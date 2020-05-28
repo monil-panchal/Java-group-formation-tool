@@ -16,6 +16,8 @@ cache:
 
 build:
   stage: build
+  tags:
+    - dalfcs_gitlab_docker_ci
   script:
     - ./gradlew assemble
   artifacts:
