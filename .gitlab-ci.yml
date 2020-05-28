@@ -1,32 +1,32 @@
-image: openjdk:11-jdk-slim
+image: gradle:alpine
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GIT_STRATEGY: clone #makes sure that runner clone fresh repository.
+  GIT_DEPTH: 1 #clone repository for last commit. known as shallow clone.
 
 stages:
   - build
   - test
 
 before_script:
-#  - echo `pwd` # debug
-#  - echo "$CI_BUILD_NAME, $CI_BUILD_REF_NAME $CI_BUILD_STAGE" # debug
-  - export GRADLE_USER_HOME=`pwd`/.gradle
-
-cache:
-  paths:
-    - .gradle/wrapper
-    - .gradle/caches
+  - chmod +x ./gradlew
 
 build:
   stage: build
   tags:
+    - grad
     - dalfcs_gitlab_docker_ci
   script:
     - ./gradlew assemble
   artifacts:
     paths:
       - build/libs/*.jar
-      
+
 test:
   stage: test
   tags:
+    - grad
     - dalfcs_gitlab_docker_ci
   script:
     - ./gradlew check
