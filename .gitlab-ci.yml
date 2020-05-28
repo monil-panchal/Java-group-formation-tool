@@ -16,7 +16,6 @@ build:
   stage: build
   tags:
     - grad
-    - dalfcs_gitlab_docker_ci
   script:
     - ./gradlew assemble
   artifacts:
@@ -27,7 +26,6 @@ test:
   stage: test
   tags:
     - grad
-    - dalfcs_gitlab_docker_ci
   script:
     - ./gradlew check
 
