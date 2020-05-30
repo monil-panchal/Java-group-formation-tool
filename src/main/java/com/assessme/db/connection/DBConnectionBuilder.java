@@ -58,4 +58,9 @@ public class DBConnectionBuilder {
             throw e;
         }
     }
+
+    public boolean closeConnection(Connection connection) throws SQLException {
+        connection.close();
+        return true;
+    }
 }
