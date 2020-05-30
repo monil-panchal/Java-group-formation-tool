@@ -7,8 +7,11 @@ package com.assessme.controller;
 
 import com.assessme.model.ResponseDTO;
 import com.assessme.model.User;
+import com.assessme.service.CSVImport;
 import com.assessme.service.CSVStorageService;
 import com.assessme.service.StorageService;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,11 +43,25 @@ public class CSVUploadController {
         try {
             String newFileName = service.store(file);
             logger.info(String.format("New FileName: %s",newFileName));
-            redirectAttributes.addFlashAttribute("message",
-				"You successfully uploaded " + file.getOriginalFilename() + "!");
+            CSVReader reader = CSVImport.importFromPath(service.load(newFileName));
+            logger.info("CSVParsed Successfully");
+            List<String[]> allStudentsList = reader.readAll();
+            for (String[] user : allStudentsList){
+                logger.info(String.format("UserEmail: %s", user[3]));
+            }
+
+//            redirectAttributes.addFlashAttribute("message",
+//				"You successfully uploaded " + file.getOriginalFilename() + "!");
+//            redirectAttributes.addFlashAttribute("isSuccess", true);
+
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("message",
 				"empty file was selected!");
+            redirectAttributes.addFlashAttribute("isSuccess", false);
+        } catch(CsvException e){
+            redirectAttributes.addFlashAttribute("message",
+				"Error Parsing CSV File");
+            redirectAttributes.addFlashAttribute("isSuccess", false);
         }
         return "redirect:/csvupload";
 	}
