@@ -1,6 +1,9 @@
 package com.assessme.model;
 
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author: monil
@@ -12,7 +15,7 @@ import java.io.Serializable;
  */
 public class User implements Serializable {
 
-    private int userId;
+    private Long userId;
     private String bannerId;
     private String firstName;
     private String lastName;
@@ -32,11 +35,11 @@ public class User implements Serializable {
         this.isActive = isActive;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -86,5 +89,37 @@ public class User implements Serializable {
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", bannerId='" + bannerId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", isActive=" + isActive +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getUserId().equals(user.getUserId()) &&
+                getBannerId().equals(user.getBannerId()) &&
+                getFirstName().equals(user.getFirstName()) &&
+                getLastName().equals(user.getLastName()) &&
+                getEmail().equals(user.getEmail()) &&
+                getPassword().equals(user.getPassword()) &&
+                isActive.equals(user.isActive);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserId(), getBannerId(), getFirstName(), getLastName(), getEmail(), getPassword(), isActive);
     }
 }

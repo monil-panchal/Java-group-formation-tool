@@ -1,22 +1,64 @@
 package com.assessme.model;
 
-import java.io.Serializable;
-import java.util.Set;
-
 /**
  * @author: monil
- * Created on: 2020-05-29
+ * Created on: 2020-05-30
  */
-public class UserRole extends User implements Serializable {
 
-    private Set userRoles;
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * Model bean of the user_role table of the database
+ */
+public class UserRole implements Serializable {
+
+    private Long userId;
+    private Integer roleId;
 
     public UserRole() {
-        super();
     }
 
-    public UserRole(Set userRoles) {
-        this.userRoles = userRoles;
+    public UserRole(Long userId, Integer roleId) {
+        this.userId = userId;
+        this.roleId = roleId;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+
+    @Override
+    public String toString() {
+        return "UserRole{" +
+                "userId=" + userId +
+                ", roleId='" + roleId + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserRole)) return false;
+        UserRole userRole = (UserRole) o;
+        return getUserId().equals(userRole.getUserId()) &&
+                getRoleId().equals(userRole.getRoleId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserId(), getRoleId());
+    }
 }

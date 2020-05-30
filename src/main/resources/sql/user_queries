@@ -1,7 +1,7 @@
 use CSCI5308_13_DEVINT;
 
 CREATE TABLE user (
-user_id int(15) NOT NULL AUTO_INCREMENT,
+user_id BIGINT NOT NULL AUTO_INCREMENT,
 banner_id varchar (255) NOT NULL UNIQUE,
 first_name varchar (255) NOT NULL,
 last_name varchar (255) NOT NULL,
@@ -17,7 +17,7 @@ CREATE INDEX email_index ON user (email);
 
 CREATE TABLE role (
 
-role_id int (15) NOT NULL AUTO_INCREMENT,
+role_id int NOT NULL AUTO_INCREMENT,
 role_name varchar (255) NOT NULL,
 
 PRIMARY KEY (role_id)
@@ -27,7 +27,7 @@ PRIMARY KEY (role_id)
 
 CREATE TABLE user_role (
 
-user_id int (15) NOT NULL,
+user_id BIGINT NOT NULL,
 role_id int (15) NOT NULL,
 
 PRIMARY KEY (user_id, role_id),
@@ -37,13 +37,28 @@ FOREIGN KEY (role_id) REFERENCES role(role_id)
 
 );
 
-INSERT INTO user values (1, 'B00838558', 'monil', 'panchal', 'monil.panchal@dal.ca', 'admin', true);
-INSERT INTO role values (1, 'admin');
-INSERT INTO user_role values (1,1);
+
+INSERT INTO user values (1, 'B00838558', 'monil', 'panchal', 'monil.panchal@dal.ca', 'password', true);
+INSERT INTO user values (2, 'B00000000', 'admin', 'admin', 'admin@dal.ca', 'password', true);
+
+INSERT INTO role values (1, 'ADMIN');
+INSERT INTO role values (2, 'INSTRUCTOR');
+INSERT INTO role values (3, 'TA');
+INSERT INTO role values (4, 'STUDENT');
+INSERT INTO role values (5, 'GUEST');
 
 
+INSERT INTO user_role values (2,1);
+INSERT INTO user_role values (1,4);
+INSERT INTO user_role values (1,3);
 
-SELECT * FROM user;
-SELECT * FROM role;
-SELECT * from user_role;
+
+SELECT u.*  , r.role_name FROM user AS u
+INNER JOIN user_role AS ur
+	ON u.user_id = ur.user_id
+INNER JOIN role AS r
+	ON ur.role_id = r.role_id
+WHERE u.email = 'monil.panchal@dal.ca';
+
+
 

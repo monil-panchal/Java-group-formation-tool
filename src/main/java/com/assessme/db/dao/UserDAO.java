@@ -6,6 +6,7 @@ package com.assessme.db.dao;
  */
 
 import com.assessme.model.User;
+import com.assessme.model.UserRoleDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,12 +17,15 @@ import java.util.Optional;
 
 public interface UserDAO {
 
-    Optional<User> getUserByEmail(String email) throws Exception;
-
     List<User> getAllUser() throws Exception;
 
-    Boolean addUser(User user) throws Exception;
+    Optional<User> getUserByEmail(String email) throws Exception;
+
+    Optional<UserRoleDTO> getUserWithRolesFromEmail(String email) throws Exception;
+
+    Optional<User> addUser(User user) throws Exception;
 
     Optional<User> updateUser(User user) throws Exception;
+
 
 }
