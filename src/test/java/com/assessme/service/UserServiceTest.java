@@ -15,6 +15,10 @@ import org.springframework.util.Assert;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 /**
  * @author: monil
  * Created on: 2020-05-29
@@ -62,6 +66,20 @@ public class UserServiceTest {
         Mockito.when(userDAO.getAllUser()).thenReturn(userList);
         Assert.notEmpty(userDAO.getAllUser(), "user list is not null");
 
+    }
+
+    /**
+     * Darshan
+     * Insert User Test
+     */
+
+    @Test
+    void insertUser() throws Exception {
+        user = new User("B00123456", "Doe",
+                "John", "john.doe@email.com", "password", true);
+        Mockito.when(userDAO.addUser(user)).thenReturn(true);
+        assertTrue(userDAO.addUser(user));
+        verify(userDAO, times(1)).addUser(user);
     }
 
     //Integration test
