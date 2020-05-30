@@ -14,7 +14,6 @@ public class ImportCSVTest {
     public void importCSV() {
         try {
             String url = "https://gist.githubusercontent.com/dash2507/e8bbde96b5c1798088b8af81958e87f8/raw/8b2d04c4a3d930fa1021e15d4530886c7ef9cd24/students.csv";
-
             CSVReader reader = importFromUrl(url);
             Assertions.assertNotNull(reader);
 
@@ -22,7 +21,6 @@ public class ImportCSVTest {
             String[][] studentArray = new String[allStudentsList.size()][];
             allStudentsList.toArray(studentArray);
             String[][] expectedArray = {
-                    {"BannerId", "LastName", "FirstName", "Email"},
                     {"B00123456", "Doe", "John", "john.doe@email.com"},
                     {"B00123789", "Doe", "Jane", "jane.doe@email.com"},
                     {"B00789123", "Christy", "Agatha", "cagatha@company.com"},
