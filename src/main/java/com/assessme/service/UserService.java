@@ -21,12 +21,20 @@ import java.util.Optional;
  */
 @Service
 public class UserService {
+    private static UserService instance;
 
     private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserDAOImpl userDAOImpl;
 
+    public static UserService getInstance(){
+
+        if (instance == null) {
+            instance = new UserService();
+        }
+        return instance;
+    }
     /**
      * Service method for retrieving all users
      */

@@ -10,6 +10,7 @@ import com.assessme.model.User;
 import com.assessme.service.CSVImport;
 import com.assessme.service.CSVStorageService;
 import com.assessme.service.StorageService;
+import com.assessme.service.UserService;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
@@ -25,44 +26,69 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class CSVUploadController {
+
     private Logger logger = LoggerFactory.getLogger(CSVUploadController.class);
     private StorageService service = CSVStorageService.getInstance();
+    private UserService userService = UserService.getInstance();
 
     @GetMapping("/csvupload")
-    public String csvFileUploadForm(Model model){
+    public String csvFileUploadForm(Model model) {
         return "csvupload";
     }
 
     @PostMapping("/csvupload")
-	public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                                        RedirectAttributes redirectAttributes) {
+    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                   RedirectAttributes redirectAttributes) {
         try {
             String newFileName = service.store(file);
-            logger.info(String.format("New FileName: %s",newFileName));
+            logger.info(String.format("New FileName: %s", newFileName));
             CSVReader reader = CSVImport.importFromPath(service.load(newFileName));
             logger.info("CSVParsed Successfully");
             List<String[]> allStudentsList = reader.readAll();
-            for (String[] user : allStudentsList){
-                logger.info(String.format("UserEmail: %s", user[3]));
+            List<String> successfullInsertion = new ArrayList<>();
+            List<String> failedInsertion = new ArrayList<>();
+
+            for (String[] userRow : allStudentsList) {
+                logger.info(String.format("UserEmail: %s", userRow[3]));
+                Optional<User> userWithEmail = userService.getUserWithEmail(userRow[3]);
+                if (userWithEmail.isPresent()) {
+                    // update uer role for that student.
+                    int userId = userWithEmail.get().getUserId();
+//                    userService.updateUserRole(userId, "UserRole");
+                } else {
+                    User user = new User(userRow[0], userRow[1], userRow[2], userRow[3], "password", true);
+//                    userService.insertUser();
+                    Optional<User> insertedUser = userService.getUserWithEmail(userRow[3]);
+                    if (insertedUser.isPresent()) {
+                        successfullInsertion.add(insertedUser.get().getBannerId());
+                    }else{
+                        failedInsertion.add(userRow[1]);
+                    }
+                }
             }
 
-//            redirectAttributes.addFlashAttribute("message",
-//				"You successfully uploaded " + file.getOriginalFilename() + "!");
-//            redirectAttributes.addFlashAttribute("isSuccess", true);
-
+            redirectAttributes.addFlashAttribute("message",
+                    "Users has been successfully created!");
+            redirectAttributes.addFlashAttribute("isSuccess", true);
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("message",
-				"empty file was selected!");
+                    "empty file was selected!");
             redirectAttributes.addFlashAttribute("isSuccess", false);
-        } catch(CsvException e){
+        } catch (CsvException e) {
             redirectAttributes.addFlashAttribute("message",
-				"Error Parsing CSV File");
+                    "Error Parsing CSV File");
+            redirectAttributes.addFlashAttribute("isSuccess", false);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message",
+                    "Error while accessing database");
             redirectAttributes.addFlashAttribute("isSuccess", false);
         }
         return "redirect:/csvupload";
-	}
+    }
 }
