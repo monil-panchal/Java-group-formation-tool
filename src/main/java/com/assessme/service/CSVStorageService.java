@@ -40,7 +40,8 @@ public class CSVStorageService implements StorageService{
     public void init() {
         if(!Files.exists(rootLocation)){
             try {
-                createdDirectoryPath = Files.createDirectory(rootLocation);
+                createdDirectoryPath = Files.createDirectories(rootLocation);
+                logger.info(String.format("Directory created: %s", rootLocation));
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("Can't Create Directory for uploading files");
