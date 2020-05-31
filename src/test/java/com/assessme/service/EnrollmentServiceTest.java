@@ -10,14 +10,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jmx.export.annotation.ManagedOperation;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Darshan Kathiriya
@@ -38,7 +39,7 @@ public class EnrollmentServiceTest {
 
     @Test
     void insertEnrollment() throws Exception {
-        Enrollment enrollment = new Enrollment(1L, 1,1L);
+        Enrollment enrollment = new Enrollment(1L, 1, 1L);
         when(enrollmentDAO.insertEnrollment(enrollment)).thenReturn(true);
         assertTrue(enrollmentDAO.insertEnrollment(enrollment));
         verify(enrollmentDAO, times(1)).insertEnrollment(enrollment);
@@ -55,7 +56,5 @@ public class EnrollmentServiceTest {
 
         Enrollment enrollment = new Enrollment(userId, roleId, courseId);
         when(enrollmentDAO.insertEnrollment(enrollment)).thenReturn(true);
-        assertTrue(enrollmentDAO.insertEnrollment(enrollment));
-        verify(enrollmentDAO, times(1)).insertEnrollment(enrollment);
     }
 }
