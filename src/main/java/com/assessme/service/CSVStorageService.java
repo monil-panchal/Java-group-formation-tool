@@ -1,6 +1,7 @@
 package com.assessme.service;
 
 import com.assessme.SystemConfig;
+import com.assessme.config.IStorageConfig;
 import com.assessme.config.StorageConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class CSVStorageService implements StorageService{
     Path createdDirectoryPath;
 
     public CSVStorageService() {
-        StorageConfig config = SystemConfig.getInstance().getStorageConfig();
+        IStorageConfig config = SystemConfig.getInstance().getStorageConfig();
         this.rootLocation = Paths.get(config.getLocation());
         init();
     }

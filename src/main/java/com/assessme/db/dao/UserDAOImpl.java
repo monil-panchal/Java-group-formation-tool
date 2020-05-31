@@ -20,7 +20,6 @@ import java.util.*;
  */
 @Repository
 public class UserDAOImpl implements UserDAO {
-
     private Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
     private DBConnectionBuilder dbConnectionBuilder;
