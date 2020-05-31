@@ -5,7 +5,6 @@ import com.assessme.model.Enrollment;
 import com.assessme.model.Role;
 import com.assessme.db.dao.EnrollmentDAO;
 import com.assessme.model.User;
-import com.assessme.model.UserRole;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -60,6 +59,5 @@ public class EnrollmentServiceTest {
         assertTrue(enrollmentDAO.insertEnrollment(enrollment));
         verify(enrollmentDAO, times(1)).insertEnrollment(enrollment);
     }
-
 
 }

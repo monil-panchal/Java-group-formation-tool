@@ -29,6 +29,7 @@ public class SystemConfig {
         return databaseConfig;
     }
 
+
     public EmailConfig getEmailConfig(){
         return emailConfig;
     }
