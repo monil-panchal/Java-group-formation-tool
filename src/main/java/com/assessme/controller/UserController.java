@@ -2,9 +2,8 @@ package com.assessme.controller;
 
 import com.assessme.model.ResponseDTO;
 import com.assessme.model.User;
-import com.assessme.model.UserRole;
 import com.assessme.model.UserRoleDTO;
-import com.assessme.service.UserService;
+import com.assessme.service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +27,7 @@ public class UserController {
     private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     // API endpoint method for fetching all users
     @GetMapping("/all")

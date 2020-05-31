@@ -3,7 +3,6 @@ package com.assessme.service;
 import com.assessme.db.dao.RoleDAOImpl;
 import com.assessme.db.dao.UserDAOImpl;
 import com.assessme.db.dao.UserRoleDAOImpl;
-import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.model.UserRoleDTO;
 import com.assessme.util.AppConstant;
@@ -16,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -32,9 +30,9 @@ import static org.mockito.Mockito.verify;
  * Created on: 2020-05-29
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class UserServiceTest {
+public class UserServiceImplTest {
 
-    private Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
+    private Logger logger = LoggerFactory.getLogger(UserServiceImplTest.class);
 
     @Mock
     private UserDAOImpl userDAO;
@@ -42,10 +40,10 @@ public class UserServiceTest {
     private Optional<User> userFromDB;
 
     @InjectMocks
-    private UserService userServiceMock;
+    private UserServiceImpl userServiceMock;
 
     @Mock
-    private UserService userServiceMock2;
+    private UserServiceImpl userServiceMock2;
 
     @Mock
     private UserRoleService userRoleService;
@@ -54,7 +52,7 @@ public class UserServiceTest {
     private RoleService roleService;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Mock
     private RoleDAOImpl roleDAOImpl;

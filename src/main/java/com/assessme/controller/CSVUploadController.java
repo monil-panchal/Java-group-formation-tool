@@ -5,18 +5,15 @@ package com.assessme.controller;
  * @created 30-May-2020 12:28 AM
  */
 
-import com.assessme.model.ResponseDTO;
 import com.assessme.model.User;
 import com.assessme.service.CSVImport;
 import com.assessme.service.CSVStorageService;
 import com.assessme.service.StorageService;
-import com.assessme.service.UserService;
+import com.assessme.service.UserServiceImpl;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +32,7 @@ public class CSVUploadController {
 
     private Logger logger = LoggerFactory.getLogger(CSVUploadController.class);
     private StorageService service = CSVStorageService.getInstance();
-    private UserService userService = UserService.getInstance();
+    private UserServiceImpl userService = UserServiceImpl.getInstance();
 
     @GetMapping("/csvupload")
     public String csvFileUploadForm(Model model) {
