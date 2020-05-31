@@ -1,8 +1,8 @@
 package com.assessme.service;
 
-import com.assessme.db.dao.*;
 import com.assessme.model.Enrollment;
 import com.assessme.model.Role;
+import com.assessme.db.dao.EnrollmentDAO;
 import com.assessme.model.User;
 import com.assessme.model.UserRole;
 import org.junit.jupiter.api.Test;

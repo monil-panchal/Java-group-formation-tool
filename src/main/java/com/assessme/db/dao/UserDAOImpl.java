@@ -30,6 +30,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
 
+
     // UserDAO method for retrieving user using email
     @Override
     public Optional<User> getUserByEmail(String email) throws Exception {
