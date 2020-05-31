@@ -21,13 +21,20 @@ import java.util.*;
  */
 @Repository
 public class UserDAOImpl implements UserDAO {
-
+    static UserDAO instance;
     private Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
     @Autowired
     private DBConnectionBuilder dbConnectionBuilder;
 
     private Optional<Connection> connection;
+
+    public static UserDAO getInstance() {
+        if (instance == null) {
+            instance = new UserDAOImpl();
+        }
+        return instance;
+    }
 
     // UserDAO method for retrieving user using email
     @Override
