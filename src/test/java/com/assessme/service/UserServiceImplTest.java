@@ -179,18 +179,18 @@ public class UserServiceImplTest {
     }
 
     //Integration test
-    @Test
-    public void getUserFromEmailIntegrationTests() throws Exception {
-
-        String email = "monil.panchal@dal.ca";
-        logger.info(String.format("Running Integration test for fetching user with emailId: " + email));
-
-        // Calling the actual service
-        Optional<User> dbUser = userService.getUserFromEmail(email);
-
-        //verification
-        Assert.notNull(dbUser, String.format("User with email id: %s should not be null", email));
-        Assertions.assertEquals(dbUser.get().getEmail(), email);
-
-    }
+//    @Test
+//    public void getUserFromEmailIntegrationTests() throws Exception {
+//
+//        String email = "monil.panchal@dal.ca";
+//        logger.info(String.format("Running Integration test for fetching user with emailId: " + email));
+//
+//        // Calling the actual service
+//        Optional<User> dbUser = userService.getUserFromEmail(email);
+//
+//        //verification
+//        Assert.notNull(dbUser, String.format("User with email id: %s should not be null", email));
+//        Assertions.assertEquals(dbUser.get().getEmail(), email);
+//
+//    }
 }
