@@ -2,6 +2,7 @@ package com.assessme;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /*
  * Spring boot starter class, serving as an entry point to this application.
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Configurations are defined in application.properties file in resource directory.
  */
 @SpringBootApplication
+@EnableAsync
 public class AssessmeApplication {
     public static void main(String[] args) {
         SpringApplication.run(AssessmeApplication.class, args);
