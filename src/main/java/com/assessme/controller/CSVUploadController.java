@@ -50,6 +50,7 @@ public class CSVUploadController {
     }
 
 
+    @Autowired
     private EnrollmentDAO enrollmentDAO = EnrollmentDAOImpl.getInstance();
 
     private MailSenderService mailSenderService = MailSenderService.getInstance();
