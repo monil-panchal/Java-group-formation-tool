@@ -40,13 +40,14 @@ public class UserService {
     private UserRoleService userRoleService;
 
 
-    public static UserService getInstance(){
+    public static UserService getInstance() {
 
         if (instance == null) {
             instance = new UserService();
         }
         return instance;
     }
+
     /**
      * Service method for retrieving all users
      */
@@ -71,9 +72,8 @@ public class UserService {
     /**
      * Service method for retrieving user based on email
      */
-    public Optional<User> getUserFromEmail(String email) throws Exception {
-
-        Optional<User> user;
+    public Optional<User> getUserFromEmail(String email) {
+        Optional<User> user = Optional.empty();
         try {
             user = userDAOImpl.getUserByEmail(email);
             String resMessage = String.format("User with email: %s has been retrieved from the database", email);
@@ -82,7 +82,6 @@ public class UserService {
             String errMessage = String.format("Error in retrieving the user from the database");
             logger.error(errMessage);
             e.printStackTrace();
-            throw e;
         }
         return user;
     }
@@ -113,73 +112,62 @@ public class UserService {
      */
     public Optional<User> addUser(User user, String userRole) throws Exception {
 
-        logger.info("user: "+ user);
+        logger.info("user: " + user);
 
         Optional<User> newUser = Optional.empty();
         Optional<Role> role = Optional.empty();
         Optional<UserRole> newUserRole = Optional.empty();
-        try {
+        //TODO
+        //Step -1
+        //Validate the User object
+
+        if (user.getActive() == null) {
+            user.setActive(true);
+        }
+
+        //Step-2
+        // Check for password
+        if (user.getPassword() == null || user.getPassword().isBlank() || user.getPassword().isEmpty()) {
+            // generate new Password
+            String password = user.getBannerId() + "_" + user.getLastName();
+            logger.info(String.format("User: %s default password is: %s", user.getEmail(), password));
+            user.setPassword(password);
 
             //TODO
-            //Step -1
-            //Validate the User object
-
-            if(user.getActive() == null){
-                user.setActive(true);
-            }
-
-            //Step-2
-            // Check for password
-            if (user.getPassword() == null || user.getPassword().isBlank() || user.getPassword().isEmpty()) {
-                // generate new Password
-                String password = user.getBannerId() + "_" + user.getLastName();
-                logger.info(String.format("User: %s default password is: %s", user.getEmail(), password));
-                user.setPassword(password);
-
-                //TODO
-                //secure password
-            }
-
-            // Step-3 Insert user record in the user table
-            newUser = userDAOImpl.addUser(user);
-            if (newUser.isPresent()) {
-                //  newUser = Optional.of(user);
-                String resMessage = String.format("User with email: %s has been successfully added to the user table", user.getEmail());
-                logger.info(resMessage);
-            } else {
-                throw new Exception(String.format("Error in creating a user with email: %s", user.getEmail()));
-            }
-
-            // Step-4 Get role_id from role table
-
-            if (userRole == null || userRole.isBlank() || userRole.isBlank()) {
-                userRole = AppConstant.DEFAULT_USER_ROLE_CREATE;
-            }
-            role = roleService.getRoleFromRoleName(userRole);
-
-            if (role.isPresent()) {
-
-                // Step-5 Update user_role table
-                newUserRole = userRoleService.addUserRole(newUser.get().getUserId(), role.get().getRoleId());
-
-            } else
-                throw new Exception("Unable to fetch role id for the user from the role table.");
-
-            if (newUser.isPresent()) {
-                String resMessage = String.format("User: %s has been assigned with the role: %s in the system", user.getEmail(), userRole);
-                logger.info(resMessage);
-            } else
-                throw new Exception(String.format("Unable to assign the role: %s to the user: %s", userRole, user.getEmail()));
-
-        } catch (Exception e) {
-            String errMessage = String.format("Error in adding the user to the database");
-            logger.error(errMessage);
-            e.printStackTrace();
-            throw e;
+            //secure password
         }
+
+        // Step-3 Insert user record in the user table
+        newUser = userDAOImpl.addUser(user);
+        if (newUser.isPresent()) {
+            //  newUser = Optional.of(user);
+            String resMessage = String.format("User with email: %s has been successfully added to the user table", user.getEmail());
+            logger.info(resMessage);
+        } else {
+            throw new Exception(String.format("Error in creating a user with email: %s", user.getEmail()));
+        }
+
+        // Step-4 Get role_id from role table
+
+        if (userRole == null || userRole.isBlank() || userRole.isBlank()) {
+            userRole = AppConstant.DEFAULT_USER_ROLE_CREATE;
+        }
+        role = roleService.getRoleFromRoleName(userRole);
+
+        if (role.isPresent()) {
+
+            // Step-5 Update user_role table
+            newUserRole = userRoleService.addUserRole(newUser.get().getUserId(), role.get().getRoleId());
+
+        } else
+            throw new Exception("Unable to fetch role id for the user from the role table.");
+
+        if (newUser.isPresent()) {
+            String resMessage = String.format("User: %s has been assigned with the role: %s in the system", user.getEmail(), userRole);
+            logger.info(resMessage);
+        } else
+            throw new Exception(String.format("Unable to assign the role: %s to the user: %s", userRole, user.getEmail()));
         return newUser;
     }
-
-
 
 }

@@ -9,10 +9,10 @@ import java.util.Properties;
  * @created 31-May-2020 11:28 AM
  */
 public class EmailConfig {
-    String host = "smtp.gmial.com";
-    int port = 587;
-    String username = "usename";
-    String password = "password";
+    String host = "smtp.mailtrap.io";
+    int port = 2525;
+    String username = "6612d1ce0bdec9";
+    String password = "432f71435e7ae5";
     Properties props;
 
     public Properties getProps() {

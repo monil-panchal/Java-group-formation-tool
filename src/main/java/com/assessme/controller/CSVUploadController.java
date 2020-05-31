@@ -38,7 +38,11 @@ public class CSVUploadController {
 
     private Logger logger = LoggerFactory.getLogger(CSVUploadController.class);
     private StorageService service = CSVStorageService.getInstance();
-    private UserService userService = UserService.getInstance();
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
     private EnrollmentDAO enrollmentDAO = EnrollmentDAOImpl.getInstance();
 
     private MailSenderService mailSenderService = MailSenderService.getInstance();
@@ -67,6 +71,7 @@ public class CSVUploadController {
                 long userId;
                 if (userWithEmail.isPresent()) {
                     // update uer role for that student.
+                    logger.info("User: "+userWithEmail.get());
                     userId = userWithEmail.get().getUserId();
 //                    userService.updateUserRole(userId, "UserRole");
                 } else {
@@ -98,6 +103,8 @@ public class CSVUploadController {
                     "Error Parsing CSV File");
             redirectAttributes.addFlashAttribute("isSuccess", false);
         } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
             redirectAttributes.addFlashAttribute("message",
                     "Error while accessing database");
             redirectAttributes.addFlashAttribute("isSuccess", false);
