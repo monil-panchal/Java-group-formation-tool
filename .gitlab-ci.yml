@@ -2,13 +2,22 @@
 image: gradle:jdk11
 
 variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false" #we don't need daemon as we are doing only short jobs.
+  #we don't need daemon as we are doing only short jobs.
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false 
+                -XX:MaxMetaspaceSize=256m
+                -XX:+HeapDumpOnOutOfMemoryError
+                -Xmx512m
+                -Dfile.encoding=UTF-8
+                -Duser.country=US
+                -Duser.language=en
+                -Duser.variant"
   GIT_STRATEGY: clone #makes sure that runner clone fresh repository.
   GIT_DEPTH: 1 #clone repository for last commit. known as shallow clone.
 
 stages:
   - build
   - test
+  - deploy
 
 # before_script:
 #   - chmod +x ./gradlew
@@ -29,6 +38,19 @@ test:
     - dalfcs_gitlab_docker_ci
   script:
     - ./gradlew check
+
+deploy:
+  stage: deploy
+  tags:
+    - dalfcs_gitlab_docker_ci
+  image: ruby:latest
+  script:
+  - apt-get update -qy
+  - apt-get install -y ruby-dev
+  - gem install dpl
+  - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+  - develop
 
 after_script:
   - echo "End CI"
