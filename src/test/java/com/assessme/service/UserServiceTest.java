@@ -64,7 +64,7 @@ public class UserServiceTest {
 
     }
 
-    //Integration test
+    /*//Integration test
     @Test
     public void getUserWithEmailIntegrationTests() throws Exception {
 
@@ -77,5 +77,5 @@ public class UserServiceTest {
         //verification
         Assert.notNull(dbUser, String.format("User with email id: %s should not be null", email));
 
-    }
+    }*/
 }
