@@ -23,6 +23,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 /**
  * @author: monil
  * Created on: 2020-05-29
@@ -160,6 +164,20 @@ public class UserServiceTest {
 //        Assertions.assertEquals(userFromDB.get().getActive(), true);
 //        Assertions.assertEquals(userFromDB.get().getPassword(), "B00838558" + "_" + "Abraham");
 
+    }
+
+    /**
+     * Darshan
+     * Insert User Test
+     */
+
+    @Test
+    void insertUser() throws Exception {
+        user = new User("B00123456", "Doe",
+                "John", "john.doe@email.com", "password", true);
+        Mockito.when(userDAO.addUser(user)).thenReturn(true);
+        assertTrue(userDAO.addUser(user));
+        verify(userDAO, times(1)).addUser(user);
     }
 
     //Integration test
