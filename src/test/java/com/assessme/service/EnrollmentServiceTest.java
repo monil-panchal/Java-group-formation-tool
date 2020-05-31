@@ -39,7 +39,7 @@ public class EnrollmentServiceTest {
 
     @Test
     void insertEnrollment() throws Exception {
-        Enrollment enrollment = new Enrollment(1L, 1, 1L);
+        Enrollment enrollment = new Enrollment(1L, 1,1L);
         when(enrollmentDAO.insertEnrollment(enrollment)).thenReturn(true);
         assertTrue(enrollmentDAO.insertEnrollment(enrollment));
         verify(enrollmentDAO, times(1)).insertEnrollment(enrollment);

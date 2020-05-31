@@ -50,14 +50,12 @@ public class CSVUploadController {
     }
 
 
-    @Autowired
     private EnrollmentDAO enrollmentDAO = EnrollmentDAOImpl.getInstance();
 
     private MailSenderService mailSenderService = MailSenderService.getInstance();
 
     @Autowired
     private RoleService roleService;
-
 
     @GetMapping("/csvupload")
     public String csvFileUploadForm(Model model) {
