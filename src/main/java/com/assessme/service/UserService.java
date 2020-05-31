@@ -26,6 +26,7 @@ import java.util.Set;
  */
 @Service
 public class UserService {
+    private static UserService instance;
 
     private Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -39,6 +40,13 @@ public class UserService {
     private UserRoleService userRoleService;
 
 
+    public static UserService getInstance(){
+
+        if (instance == null) {
+            instance = new UserService();
+        }
+        return instance;
+    }
     /**
      * Service method for retrieving all users
      */
