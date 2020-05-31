@@ -173,10 +173,10 @@ public class UserServiceTest {
 
     @Test
     void insertUser() throws Exception {
-        user = new User("B00123456", "Doe",
+        User user = new User("B00123456", "Doe",
                 "John", "john.doe@email.com", "password", true);
-        Mockito.when(userDAO.addUser(user)).thenReturn(true);
-        assertTrue(userDAO.addUser(user));
+        Mockito.when(userDAO.addUser(user)).thenReturn(Optional.of(user));
+        assertTrue(userDAO.addUser(user).isPresent());
         verify(userDAO, times(1)).addUser(user);
     }
 

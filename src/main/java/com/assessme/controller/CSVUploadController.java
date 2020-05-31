@@ -56,15 +56,15 @@ public class CSVUploadController {
 
             for (String[] userRow : allStudentsList) {
                 logger.info(String.format("UserEmail: %s", userRow[3]));
-                Optional<User> userWithEmail = userService.getUserWithEmail(userRow[3]);
+                Optional<User> userWithEmail = userService.getUserFromEmail(userRow[3]);
                 if (userWithEmail.isPresent()) {
                     // update uer role for that student.
-                    int userId = userWithEmail.get().getUserId();
+                    long userId = userWithEmail.get().getUserId();
 //                    userService.updateUserRole(userId, "UserRole");
                 } else {
                     User user = new User(userRow[0], userRow[1], userRow[2], userRow[3], "password", true);
 //                    userService.insertUser();
-                    Optional<User> insertedUser = userService.getUserWithEmail(userRow[3]);
+                    Optional<User> insertedUser = userService.getUserFromEmail(userRow[3]);
                     if (insertedUser.isPresent()) {
                         successfullInsertion.add(insertedUser.get().getBannerId());
                     }else{
