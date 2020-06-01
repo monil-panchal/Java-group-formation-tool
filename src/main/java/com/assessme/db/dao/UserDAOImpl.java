@@ -127,6 +127,8 @@ public class UserDAOImpl implements UserDAO {
             e.printStackTrace();
             throw e;
         }
+        //Closing the connection
+        dbConnectionBuilder.closeConnection(connection.get());
         return userList;
     }
 
@@ -143,7 +145,7 @@ public class UserDAOImpl implements UserDAO {
 
 
         // SQL query for fetching the user record with role_name based on the email.
-        String selectQuery = "SELECT u.banner_id, u.first_name, u.last_name, u.email, u.isActive, r.role_name FROM user AS u" +
+        String selectQuery = "SELECT u.banner_id, u.first_name, u.last_name, u.email, u.isActive, u.password, r.role_name FROM user AS u" +
                 " INNER JOIN user_role AS ur " +
                 " ON u.user_id = ur.user_id " +
                 " INNER JOIN role AS r " +
@@ -179,6 +181,7 @@ public class UserDAOImpl implements UserDAO {
                 user.get().setLastName(resultSet.getString("last_name"));
                 user.get().setEmail(resultSet.getString("email"));
                 user.get().setActive(resultSet.getBoolean("isActive"));
+                user.get().setPassword(resultSet.getString("password"));
                 userRoles.add(resultSet.getString("role_name"));
 
                 //Getting all the roles for the user and adding to Set
@@ -249,6 +252,8 @@ public class UserDAOImpl implements UserDAO {
                     throw new SQLException("Creation of user failed. Cannot obtain user_id.");
                 }
             }
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
             return newUser;
 
         } catch (Exception e) {

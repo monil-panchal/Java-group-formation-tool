@@ -1,6 +1,7 @@
 package com.assessme.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 
 /**
