@@ -8,7 +8,7 @@
 
 <div>
     <div class="main">
-        <h3>AccessMe Login </h3>
+        <h1>AccessMe Login </h1>
         <form th:action="@{/login}" method="post">
             <div th:if="${param.error}">
                 <div style="font-size:14px; color:#8b0700; font-weight:bold;">
@@ -34,6 +34,8 @@
             </div>
         </form>
     </div>
+
+    <a th:href="@{/registration}">Register</a>
 </div>
 
 </body>

@@ -30,7 +30,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/user/**",
                         "/js/**",
                         "/css/**",
-                        "/img/**").permitAll()
+                        "/img/**",
+                        "/registration",
+                        "/home").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
