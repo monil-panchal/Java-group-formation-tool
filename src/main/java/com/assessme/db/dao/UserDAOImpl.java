@@ -127,6 +127,8 @@ public class UserDAOImpl implements UserDAO {
             e.printStackTrace();
             throw e;
         }
+        //Closing the connection
+        dbConnectionBuilder.closeConnection(connection.get());
         return userList;
     }
 
@@ -250,6 +252,8 @@ public class UserDAOImpl implements UserDAO {
                     throw new SQLException("Creation of user failed. Cannot obtain user_id.");
                 }
             }
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
             return newUser;
 
         } catch (Exception e) {

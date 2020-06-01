@@ -64,6 +64,8 @@ public class UserRoleDAOImpl implements UserRoleDAO {
                 throw new Exception(failureString);
             }
 
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
             return true;
 
         } catch (Exception e) {
