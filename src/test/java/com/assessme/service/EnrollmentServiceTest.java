@@ -1,5 +1,6 @@
 package com.assessme.service;
 
+
 import com.assessme.model.Enrollment;
 import com.assessme.model.Role;
 import com.assessme.db.dao.EnrollmentDAO;
@@ -56,5 +57,9 @@ public class EnrollmentServiceTest {
 
         Enrollment enrollment = new Enrollment(userId, roleId, courseId);
         when(enrollmentDAO.insertEnrollment(enrollment)).thenReturn(true);
+        assertTrue(enrollmentDAO.insertEnrollment(enrollment));
+        verify(enrollmentDAO, times(1)).insertEnrollment(enrollment);
     }
+
+
 }
