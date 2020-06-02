@@ -53,7 +53,7 @@ public class CourseController {
     }
 
     // API endpoint method for fetching course using courseCode
-    @GetMapping()
+    @GetMapping("/getCourseByCourseCode")
     public ResponseEntity<ResponseDTO> getCourseFromCourseCode(@RequestParam("courseCode") String courseCode) throws Exception {
 
         logger.info("Calling API for course retrieval using course code.");
@@ -75,7 +75,7 @@ public class CourseController {
     }
     
     // API endpoint method for fetching course using courseCode
-    @GetMapping()
+    @GetMapping("/getCourseByCourseName")
     public ResponseEntity<ResponseDTO> getCourseFromCourseName(@RequestParam("courseName") String courseName) throws Exception {
 
         logger.info("Calling API for course retrieval using course code.");

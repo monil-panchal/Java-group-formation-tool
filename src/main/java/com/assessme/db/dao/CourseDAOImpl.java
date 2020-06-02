@@ -180,8 +180,7 @@ public class CourseDAOImpl implements CourseDAO {
             connection = dbConnectionBuilder.createDBConnection();
 
             // Preparing the statement
-            String insertCourseQuery = "INSERT INTO course VALUES(?, ?)";
-
+            String insertCourseQuery = "INSERT INTO course(course_code, course_name) VALUES(?, ?)";
             PreparedStatement preparedStatement = connection.get().prepareStatement(insertCourseQuery); // create a statement
             // I am not sure AUTO INCREMENT courseId should be inserted on not
             preparedStatement.setString(1, courseCode); // set input parameter 1
