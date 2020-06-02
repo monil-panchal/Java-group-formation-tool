@@ -123,12 +123,108 @@ public class CourseDAOImpl implements CourseDAO {
 
     @Override
     public Boolean addCourse(Course course) throws Exception {
-        return null;
+        //returns true if course added else returns false
+        String courseCode = course.getCourseCode();
+        String courseName = course.getCourseName();
+        
+        try {
+            // Getting the DB connection
+            connection = dbConnectionBuilder.createDBConnection();
+
+            // Preparing the statement
+            String insertCourseQuery = "INSERT INTO Course VALUES(?, ?)";
+
+            PreparedStatement preparedStatement = connection.get().prepareStatement(insertCourseQuery); // create a statement
+            // I am not sure AUTO INCREMENT courseId should be inserted on not
+            preparedStatement.setString(1, courseCode); // set input parameter 1
+            preparedStatement.setString(2, courseName); // set input parameter 2
+            int row = preparedStatement.executeUpdate(); // execute insert statement
+            
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+            
+            if (row==1){ //one row inserted
+            	logger.info(String.format("Insertion Successfull! Course with course code: %s, course name:%s", courseCode,courseName));
+            	return true;
+            }
+            else{
+            	logger.info(String.format("Insertion Failed! Course with course code: %s, course name:%s", courseCode,courseName));
+            	return false;
+            }
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+
     }
     
     @Override
-    public Boolean removeCourse(Course course) throws Exception {
-        return null;
+    public Boolean removeCourseByCourseCode(String courseCode) throws Exception{
+        //returns true if course added else returns false
+        
+        try {
+            // Getting the DB connection
+            connection = dbConnectionBuilder.createDBConnection();
+
+            // Preparing the statement
+            String SQL_DELETE = "DELETE FROM Course WHERE course_code=?";
+
+            PreparedStatement preparedStatement = connection.get().prepareStatement(SQL_DELETE); // create a statement
+            preparedStatement.setString(1, courseCode); // set input parameter 2
+            int row = preparedStatement.executeUpdate(); // execute insert statement
+            
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+            
+            if (row==1){ //one row deleted
+            	logger.info(String.format("Deletion Successfull! Course with course code: %s", courseCode));
+            	return true;
+            }
+            else{
+            	logger.info(String.format("Deletion Failed! Course with course code: %s", courseCode));
+            	return false;
+            }
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+
+    }
+
+    @Override
+    public Boolean removeCourseByCourseName(String courseName) throws Exception{
+        //returns true if course added else returns false
+        
+        try {
+            // Getting the DB connection
+            connection = dbConnectionBuilder.createDBConnection();
+
+            // Preparing the statement
+            String SQL_DELETE = "DELETE FROM Course WHERE course_name=?";
+
+            PreparedStatement preparedStatement = connection.get().prepareStatement(SQL_DELETE); // create a statement
+            preparedStatement.setString(1, courseName); // set input parameter 2
+            int row = preparedStatement.executeUpdate(); // execute insert statement
+            
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+            
+            if (row==1){ //one row deleted
+            	logger.info(String.format("Deletion Successfull! Course with course name: %s", courseName));
+            	return true;
+            }
+            else{
+            	logger.info(String.format("Deletion Failed! Course with course name: %s", courseName));
+            	return false;
+            }
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+
     }
     /*
     @Override
