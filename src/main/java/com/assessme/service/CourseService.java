@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +25,10 @@ public class CourseService {
 
     @Autowired
     private CourseDAOImpl courseDAOImpl;
+
+    public CourseService(CourseDAOImpl courseDAOImpl){
+        this.courseDAOImpl = courseDAOImpl;
+    }
 
     /**
      * Service method for retrieving all Courses

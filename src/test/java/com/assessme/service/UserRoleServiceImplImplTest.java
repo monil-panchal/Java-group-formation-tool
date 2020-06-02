@@ -19,9 +19,9 @@ import java.util.Optional;
  * Created on: 2020-05-30
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class UserRoleServiceTest {
+public class UserRoleServiceImplImplTest {
 
-    private Logger logger = LoggerFactory.getLogger(UserRoleServiceTest.class);
+    private Logger logger = LoggerFactory.getLogger(UserRoleServiceImplImplTest.class);
 
     @Mock
     private UserRoleDAOImpl userRoleDAOImpl;
@@ -29,7 +29,7 @@ public class UserRoleServiceTest {
     private Optional<UserRole> userRole;
 
     @InjectMocks
-    private UserRoleService userRoleService;
+    private UserRoleServiceImpl userRoleServiceImpl;
 
     @Test
     public void addUserRoleTest() throws Exception {
@@ -38,7 +38,7 @@ public class UserRoleServiceTest {
 
         Mockito.when(userRoleDAOImpl.addUserRole(newUserRole)).thenReturn(true);
 
-        userRole = userRoleService.addUserRole(1L, 1);
+        userRole = userRoleServiceImpl.addUserRole(1L, 1);
 
         Assert.isTrue(userRole.isPresent(), "User role should not be empty");
         Assert.notNull(userRole.get().getRoleId(), "Role id should not be null");

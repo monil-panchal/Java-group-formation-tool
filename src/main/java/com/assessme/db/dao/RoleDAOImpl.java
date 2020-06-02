@@ -4,7 +4,6 @@ import com.assessme.db.connection.DBConnectionBuilder;
 import com.assessme.model.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -25,12 +24,11 @@ public class RoleDAOImpl implements RoleDAO {
 
     private Logger logger = LoggerFactory.getLogger(RoleDAOImpl.class);
 
-    @Autowired
     private DBConnectionBuilder dbConnectionBuilder;
-
     private Optional<Connection> connection;
 
-    public RoleDAOImpl() {
+    public RoleDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
+        this.dbConnectionBuilder = dbConnectionBuilder;
     }
 
     // RoleDAO method for retrieving role using role_name
@@ -40,7 +38,7 @@ public class RoleDAOImpl implements RoleDAO {
         Optional<Role> role = Optional.empty();
 
         // SQL query for fetching the role record based on the role_name
-        roleName = '\'' + roleName+ '\'';
+        roleName = '\'' + roleName + '\'';
         String selectQuery = "SELECT * FROM role WHERE role_name=" + roleName;
 
         logger.info(String.format("selectQuery: %s", selectQuery));

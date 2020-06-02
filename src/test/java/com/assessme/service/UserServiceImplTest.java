@@ -46,10 +46,10 @@ public class UserServiceImplTest {
     private UserServiceImpl userServiceMock2;
 
     @Mock
-    private UserRoleService userRoleService;
+    private UserRoleServiceImpl userRoleServiceImpl;
 
     @Mock
-    private RoleService roleService;
+    private RoleServiceImpl roleServiceImpl;
 
     @Autowired
     private UserServiceImpl userService;

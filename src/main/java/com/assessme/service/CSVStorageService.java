@@ -4,6 +4,7 @@ import com.assessme.SystemConfig;
 import com.assessme.config.StorageConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,9 +19,12 @@ import java.util.Date;
 import java.util.stream.Stream;
 
 
+@Service
 public class CSVStorageService implements StorageService{
+
     private Logger logger = LoggerFactory.getLogger(CSVStorageService.class);
     private static CSVStorageService instance;
+
     Path rootLocation;
     Path createdDirectoryPath;
 
