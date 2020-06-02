@@ -17,6 +17,8 @@ import java.util.Optional;
 public interface CourseDAO {
 
     Optional<Course> getCourseByCode(String courseCode) throws Exception;
+    
+    Optional<Course> getCourseByName(String courseName) throws Exception;
 
     List<Course> getAllCourse() throws Exception;
 

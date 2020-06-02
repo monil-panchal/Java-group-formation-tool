@@ -78,6 +78,54 @@ public class CourseDAOImpl implements CourseDAO {
         return course;
     }
 
+    
+    // CourseDAO method for retrieving course by using courseName
+    @Override
+    public Optional<Course> getCourseByName(String courseName) throws Exception {
+
+        Optional<Course> course = Optional.empty();
+
+        // SQL query for fetching the course record based on the courseName
+        String selectQuery = "SELECT * FROM course WHERE course_name =" +  courseName;
+
+		try {
+            // Getting the DB connection
+            connection = dbConnectionBuilder.createDBConnection();
+
+            // Preparing the statement
+            Statement statement = connection.get().createStatement();
+
+            if ((!courseName.isEmpty() && courseName != null)) {
+
+                ResultSet resultSet = statement.executeQuery(selectQuery);
+
+                if (!resultSet.isBeforeFirst()) {
+                    logger.error(String.format("Course: %s is not found in the database", courseName));
+                    throw new Exception(String.format("Course: %s is not found in the database", courseName));
+                }
+
+                logger.info(String.format("Course data retrieved successfully"));
+                while (resultSet.next()) {
+
+                    course = Optional.of(new Course());	
+                    course.get().setCourseId(resultSet.getInt("course_code"));
+                    course.get().setCourseName(resultSet.getString("course_name"));
+
+                }
+                String successString = String.format("Course with course name: %s retrieved successfully.", courseName);
+                logger.info(successString);
+
+            } else
+                throw new Exception(String.format("Course: %s record is not found in the Database.", courseName));
+
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+        return course;
+    }
+
 
     @Override
     public List<Course> getAllCourse() throws SQLException, ClassNotFoundException {
@@ -162,7 +210,7 @@ public class CourseDAOImpl implements CourseDAO {
     @Override
     public Boolean removeCourseByCourseCode(String courseCode) throws Exception{
         //returns true if course added else returns false
-        
+    	
         try {
             // Getting the DB connection
             connection = dbConnectionBuilder.createDBConnection();

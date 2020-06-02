@@ -67,6 +67,26 @@ public class CourseService {
         return course;
     }
     
+    
+    /**
+     * Service method for retrieving course using courseName
+     */
+    public Optional<Course> getCourseWithName(String courseName) throws Exception {
+
+        Optional<Course> course;
+        try {
+            course = courseDAOImpl.getCourseByName(courseName);
+            String resMessage = String.format("Course with course code: %s has been retrieved from the database", courseName);
+            logger.info(resMessage);
+        } catch (Exception e) {
+            String errMessage = String.format("Error in retrieving the course from the database");
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
+        }
+        return course;
+    }
+    
     /**
      * Service method for removing course using courseCode
      */
