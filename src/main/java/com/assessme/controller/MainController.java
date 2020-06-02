@@ -63,4 +63,14 @@ public class MainController {
         return "redirect:/home";
     }
 
+    @GetMapping("/course_admin")
+    public String courseAdmin(Model model) {
+        return "course_admin";
+    }
+
+    @GetMapping("/course_info")
+    public String courseInfo(Model model) {
+        return "course_info";
+    }
+
 }
