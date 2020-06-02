@@ -88,4 +88,43 @@ public class CourseService {
         }
         return course;
     }
+    
+    
+    /**
+     * Service method for removing course using courseCode
+     */
+    public Boolean removeCourseWithCourseCode(String courseCode) throws Exception {
+
+    	Boolean removed;
+        try {
+        	removed = courseDAOImpl.removeCourseByCourseCode(courseCode);
+            String resMessage = String.format("Course with course code: %s has been removing from the database", courseCode);
+            logger.info(resMessage);
+        } catch (Exception e) {
+            String errMessage = String.format("Error in retrieving the course from the database");
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
+        }
+        return removed;
+    }
+    
+    /**
+     * Service method for removing course using courseName
+     */
+    public Boolean removeCourseWithCourseName(String courseName) throws Exception {
+
+    	Boolean removed;
+        try {
+        	removed = courseDAOImpl.removeCourseByCourseName(courseName);
+            String resMessage = String.format("Course with course name: %s has been removing from the database", courseName);
+            logger.info(resMessage);
+        } catch (Exception e) {
+            String errMessage = String.format("Error in retrieving the course from the database");
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
+        }
+        return removed;
+    }
 }

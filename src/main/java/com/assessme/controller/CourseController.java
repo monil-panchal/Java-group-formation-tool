@@ -98,4 +98,48 @@ public class CourseController {
 
         return new ResponseEntity(responseDTO, httpStatus);
     }
+    
+    // API endpoint method for removing course using courseName
+    @GetMapping("/removeCourseByCourseName")
+    public ResponseEntity<ResponseDTO> removeCourseByCourseName(@RequestParam("courseName") String courseName) throws Exception {
+
+        logger.info("Calling API for course retrieval using course code.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Course>> responseDTO = null;
+
+        try {
+            Boolean removed = courseService.removeCourseWithCourseName(courseName);
+            String resMessage = String.format("Course has been removed from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, removed);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            String errMessage = String.format("Error in retrieving the course from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity(responseDTO, httpStatus);
+    }
+    
+    // API endpoint method for removing course using courseCode
+    @GetMapping("/removeCourseByCourseCode")
+    public ResponseEntity<ResponseDTO> removeCourseByCourseCode(@RequestParam("courseCode") String courseCode) throws Exception {
+
+        logger.info("Calling API for course retrieval using course code.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Course>> responseDTO = null;
+
+        try {
+            Boolean removed = courseService.removeCourseWithCourseCode(courseCode);
+            String resMessage = String.format("Course has been removed from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, removed);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            String errMessage = String.format("Error in retrieving the course from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity(responseDTO, httpStatus);
+    }
 }
