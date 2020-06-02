@@ -9,7 +9,6 @@ import com.assessme.util.AppConstant;
 import com.assessme.util.BcryptPasswordEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,26 +32,16 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static UserServiceImpl instance;
-
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Autowired
     private UserDAOImpl userDAOImpl;
+    private RoleServiceImpl roleServiceImpl;
+    private UserRoleServiceImpl userRoleServiceImpl;
 
-    @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private UserRoleService userRoleService;
-
-
-    public static UserServiceImpl getInstance() {
-
-        if (instance == null) {
-            instance = new UserServiceImpl();
-        }
-        return instance;
+    public UserServiceImpl(UserDAOImpl userDAOImpl, RoleServiceImpl roleServiceImpl, UserRoleServiceImpl userRoleServiceImpl) {
+        this.userDAOImpl = userDAOImpl;
+        this.roleServiceImpl = roleServiceImpl;
+        this.userRoleServiceImpl = userRoleServiceImpl;
     }
 
     /**
@@ -166,12 +155,12 @@ public class UserServiceImpl implements UserService {
             if (userRole == null || userRole.isBlank() || userRole.isBlank()) {
                 userRole = AppConstant.DEFAULT_USER_ROLE_CREATE;
             }
-            role = roleService.getRoleFromRoleName(userRole);
+            role = roleServiceImpl.getRoleFromRoleName(userRole);
 
             if (role.isPresent()) {
 
                 // Step-5 Update user_role table
-                newUserRole = userRoleService.addUserRole(newUser.get().getUserId(), role.get().getRoleId());
+                newUserRole = userRoleServiceImpl.addUserRole(newUser.get().getUserId(), role.get().getRoleId());
 
             } else
                 throw new Exception("Unable to fetch role id for the user from the role table.");

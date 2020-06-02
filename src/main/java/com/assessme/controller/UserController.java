@@ -6,7 +6,6 @@ import com.assessme.model.UserRoleDTO;
 import com.assessme.service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +25,11 @@ public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    UserServiceImpl userService;
+    private UserServiceImpl userServiceImpl;
+
+    public  UserController(UserServiceImpl userServiceImpl){
+        this.userServiceImpl = userServiceImpl;
+    }
 
     // API endpoint method for fetching all users
     @GetMapping("/all")
@@ -38,7 +40,7 @@ public class UserController {
         ResponseDTO<List<User>> responseDTO = null;
 
         try {
-            Optional<List<User>> userList = userService.getUserList();
+            Optional<List<User>> userList = userServiceImpl.getUserList();
             String resMessage = String.format("User list has been retrieved from the database");
             responseDTO = new ResponseDTO(true, resMessage, null, userList);
             httpStatus = HttpStatus.OK;
@@ -63,7 +65,7 @@ public class UserController {
         ResponseDTO<List<User>> responseDTO = null;
 
         try {
-            Optional<User> user = userService.getUserFromEmail(email);
+            Optional<User> user = userServiceImpl.getUserFromEmail(email);
             String resMessage = String.format("User has been retrieved from the database");
             responseDTO = new ResponseDTO(true, resMessage, null, user);
             httpStatus = HttpStatus.OK;
@@ -89,7 +91,7 @@ public class UserController {
         ResponseDTO<List<UserRoleDTO>> responseDTO = null;
 
         try {
-            Optional<UserRoleDTO> user = userService.getUserWithRolesFromEmail(email);
+            Optional<UserRoleDTO> user = userServiceImpl.getUserWithRolesFromEmail(email);
             String resMessage = String.format("User has been retrieved from the database");
             responseDTO = new ResponseDTO(true, resMessage, null, user);
             httpStatus = HttpStatus.OK;
@@ -117,7 +119,7 @@ public class UserController {
 
         try {
 
-            Optional<User> newUser = userService.addUser(user, null);
+            Optional<User> newUser = userServiceImpl.addUser(user, null);
             String resMessage = String.format("User with email: %s has been successfully.", user.getEmail());
 
             responseDTO = new ResponseDTO(true, resMessage, null, newUser);

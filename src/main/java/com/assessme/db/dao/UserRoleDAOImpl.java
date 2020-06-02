@@ -4,7 +4,6 @@ import com.assessme.db.connection.DBConnectionBuilder;
 import com.assessme.model.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -25,10 +24,12 @@ public class UserRoleDAOImpl implements UserRoleDAO {
 
     private Logger logger = LoggerFactory.getLogger(RoleDAOImpl.class);
 
-    @Autowired
     private DBConnectionBuilder dbConnectionBuilder;
-
     private Optional<Connection> connection;
+
+    public UserRoleDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
+        this.dbConnectionBuilder = dbConnectionBuilder;
+    }
 
     @Override
     public Boolean addUserRole(UserRole userRole) throws Exception {

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +25,10 @@ public class CourseService {
 
     @Autowired
     private CourseDAOImpl courseDAOImpl;
+
+    public CourseService(CourseDAOImpl courseDAOImpl){
+        this.courseDAOImpl = courseDAOImpl;
+    }
 
     /**
      * Service method for retrieving all Courses
@@ -66,62 +69,4 @@ public class CourseService {
         }
         return course;
     }
-    
-    
-    /**
-     * Service method for retrieving course using courseName
-     */
-    public Optional<Course> getCourseWithName(String courseName) throws Exception {
-
-        Optional<Course> course;
-        try {
-            course = courseDAOImpl.getCourseByName(courseName);
-            String resMessage = String.format("Course with course code: %s has been retrieved from the database", courseName);
-            logger.info(resMessage);
-        } catch (Exception e) {
-            String errMessage = String.format("Error in retrieving the course from the database");
-            logger.error(errMessage);
-            e.printStackTrace();
-            throw e;
-        }
-        return course;
-    }
-    
-    /**
-     * Service method for removing course using courseCode
-     */
-    public Boolean removeCourseWithCode(String courseCode) throws Exception {
-
-        Boolean removed;
-        try {
-        	removed = courseDAOImpl.removeCourseByCourseCode(courseCode);
-            String resMessage = String.format("Course with course code: %s has been removed from the database", courseCode);
-            logger.info(resMessage);
-        } catch (Exception e) {
-            String errMessage = String.format("Error in retrieving the course from the database");
-            logger.error(errMessage);
-            e.printStackTrace();
-            throw e;
-        }
-        return removed;
-    }
-
-	/**
-	 * Service method for removing course using courseCode
-	 */
-	public Boolean removeCourseWithName(String courseName) throws Exception {
-	
-	    Boolean removed;
-	    try {
-	    	removed = courseDAOImpl.removeCourseByCourseName(courseName);
-	        String resMessage = String.format("Course with name: %s has been removed from the database", courseName);
-	        logger.info(resMessage);
-	    } catch (Exception e) {
-	        String errMessage = String.format("Error in retrieving the course from the database");
-	        logger.error(errMessage);
-	        e.printStackTrace();
-	        throw e;
-	    }
-	    return removed;
-	}
 }
