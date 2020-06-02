@@ -8,7 +8,6 @@ package com.assessme.controller;
 import com.assessme.model.User;
 import com.assessme.service.CSVImport;
 import com.assessme.service.CSVStorageService;
-import com.assessme.service.StorageService;
 import com.assessme.service.UserServiceImpl;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
@@ -31,8 +30,15 @@ import java.util.Optional;
 public class CSVUploadController {
 
     private Logger logger = LoggerFactory.getLogger(CSVUploadController.class);
-    private StorageService service = CSVStorageService.getInstance();
-    private UserServiceImpl userService = UserServiceImpl.getInstance();
+    // private StorageService service = CSVStorageService.getInstance();
+    //private UserServiceImpl userService = UserServiceImpl.getInstance();
+    private UserServiceImpl userServiceImpl;
+    private CSVStorageService service;
+
+    public CSVUploadController(CSVStorageService service, UserServiceImpl userServiceImpl) {
+        this.service = service;
+        this.userServiceImpl = userServiceImpl;
+    }
 
     @GetMapping("/csvupload")
     public String csvFileUploadForm(Model model) {
@@ -53,7 +59,7 @@ public class CSVUploadController {
 
             for (String[] userRow : allStudentsList) {
                 logger.info(String.format("UserEmail: %s", userRow[3]));
-                Optional<User> userWithEmail = userService.getUserFromEmail(userRow[3]);
+                Optional<User> userWithEmail = userServiceImpl.getUserFromEmail(userRow[3]);
                 if (userWithEmail.isPresent()) {
                     // update uer role for that student.
                     long userId = userWithEmail.get().getUserId();
@@ -61,10 +67,10 @@ public class CSVUploadController {
                 } else {
                     User user = new User(userRow[0], userRow[1], userRow[2], userRow[3], "password", true);
 //                    userService.insertUser();
-                    Optional<User> insertedUser = userService.getUserFromEmail(userRow[3]);
+                    Optional<User> insertedUser = userServiceImpl.getUserFromEmail(userRow[3]);
                     if (insertedUser.isPresent()) {
                         successfullInsertion.add(insertedUser.get().getBannerId());
-                    }else{
+                    } else {
                         failedInsertion.add(userRow[1]);
                     }
                 }

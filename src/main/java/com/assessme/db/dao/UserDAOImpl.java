@@ -5,7 +5,6 @@ import com.assessme.model.User;
 import com.assessme.model.UserRoleDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -24,10 +23,13 @@ public class UserDAOImpl implements UserDAO {
 
     private Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
-    @Autowired
     private DBConnectionBuilder dbConnectionBuilder;
-
     private Optional<Connection> connection;
+
+    public UserDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
+        this.dbConnectionBuilder = dbConnectionBuilder;
+    }
+
 
     // UserDAO method for retrieving user using email
     @Override
