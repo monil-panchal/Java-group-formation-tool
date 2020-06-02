@@ -15,12 +15,14 @@ import com.assessme.model.Enrollment;
 import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.*;
+import com.assessme.service.CourseService;
 import com.assessme.util.AppConstant;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +47,9 @@ public class CSVUploadController {
 
 
     @Autowired
+    CourseService courseService;
+
+    @Autowired
     private EnrollmentDAO enrollmentDAO = EnrollmentDAOImpl.getInstance();
 
     private MailSenderService mailSenderService = MailSenderService.getInstance();
@@ -61,9 +66,9 @@ public class CSVUploadController {
         return mav;
     }
 
-    @PostMapping("/csvupload")
+    @PostMapping("/csvupload/{courseCode}")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   @RequestParam("courseId") long courseId,
+                                   @PathVariable String courseCode,
                                    RedirectAttributes redirectAttributes) {
         try {
             String newFileName = service.store(file);
@@ -92,7 +97,9 @@ public class CSVUploadController {
                             "Your Account Has Been Created",
                             "Your password is YourBannerId_YourLastName");
                 }
-                Enrollment enrollment = new Enrollment(userId, studentRole.get().getRoleId(), courseId);
+                Enrollment enrollment = new Enrollment(userId, studentRole.get().getRoleId(),
+                        (long)courseService.getCourseWithCode(courseCode).get().getCourseId()
+                );
                 enrollmentDAO.insertEnrollment(enrollment);
             }
             redirectAttributes.addFlashAttribute("message",
@@ -113,6 +120,6 @@ public class CSVUploadController {
                     "Error while accessing database");
             redirectAttributes.addFlashAttribute("isSuccess", false);
         }
-        return "redirect:/csvupload";
+        return String.format("redirect:/csvupload/%d", courseCode);
     }
 }
