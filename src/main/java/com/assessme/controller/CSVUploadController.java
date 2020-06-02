@@ -12,7 +12,6 @@ import com.assessme.service.UserServiceImpl;
 import com.assessme.db.dao.EnrollmentDAO;
 import com.assessme.db.dao.EnrollmentDAOImpl;
 import com.assessme.model.Enrollment;
-import com.assessme.model.ResponseDTO;
 import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.*;
@@ -22,18 +21,13 @@ import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,13 +52,18 @@ public class CSVUploadController {
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/csvupload")
-    public String csvFileUploadForm(Model model) {
-        return "csvupload";
+    @GetMapping("/csvupload/{courseCode}")
+    public ModelAndView csvFileUploadForm(
+            @PathVariable long courseCode) {
+        ModelAndView mav = new ModelAndView("csvupload");
+        logger.info("Serving for course: " + courseCode);
+        mav.addObject("course_code", courseCode);
+        return mav;
     }
 
     @PostMapping("/csvupload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                   @RequestParam("courseId") long courseId,
                                    RedirectAttributes redirectAttributes) {
         try {
             String newFileName = service.store(file);
@@ -73,17 +72,15 @@ public class CSVUploadController {
             logger.info("CSVParsed Successfully");
             List<String[]> allStudentsList = reader.readAll();
             Optional<Role> studentRole = roleService.getRoleFromRoleName("STUDENT");
+
             for (String[] csvRow : allStudentsList) {
                 logger.info(String.format("UserEmail: %s", csvRow[3]));
-                Optional<User> userWithEmail = userService.getUserFromEmail(csvRow[3]);
                 long userId;
-                if (userWithEmail.isPresent()) {
-                    // update uer role for that student.
-                    logger.info("User: "+userWithEmail.get());
+                try {
+                    Optional<User> userWithEmail = userService.getUserFromEmail(csvRow[3]);
+                    logger.info("User: " + userWithEmail.get());
                     userId = userWithEmail.get().getUserId();
-//                    userService.updateUserRole(userId, "UserRole");
-                } else {
-
+                } catch (Exception e) {
                     User newUser = new User();
                     newUser.setBannerId(csvRow[0]);
                     newUser.setLastName(csvRow[1]);
@@ -95,11 +92,9 @@ public class CSVUploadController {
                             "Your Account Has Been Created",
                             "Your password is YourBannerId_YourLastName");
                 }
-                Enrollment enrollment = new Enrollment(userId, studentRole.get().getRoleId(), 1L);
+                Enrollment enrollment = new Enrollment(userId, studentRole.get().getRoleId(), courseId);
                 enrollmentDAO.insertEnrollment(enrollment);
-
             }
-
             redirectAttributes.addFlashAttribute("message",
                     "Users has been successfully created!");
             redirectAttributes.addFlashAttribute("isSuccess", true);
