@@ -73,27 +73,4 @@ public class CourseController {
 
         return new ResponseEntity(responseDTO, httpStatus);
     }
-    
- // API endpoint method for fetching course using courseName
-    @GetMapping()
-    public ResponseEntity<ResponseDTO> getCourseFromcourseName(@RequestParam("courseName") String courseName) throws Exception {
-
-        logger.info("Calling API for course retrieval using course code.");
-        HttpStatus httpStatus = null;
-        ResponseDTO<List<Course>> responseDTO = null;
-
-        try {
-            Optional<Course> course = courseService.getCourseWithCourseName(courseName);
-            String resMessage = String.format("Course has been retrieved from the database");
-            responseDTO = new ResponseDTO(true, resMessage, null, course);
-            httpStatus = HttpStatus.OK;
-        } catch (Exception e) {
-            String errMessage = String.format("Error in retrieving the course from the database");
-            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-            httpStatus = HttpStatus.CONFLICT;
-        }
-
-        return new ResponseEntity(responseDTO, httpStatus);
-    }
-
 }
