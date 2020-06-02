@@ -132,7 +132,7 @@ public class CourseDAOImpl implements CourseDAO {
             connection = dbConnectionBuilder.createDBConnection();
 
             // Preparing the statement
-            String insertCourseQuery = "INSERT INTO Course VALUES(?, ?)";
+            String insertCourseQuery = "INSERT INTO course VALUES(?, ?)";
 
             PreparedStatement preparedStatement = connection.get().prepareStatement(insertCourseQuery); // create a statement
             // I am not sure AUTO INCREMENT courseId should be inserted on not
@@ -168,7 +168,7 @@ public class CourseDAOImpl implements CourseDAO {
             connection = dbConnectionBuilder.createDBConnection();
 
             // Preparing the statement
-            String SQL_DELETE = "DELETE FROM Course WHERE course_code=?";
+            String SQL_DELETE = "DELETE FROM course WHERE course_code=?";
 
             PreparedStatement preparedStatement = connection.get().prepareStatement(SQL_DELETE); // create a statement
             preparedStatement.setString(1, courseCode); // set input parameter 2
@@ -202,7 +202,7 @@ public class CourseDAOImpl implements CourseDAO {
             connection = dbConnectionBuilder.createDBConnection();
 
             // Preparing the statement
-            String SQL_DELETE = "DELETE FROM Course WHERE course_name=?";
+            String SQL_DELETE = "DELETE FROM course WHERE course_name=?";
 
             PreparedStatement preparedStatement = connection.get().prepareStatement(SQL_DELETE); // create a statement
             preparedStatement.setString(1, courseName); // set input parameter 2
