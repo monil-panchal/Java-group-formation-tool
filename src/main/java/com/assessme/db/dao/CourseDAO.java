@@ -22,9 +22,7 @@ public interface CourseDAO {
 
     Boolean addCourse(Course course) throws Exception;
     
-    Boolean removeCourseByCourseCode(String courseCode) throws Exception;
-
-    Boolean removeCourseByCourseName(String courseName) throws Exception;
+    Boolean removeCourse(Course course) throws Exception;
 
     //Optional<Course> updateCourse(Course course) throws Exception;
 
