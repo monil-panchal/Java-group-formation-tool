@@ -32,7 +32,6 @@ public class MainController {
 
     @Autowired
     private UserServiceImpl userService;
-
     @GetMapping("/login")
     public String loginPage(Model model) {
         return "login";
@@ -62,6 +61,16 @@ public class MainController {
             throw e;
         }
         return "redirect:/home";
+    }
+
+    @GetMapping("/course_admin")
+    public String courseAdmin(Model model) {
+        return "course_admin";
+    }
+
+    @GetMapping("/course_info")
+    public String courseInfo(Model model) {
+        return "course_info";
     }
 
 }
