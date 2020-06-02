@@ -87,7 +87,7 @@ public class CourseService {
     }
 
 	/**
-	 * Service method for removing course using courseCode
+	 * Service method for removing course using courseName
 	 */
 	public Boolean removeCourseWithName(String courseName) throws Exception {
 	
@@ -104,4 +104,8 @@ public class CourseService {
 	    }
 	    return removed;
 	}
+	
+	/**
+	 * Service method for adding a course
+	 */
 }
