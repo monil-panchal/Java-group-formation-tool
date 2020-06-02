@@ -2,6 +2,8 @@ package com.assessme.db.dao;
 
 import com.assessme.db.connection.DBConnectionBuilder;
 import com.assessme.model.Course;
+import com.assessme.model.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -170,11 +172,11 @@ public class CourseDAOImpl implements CourseDAO {
     }
 
     @Override
-    public Boolean addCourse(Course course) throws Exception {
+    public Optional<Course> addCourse(Course course) throws Exception {
         //returns true if course added else returns false
-        String courseCode = course.getCourseCode();
-        String courseName = course.getCourseName();
         
+    	Optional<Course> newCourse = Optional.empty();
+    	
         try {
             // Getting the DB connection
             connection = dbConnectionBuilder.createDBConnection();
@@ -182,22 +184,35 @@ public class CourseDAOImpl implements CourseDAO {
             // Preparing the statement
             String insertCourseQuery = "INSERT INTO course(course_code, course_name) VALUES(?, ?)";
             PreparedStatement preparedStatement = connection.get().prepareStatement(insertCourseQuery); // create a statement
-            // I am not sure AUTO INCREMENT courseId should be inserted on not
-            preparedStatement.setString(1, courseCode); // set input parameter 1
-            preparedStatement.setString(2, courseName); // set input parameter 2
-            int row = preparedStatement.executeUpdate(); // execute insert statement
+            preparedStatement.setString(1, course.getCourseCode()); // set input parameter 1
+            preparedStatement.setString(2, course.getCourseName()); // set input parameter 2
             
+            // Executing the query to store the user record
+            int row = preparedStatement.executeUpdate();
+
+            // check if the record was inserted successfully
+            if (row > 0) {
+                String successString = String.format("Course Inserted Succeccfully \nCourse Code:%s\nCourse Name:%s", course.getCourseCode(),course.getCourseName());
+                logger.info(successString);
+
+            } else {
+                String failureString = String.format("Course Inserted Failed \nCourse Code:%s\nCourse Name:%s", course.getCourseCode(),course.getCourseName());
+                logger.error(failureString);
+                throw new Exception(failureString);
+            }
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                	course.setCourseId(generatedKeys.getLong(1));
+                    newCourse = Optional.of(course);
+                } else {
+                    throw new SQLException("Creation of course failed. Cannot obtain course_id.");
+                }
+            }
             //Closing the connection
             dbConnectionBuilder.closeConnection(connection.get());
-            
-            if (row==1){ //one row inserted
-            	logger.info(String.format("Insertion Successfull! Course with course code: %s, course name:%s", courseCode,courseName));
-            	return true;
-            }
-            else{
-            	logger.info(String.format("Insertion Failed! Course with course code: %s, course name:%s", courseCode,courseName));
-            	return false;
-            }
+            return newCourse;
+
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();

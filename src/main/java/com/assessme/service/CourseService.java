@@ -2,6 +2,8 @@ package com.assessme.service;
 
 import com.assessme.db.dao.CourseDAOImpl;
 import com.assessme.model.Course;
+import com.assessme.model.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,5 +128,13 @@ public class CourseService {
             throw e;
         }
         return removed;
+    }
+    
+    /**
+     * Service method for inserting course record
+     */
+    public Optional<Course> addCourse(Course coure) throws Exception{
+    	Optional<Course> newCourse = Optional.empty();
+    	return newCourse;
     }
 }
