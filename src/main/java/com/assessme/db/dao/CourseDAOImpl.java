@@ -151,7 +151,7 @@ public class CourseDAOImpl implements CourseDAO {
                 Course course = new Course();
 
                 //Setting the attributes
-                course.setCourseId(resultSet.getInt("course_code"));
+                course.setCourseCode(resultSet.getString("course_code"));
                 course.setCourseName(resultSet.getString("course_name"));
 
                 // Adding course to the list
