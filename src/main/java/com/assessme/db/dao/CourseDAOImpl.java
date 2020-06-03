@@ -40,7 +40,7 @@ public class CourseDAOImpl implements CourseDAO {
         Optional<Course> course = Optional.empty();
 
         // SQL query for fetching the course record based on the courseCode
-        String selectQuery = "SELECT * FROM course WHERE course_code =" + courseCode;
+        String selectQuery = "SELECT * FROM course WHERE course_code like\"" + courseCode+"\"";
 
         try {
             // Getting the DB connection
@@ -62,9 +62,9 @@ public class CourseDAOImpl implements CourseDAO {
                 while (resultSet.next()) {
 
                     course = Optional.of(new Course());
-                    course.get().setCourseId(resultSet.getInt("course_code"));
+                    course.get().setCourseId(resultSet.getLong("course_id"));
+                    course.get().setCourseCode(resultSet.getString("course_code"));
                     course.get().setCourseName(resultSet.getString("course_name"));
-
                 }
                 String successString = String.format("Course with course code: %s retrieved successfully.", courseCode);
                 logger.info(successString);
@@ -110,9 +110,9 @@ public class CourseDAOImpl implements CourseDAO {
                 while (resultSet.next()) {
 
                     course = Optional.of(new Course());	
-                    course.get().setCourseId(resultSet.getInt("course_code"));
+                    course.get().setCourseId(resultSet.getLong("course_id"));
+                    course.get().setCourseCode(resultSet.getString("course_code"));
                     course.get().setCourseName(resultSet.getString("course_name"));
-
                 }
                 String successString = String.format("Course with course name: %s retrieved successfully.", courseName);
                 logger.info(successString);
@@ -151,6 +151,7 @@ public class CourseDAOImpl implements CourseDAO {
                 Course course = new Course();
 
                 //Setting the attributes
+                course.setCourseId(resultSet.getLong("course_id"));
                 course.setCourseCode(resultSet.getString("course_code"));
                 course.setCourseName(resultSet.getString("course_name"));
 
@@ -200,15 +201,7 @@ public class CourseDAOImpl implements CourseDAO {
                 logger.error(failureString);
                 throw new Exception(failureString);
             }
-
-            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                	course.setCourseId(generatedKeys.getLong(1));
-                    newCourse = Optional.of(course);
-                } else {
-                    throw new SQLException("Creation of course failed. Cannot obtain course_id.");
-                }
-            }
+            
             //Closing the connection
             dbConnectionBuilder.closeConnection(connection.get());
             return newCourse;

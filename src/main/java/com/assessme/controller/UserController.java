@@ -1,5 +1,6 @@
 package com.assessme.controller;
 
+import com.assessme.db.dao.UserRoleDAO;
 import com.assessme.model.ResponseDTO;
 import com.assessme.model.User;
 import com.assessme.model.UserRoleDTO;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author: monil
@@ -27,7 +29,7 @@ public class UserController {
 
     private UserServiceImpl userServiceImpl;
 
-    public  UserController(UserServiceImpl userServiceImpl){
+    public UserController(UserServiceImpl userServiceImpl) {
         this.userServiceImpl = userServiceImpl;
     }
 
@@ -108,10 +110,10 @@ public class UserController {
     }
 
     // API endpoint method for fetching user using emailId
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> createUser(@RequestBody User user) throws Exception {
 
-        logger.info("request:"+ user);
+        logger.info("request:" + user);
 
         logger.info("Calling API for creating a new user.");
         HttpStatus httpStatus = null;
@@ -129,6 +131,33 @@ public class UserController {
             logger.error(e.getMessage());
 
             String errMessage = String.format("Error in creating a user in the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity(responseDTO, httpStatus);
+    }
+
+    // API endpoint method for updating the user role
+    @PutMapping(path = "/roles", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ResponseDTO> updateUserRole(@RequestBody UserRoleDTO user) throws Exception {
+
+        logger.info("Calling API for updating the user role.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<UserRoleDAO> responseDTO = null;
+
+        try {
+
+            Optional<UserRoleDTO> newUser = userServiceImpl.updateUserRole(user, user.getUserRoles().stream().collect(Collectors.toList()).get(0));
+            String resMessage = String.format("User with email: %s has been successfully assigned the role: %s .", user.getEmail(), user.getUserRoles().stream().collect(Collectors.toList()).get(0));
+
+            responseDTO = new ResponseDTO(true, resMessage, null, newUser);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+            String errMessage = String.format("Error in updating the user role in the database");
             responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
             httpStatus = HttpStatus.CONFLICT;
         }
