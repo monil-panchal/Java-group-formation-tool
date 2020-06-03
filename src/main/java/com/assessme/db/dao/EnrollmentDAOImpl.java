@@ -4,7 +4,6 @@ import com.assessme.db.connection.DBConnectionBuilder;
 import com.assessme.model.Enrollment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -59,11 +58,16 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
                     logger.error(failureString);
                     throw new Exception(failureString);
                 }
+                //Closing the connection
+                dbConnectionBuilder.closeConnection(connection.get());
                 return true;
             } else {
                 throw new Exception("Missing Fields for Enrollment");
             }
         } catch (Exception e) {
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;
