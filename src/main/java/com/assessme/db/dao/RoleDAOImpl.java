@@ -71,16 +71,19 @@ public class RoleDAOImpl implements RoleDAO {
                 String successString = String.format("Role: %s retrieved successfully.", roleName);
                 logger.info(successString);
 
-                //Closing the connection
-                dbConnectionBuilder.closeConnection(connection.get());
             } else
                 throw new Exception(String.format("roleName is null or empty"));
 
         } catch (Exception e) {
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
         }
+        //Closing the connection
+        dbConnectionBuilder.closeConnection(connection.get());
         return role;
     }
 }
