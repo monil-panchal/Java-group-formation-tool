@@ -1,7 +1,6 @@
 package com.assessme.auth;
 
-import com.assessme.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.assessme.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,8 +18,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
+
+    public SpringSecurityConfig(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -49,7 +51,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userService);
+        auth.setUserDetailsService(userServiceImpl);
         auth.setPasswordEncoder(passwordEncoder());
         return auth;
     }

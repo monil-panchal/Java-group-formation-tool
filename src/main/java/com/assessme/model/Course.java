@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 public class Course implements Serializable{
 	
-    private int courseId;
+    private long courseId;
     private String courseCode;
     private String courseName;
     
@@ -24,10 +24,10 @@ public class Course implements Serializable{
         this.courseName = courseName;
     }
     
-	public int getCourseId() {
+	public long getCourseId() {
 		return courseId;
 	}
-	public void setCourseId(int courseId) {
+	public void setCourseId(long courseId) {
 		this.courseId = courseId;
 	}
 	public String getCourseName() {
@@ -35,6 +35,12 @@ public class Course implements Serializable{
 	}
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
+	}
+	public String getCourseCode() {
+		return courseCode;
+	}
+	public void setCourseCode(String courseCode) {
+		this.courseCode = courseCode;
 	}
 
 }
