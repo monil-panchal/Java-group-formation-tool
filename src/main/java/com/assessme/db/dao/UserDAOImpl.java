@@ -39,7 +39,7 @@ public class UserDAOImpl implements UserDAO {
         Optional<User> user = Optional.empty();
 
         // SQL query for fetching the user record based on the email
-        String selectQuery = "SELECT u.banner_id, u.first_name, u.last_name, u.email, u.isActive FROM user AS u WHERE email =" + email;
+        String selectQuery = "SELECT u.user_id, u.banner_id, u.first_name, u.last_name, u.email, u.isActive FROM user AS u WHERE email =" + email;
 
         try {
             if ((!email.isEmpty() && email != null)) {
@@ -53,8 +53,8 @@ public class UserDAOImpl implements UserDAO {
                 ResultSet resultSet = statement.executeQuery(selectQuery);
 
                 if (!resultSet.isBeforeFirst()) {
-                    logger.error(String.format("No users found in the database"));
-                    throw new Exception(String.format("No users found in the database"));
+                    logger.error(String.format("No user found in the database"));
+                    throw new Exception(String.format("No user found in the database"));
                 }
 
                 logger.info(String.format("User data retrieved successfully"));
@@ -63,6 +63,7 @@ public class UserDAOImpl implements UserDAO {
                 while (resultSet.next()) {
                     user = Optional.of(new User());
 
+                    user.get().setUserId(resultSet.getLong("user_id"));
                     user.get().setBannerId(resultSet.getString("banner_id"));
                     user.get().setFirstName(resultSet.getString("first_name"));
                     user.get().setLastName(resultSet.getString("last_name"));
