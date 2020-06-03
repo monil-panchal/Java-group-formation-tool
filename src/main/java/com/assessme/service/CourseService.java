@@ -103,7 +103,7 @@ public class CourseService {
             String resMessage = String.format("Course with course code: %s has been removing from the database", courseCode);
             logger.info(resMessage);
         } catch (Exception e) {
-            String errMessage = String.format("Error in retrieving the course from the database");
+            String errMessage = String.format("Error in removing the course from the database");
             logger.error(errMessage);
             e.printStackTrace();
             throw e;
@@ -122,7 +122,7 @@ public class CourseService {
             String resMessage = String.format("Course with course name: %s has been removing from the database", courseName);
             logger.info(resMessage);
         } catch (Exception e) {
-            String errMessage = String.format("Error in retrieving the course from the database");
+            String errMessage = String.format("Error in removing the course from the database");
             logger.error(errMessage);
             e.printStackTrace();
             throw e;
@@ -141,7 +141,7 @@ public class CourseService {
             String resMessage = String.format("Course with course name: %s has been added to the database", course.getCourseName());
             logger.info(resMessage);
         } catch (Exception e) {
-            String errMessage = String.format("Error in retrieving the course from the database");
+            String errMessage = String.format("Error in adding the course from the database");
             logger.error(errMessage);
             e.printStackTrace();
             throw e;
