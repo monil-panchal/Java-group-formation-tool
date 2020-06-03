@@ -10,7 +10,8 @@
 </div>
 <div>
     <a th:href="@{/course/{course_code}(course_code=${course_code})}">Go to Course</a>
-    <form method="POST" enctype="multipart/form-data" th:action="@{/csvupload}">
+    <form method="POST" enctype="multipart/form-data"
+          th:action="@{/csvupload/{course_code}(course_code=${course_code})}">
         <table>
             <tr>
                 <td>File to upload:</td>

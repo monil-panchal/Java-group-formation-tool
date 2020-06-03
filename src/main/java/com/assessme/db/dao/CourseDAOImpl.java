@@ -39,8 +39,7 @@ public class CourseDAOImpl implements CourseDAO {
 
         // SQL query for fetching the course record based on the courseCode
 
-        String selectQuery = "SELECT * FROM course WHERE course_code =\"" +  courseCode+"\"";;
-
+        String selectQuery = "SELECT * FROM course WHERE course_code =\"" +  courseCode+"\"";
         try {
             // Getting the DB connection
             connection = dbConnectionBuilder.createDBConnection();
@@ -61,7 +60,7 @@ public class CourseDAOImpl implements CourseDAO {
                 while (resultSet.next()) {
 
                     course = Optional.of(new Course());
-                    course.get().setCourseId(resultSet.getInt("course_code"));
+                    course.get().setCourseId(resultSet.getInt("course_id"));
                     course.get().setCourseName(resultSet.getString("course_name"));
 
                 }

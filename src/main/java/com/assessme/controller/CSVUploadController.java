@@ -36,29 +36,27 @@ public class CSVUploadController {
 
     private Logger logger = LoggerFactory.getLogger(CSVUploadController.class);
 
-    private UserServiceImpl userService;
-    private CSVStorageService service;
-
-    public CSVUploadController(CSVStorageService service, UserServiceImpl userServiceImpl) {
-        this.service = service;
-        this.userService = userServiceImpl;
-    }
-
-
-    @Autowired
+    StorageService storageService;
+    UserService userService;
     CourseService courseService;
+    EnrollmentService enrollmentService;
+    MailSenderService mailSenderService;
+    RoleService roleService;
 
-    @Autowired
-    private EnrollmentDAO enrollmentDAO = EnrollmentDAOImpl.getInstance();
-
-    private MailSenderService mailSenderService = MailSenderService.getInstance();
-
-    @Autowired
-    private RoleService roleService;
+    public CSVUploadController(StorageService storageService, UserService userService,
+                               CourseService courseService, EnrollmentService enrollmentService,
+                               MailSenderService mailSenderService, RoleService roleService) {
+        this.storageService = storageService;
+        this.userService = userService;
+        this.courseService = courseService;
+        this.enrollmentService = enrollmentService;
+        this.mailSenderService = mailSenderService;
+        this.roleService = roleService;
+    }
 
     @GetMapping("/csvupload/{courseCode}")
     public ModelAndView csvFileUploadForm(
-            @PathVariable long courseCode) {
+            @PathVariable String courseCode) {
         ModelAndView mav = new ModelAndView("csvupload");
         logger.info("Serving for course: " + courseCode);
         mav.addObject("course_code", courseCode);
@@ -70,14 +68,8 @@ public class CSVUploadController {
                                    @PathVariable String courseCode,
                                    RedirectAttributes redirectAttributes) {
         try {
-            String newFileName = service.store(file);
-            logger.info(String.format("New FileName: %s", newFileName));
-            CSVReader reader = CSVImport.importFromPath(service.load(newFileName));
-            logger.info("CSVParsed Successfully");
-            List<String[]> allStudentsList = reader.readAll();
             Optional<Role> studentRole = roleService.getRoleFromRoleName("STUDENT");
-
-            for (String[] csvRow : allStudentsList) {
+            for (String[] csvRow : storageService.storeAndParseAll(file)) {
                 logger.info(String.format("UserEmail: %s", csvRow[3]));
                 long userId;
                 try {
@@ -99,7 +91,7 @@ public class CSVUploadController {
                 Enrollment enrollment = new Enrollment(userId, studentRole.get().getRoleId(),
                         (long)courseService.getCourseWithCode(courseCode).get().getCourseId()
                 );
-                enrollmentDAO.insertEnrollment(enrollment);
+                enrollmentService.insertEnrollment(enrollment);
             }
             redirectAttributes.addFlashAttribute("message",
                     "Users has been successfully created!");
@@ -113,12 +105,11 @@ public class CSVUploadController {
                     "Error Parsing CSV File");
             redirectAttributes.addFlashAttribute("isSuccess", false);
         } catch (Exception e) {
-            logger.error(e.getMessage());
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("message",
                     "Error while accessing database");
             redirectAttributes.addFlashAttribute("isSuccess", false);
         }
-        return String.format("redirect:/csvupload/%d", courseCode);
+        return String.format("redirect:/csvupload/%s", courseCode);
     }
 }

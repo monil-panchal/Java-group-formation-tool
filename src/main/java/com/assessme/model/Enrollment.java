@@ -1,10 +1,13 @@
 package com.assessme.model;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
  * @author Darshan Kathiriya
  * @created 30-May-2020 11:40 PM
  */
-public class Enrollment {
+public class Enrollment implements Serializable {
     private Long userId;
     private Integer roleId;
     private Long courseId;
@@ -37,5 +40,29 @@ public class Enrollment {
 
     public void setCourseId(Long courseId) {
         this.courseId = courseId;
+    }
+
+    @Override
+    public String toString() {
+        return "Enrollment{" +
+                "userId=" + userId +
+                ", roleId=" + roleId +
+                ", courseId=" + courseId +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Enrollment that = (Enrollment) o;
+        return userId.equals(that.userId) &&
+                roleId.equals(that.roleId) &&
+                courseId.equals(that.courseId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, roleId, courseId);
     }
 }

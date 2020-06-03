@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Darshan Kathiriya
  * @created 31-May-2020 11:33 AM
  */
+@Service
 public class MailSenderService {
 
     private Logger logger = LoggerFactory.getLogger(MailSenderService.class);

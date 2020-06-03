@@ -18,21 +18,17 @@ import java.util.Optional;
  */
 @Repository
 public class EnrollmentDAOImpl implements EnrollmentDAO {
-    private static EnrollmentDAOImpl instance;
-
     private Logger logger = LoggerFactory.getLogger(EnrollmentDAOImpl.class);
 
-    @Autowired
+
     private DBConnectionBuilder dbConnectionBuilder;
 
     private Optional<Connection> connection;
 
-    public static EnrollmentDAOImpl getInstance() {
-        if (instance == null) {
-            instance = new EnrollmentDAOImpl();
-        }
-        return instance;
+    public EnrollmentDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
+        this.dbConnectionBuilder = dbConnectionBuilder;
     }
+
     @Override
     public Enrollment getEnrollment(long userId, int roleId, long courseId) {
         return null;

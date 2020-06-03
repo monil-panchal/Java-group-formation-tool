@@ -35,11 +35,21 @@ import java.util.Optional;
 public class AssignTAController {
 
     private Logger logger = LoggerFactory.getLogger(AssignTAController.class);
-    @Autowired private UserServiceImpl userService;
-    @Autowired private CourseService courseService;
-    private EnrollmentDAO enrollmentDAO = EnrollmentDAOImpl.getInstance();
 
-    private MailSenderService mailSenderService = MailSenderService.getInstance();
+    UserServiceImpl userService;
+    CourseService courseService;
+    EnrollmentService enrollmentService;
+    MailSenderService mailSenderService;
+
+    public AssignTAController(UserServiceImpl userService, CourseService courseService,
+                              EnrollmentService enrollmentService, MailSenderService mailSenderService,
+                              RoleService roleService) {
+        this.userService = userService;
+        this.courseService = courseService;
+        this.enrollmentService = enrollmentService;
+        this.mailSenderService = mailSenderService;
+        this.roleService = roleService;
+    }
 
     @Autowired
     private RoleService roleService;
@@ -64,12 +74,14 @@ public class AssignTAController {
     public String handleFileUpload(@RequestParam("user_email") String userEmail,
                                    @PathVariable String courseCode,
                                    RedirectAttributes redirectAttributes) {
+        logger.info(String.format("assigning %s as TA for course: %s", userEmail, courseCode));
         try {
             Optional<User> user = userService.getUserFromEmail(userEmail);
             long courseId = courseService.getCourseWithCode(courseCode).get().getCourseId();
             Optional<Role> taRole = roleService.getRoleFromRoleName("TA");
-            Enrollment enrollment = new Enrollment(user.get().getUserId(), taRole.get().getRoleId(), courseId);
-            enrollmentDAO.insertEnrollment(enrollment);
+            Enrollment enrollment = new Enrollment(user.get().getUserId(),
+                    taRole.get().getRoleId(), courseId);
+            enrollmentService.insertEnrollment(enrollment);
             redirectAttributes.addFlashAttribute("message",
                     String.format("TA has been assigned for course %s successfully.", courseCode));
             redirectAttributes.addFlashAttribute("isSuccess", true);
