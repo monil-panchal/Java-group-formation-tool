@@ -149,7 +149,7 @@ public class CourseController {
     }
     
     // API endpoint method for adding course
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(path = "/addCourse", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> addCourse(@RequestBody Course course) throws Exception {
 
         logger.info("Calling API for course retrieval using course code.");
