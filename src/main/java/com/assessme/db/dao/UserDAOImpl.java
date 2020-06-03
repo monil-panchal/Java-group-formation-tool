@@ -53,8 +53,8 @@ public class UserDAOImpl implements UserDAO {
                 ResultSet resultSet = statement.executeQuery(selectQuery);
 
                 if (!resultSet.isBeforeFirst()) {
-                    logger.error(String.format("No users found in the database"));
-                    throw new Exception(String.format("No users found in the database"));
+                    logger.error(String.format("No user found in the database"));
+                    throw new Exception(String.format("No user found in the database"));
                 }
 
                 logger.info(String.format("User data retrieved successfully"));

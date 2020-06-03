@@ -3,7 +3,9 @@ package com.assessme.service;
 import com.assessme.db.dao.RoleDAOImpl;
 import com.assessme.db.dao.UserDAOImpl;
 import com.assessme.db.dao.UserRoleDAOImpl;
+import com.assessme.model.Role;
 import com.assessme.model.User;
+import com.assessme.model.UserRole;
 import com.assessme.model.UserRoleDTO;
 import com.assessme.util.AppConstant;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
@@ -39,11 +40,13 @@ public class UserServiceImplTest {
 
     private Optional<User> userFromDB;
 
+    private Optional<UserRoleDTO> userWithRoleFromDB;
+
     @InjectMocks
     private UserServiceImpl userServiceMock;
 
-    @Mock
-    private UserServiceImpl userServiceMock2;
+//    @Mock
+//    private UserServiceImpl userServiceMock2;
 
     @Mock
     private UserRoleServiceImpl userRoleServiceImpl;
@@ -51,8 +54,6 @@ public class UserServiceImplTest {
     @Mock
     private RoleServiceImpl roleServiceImpl;
 
-    @Autowired
-    private UserServiceImpl userService;
 
     @Mock
     private RoleDAOImpl roleDAOImpl;
@@ -138,7 +139,6 @@ public class UserServiceImplTest {
 
     }
 
-
     //Unit test
     @Test
     public void addUserTest() throws Exception {
@@ -146,21 +146,32 @@ public class UserServiceImplTest {
         logger.info("Running unit test to add new User");
 
         User user = new User();
-
-        user.setBannerId("B0011111");
-        user.setFirstName("John");
-        user.setLastName("Abraham");
+        user.setBannerId("B00838558");
+        user.setFirstName("Monil");
+        user.setLastName("Panchal");
         user.setEmail("test@email.com");
+        user.setUserId(1L);
+
+        Optional<User> optionalUserObject = Optional.of(user);
+
+        UserRole userRole = new UserRole(1L, 1);
+        Optional<UserRole> userRoleOptional = Optional.of(userRole);
+
+        Role role = new Role();
+        role.setRoleName(AppConstant.DEFAULT_USER_ROLE_CREATE);
+        role.setRoleId(2);
+
+        Optional<Role> optionalRole = Optional.of(role);
 
         Mockito.when(userDAO.addUser(user)).thenReturn(Optional.of(user));
+        Mockito.when(roleServiceImpl.getRoleFromRoleName(AppConstant.DEFAULT_USER_ROLE_CREATE)).thenReturn(optionalRole);
+        Mockito.when(userRoleServiceImpl.addUserRole(user.getUserId(), role.getRoleId())).thenReturn(userRoleOptional);
+        Mockito.when(userServiceMock.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE)).thenReturn(optionalUserObject);
 
-        userFromDB = userServiceMock2.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
+        userFromDB = userServiceMock.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
 
-//        Assert.isTrue(userFromDB.isPresent(), "User should not be empty");
-//        Assert.notNull(userFromDB.get().getBannerId(), "Banner id should not be null");
-//        Assert.notNull(userFromDB.get().getEmail(), "email id should not be null");
-//        Assertions.assertEquals(userFromDB.get().getActive(), true);
-//        Assertions.assertEquals(userFromDB.get().getPassword(), "B00838558" + "_" + "Abraham");
+        Assert.isTrue(userFromDB.isPresent(), "Updated User object should not be empty");
+        Assert.notNull(userFromDB.get().getEmail(), "User email should not be null");
 
     }
 
@@ -177,6 +188,50 @@ public class UserServiceImplTest {
         assertTrue(userDAO.addUser(user).isPresent());
         verify(userDAO, times(1)).addUser(user);
     }
+
+    //Unit test
+    @Test
+    public void updateUserRoleTest() throws Exception {
+
+        logger.info("Running unit test for updating the user role");
+
+        User user = new User();
+        user.setBannerId("B00838558");
+        user.setActive(true);
+        user.setFirstName("Monil");
+        user.setLastName("Panchal");
+        user.setUserId(1l);
+        user.setEmail("testUser@email.com");
+
+        Optional<User> optionalUserObject = Optional.of(user);
+
+        String newRole = "STUDENT";
+
+        Role role = new Role();
+        role.setRoleName(newRole);
+        role.setRoleId(2);
+
+        Optional<Role> optionalRoleObject = Optional.of(role);
+
+        UserRoleDTO userRoleDTO = new UserRoleDTO();
+        userRoleDTO.setEmail(user.getEmail());
+        userRoleDTO.setUserRoles(Set.of("TA", "STUDENT"));
+
+        Mockito.when(userServiceMock.getUserFromEmail(user.getEmail())).thenReturn(optionalUserObject);
+        Mockito.when(roleServiceImpl.getRoleFromRoleName(newRole)).thenReturn(optionalRoleObject);
+
+        Optional<UserRole> userRoleOptional = Optional.of(new UserRole());
+        Mockito.when(userRoleServiceImpl.addUserRole(optionalUserObject.get().getUserId(), optionalRoleObject.get().getRoleId())).thenReturn(userRoleOptional);
+
+        Mockito.when(userServiceMock.updateUserRole(optionalUserObject.get(), newRole)).thenReturn(Optional.of(userRoleDTO));
+        userWithRoleFromDB = userServiceMock.updateUserRole(optionalUserObject.get(), newRole);
+
+        Assert.isTrue(userWithRoleFromDB.isPresent(), "Updated User object should not be empty");
+        Assert.notNull(userWithRoleFromDB.get().getEmail(), "User email should not be null");
+        Assert.notEmpty(userWithRoleFromDB.get().getUserRoles(), "User role list should not be empty");
+
+    }
+
 
     //Integration test
 //    @Test

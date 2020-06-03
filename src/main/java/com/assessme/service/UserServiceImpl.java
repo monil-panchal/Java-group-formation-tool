@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserRoleDTO> user;
         try {
             user = userDAOImpl.getUserWithRolesFromEmail(email);
-            String resMessage = String.format("User with email: %s has been retrieved from the database : %s", email, user.get());
+            String resMessage = String.format("User with email: %s has been retrieved from the database", email);
             logger.info(resMessage);
         } catch (Exception e) {
             String errMessage = String.format("Error in retrieving the user from the database");
@@ -178,6 +178,36 @@ public class UserServiceImpl implements UserService {
             throw e;
         }
         return newUser;
+    }
+
+    @Override
+    public Optional<UserRoleDTO> updateUserRole(User user, String userRole) throws Exception {
+
+
+        Optional<UserRoleDTO> updatedUserWithRole = Optional.empty();
+        try{
+            // fetching the user object from the db
+            Optional<User> existingUser = getUserFromEmail(user.getEmail());
+
+            // fetching the role object from the db
+            Optional<Role> newUserRole = roleServiceImpl.getRoleFromRoleName(userRole);
+
+            // Adding the new role to the user_role
+            userRoleServiceImpl.addUserRole(existingUser.get().getUserId(), newUserRole.get().getRoleId());
+
+            //Fetch the updated user object with all roles
+            updatedUserWithRole = getUserWithRolesFromEmail(user.getEmail());
+
+            String resMessage = String.format("User: %s has been assigned with the role: %s in the system", user.getEmail(), userRole);
+            logger.info(resMessage);
+
+        }catch (Exception e){
+            String errMessage = String.format("Error in updating the user role in the database");
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
+        }
+        return updatedUserWithRole;
     }
 
     @Override
