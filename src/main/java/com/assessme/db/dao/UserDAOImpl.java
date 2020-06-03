@@ -20,7 +20,6 @@ import java.util.*;
  */
 @Repository
 public class UserDAOImpl implements UserDAO {
-
     private Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
     private DBConnectionBuilder dbConnectionBuilder;
@@ -29,6 +28,7 @@ public class UserDAOImpl implements UserDAO {
     public UserDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
         this.dbConnectionBuilder = dbConnectionBuilder;
     }
+
 
 
     // UserDAO method for retrieving user using email
@@ -62,7 +62,6 @@ public class UserDAOImpl implements UserDAO {
                 // Iterating through the rows and constructing user object
                 while (resultSet.next()) {
                     user = Optional.of(new User());
-
                     user.get().setUserId(resultSet.getLong("user_id"));
                     user.get().setBannerId(resultSet.getString("banner_id"));
                     user.get().setFirstName(resultSet.getString("first_name"));
