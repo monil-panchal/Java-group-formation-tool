@@ -17,4 +17,5 @@ public interface UserService extends UserDetailsService {
     Optional<User> getUserFromEmail(String email) throws Exception;
     Optional<UserRoleDTO> getUserWithRolesFromEmail(String email) throws Exception;
     Optional<User> addUser(User user, String userRole) throws Exception;
+    Optional<UserRoleDTO> updateUserRole(User user, String userRole) throws Exception;
 }

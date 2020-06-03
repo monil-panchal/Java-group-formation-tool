@@ -44,7 +44,7 @@ public class DBConnectionBuilder {
 
         Optional<Connection> connection = Optional.empty();
         try {
-            String databaseUrl = "jdbc:mysql://" + host + ":" + port + "/" + database;
+            String databaseUrl = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             connection = Optional.of(DriverManager.getConnection(databaseUrl, username, password));
