@@ -80,11 +80,11 @@ create table course
 (
     course_id   bigint auto_increment
         primary key,
-    course_name varchar(64) not null,
-    term_id     int         not null,
-    constraint course_term_fk
-        foreign key (term_id) references term (term_id)
+    course_code varchar(64) not null,
+    course_name varchar(64) not null
 );
+
+insert into course(course_code, course_name) values("CSCI Test_1", "Course Name");
 
 create table user_course_role
 (
