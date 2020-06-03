@@ -1,6 +1,8 @@
 package com.assessme.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
@@ -8,11 +10,21 @@ import java.util.Properties;
  * @author Darshan Kathiriya
  * @created 31-May-2020 11:28 AM
  */
+@Component
 public class EmailConfig {
-    String host = "smtp.mailtrap.io";
-    int port = 2525;
-    String username = "6612d1ce0bdec9";
-    String password = "432f71435e7ae5";
+
+    @Value("${email.host}")
+    String host;
+
+    @Value("${email.port}")
+    int port;
+
+    @Value("${email.username}")
+    String username;
+
+    @Value("${email.password}")
+    String password;
+
     Properties props;
 
     public Properties getProps() {

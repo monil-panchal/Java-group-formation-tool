@@ -15,26 +15,18 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MailSenderService {
-
     private Logger logger = LoggerFactory.getLogger(MailSenderService.class);
 
-    private static MailSenderService instance;
+    private EmailConfig emailConfig;
     private JavaMailSenderImpl mailSender;
 
-    public MailSenderService(){
+    public MailSenderService(EmailConfig emailConfig) {
+        this.emailConfig = emailConfig;
         mailSender = getConfigured();
-    }
-
-    public static MailSenderService getInstance() {
-        if (instance == null) {
-            instance = new MailSenderService();
-        }
-        return instance;
     }
 
     private JavaMailSenderImpl getConfigured() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-        EmailConfig emailConfig = SystemConfig.getInstance().getEmailConfig();
         javaMailSender.setHost(emailConfig.getHost());
         javaMailSender.setPort(emailConfig.getPort());
         javaMailSender.setUsername(emailConfig.getUsername());
