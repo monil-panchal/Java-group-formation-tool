@@ -133,8 +133,19 @@ public class CourseService {
     /**
      * Service method for inserting course record
      */
-    public Optional<Course> addCourse(Course coure) throws Exception{
-    	Optional<Course> newCourse = Optional.empty();
+    public Optional<Course> addCourse(Course course) throws Exception{
+    	
+    	Optional<Course> newCourse;
+        try {
+        	newCourse = courseDAOImpl.addCourse(course);
+            String resMessage = String.format("Course with course name: %s has been added to the database", course.getCourseName());
+            logger.info(resMessage);
+        } catch (Exception e) {
+            String errMessage = String.format("Error in retrieving the course from the database");
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
+        }
     	return newCourse;
     }
 }
