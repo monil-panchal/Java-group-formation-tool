@@ -67,24 +67,26 @@ public class CSVUploadController {
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    @PathVariable String courseCode,
                                    RedirectAttributes redirectAttributes) {
+        String roleName = "STUDENT";
         try {
-            Optional<Role> studentRole = roleService.getRoleFromRoleName("STUDENT");
+            Optional<Role> studentRole = roleService.getRoleFromRoleName(roleName);
             for (String[] csvRow : storageService.storeAndParseAll(file)) {
                 logger.info(String.format("UserEmail: %s", csvRow[3]));
                 long userId;
                 try {
-                    Optional<User> userWithEmail = userService.getUserFromEmail(csvRow[3]);
-                    logger.info("User: " + userWithEmail.get());
-                    userId = userWithEmail.get().getUserId();
+                    User userEntity = userService.getUserFromEmail(csvRow[3]).get();
+                    logger.info("User: " + userEntity);
+                    userId = userEntity.getUserId();
+                    userService.updateUserRole(userEntity, roleName);
                 } catch (Exception e) {
                     User newUser = new User();
                     newUser.setBannerId(csvRow[0]);
                     newUser.setLastName(csvRow[1]);
                     newUser.setFirstName(csvRow[2]);
                     newUser.setEmail(csvRow[3]);
-                    Optional<User> insertedUser = userService.addUser(newUser, AppConstant.DEFAULT_USER_ROLE_CREATE);
-                    userId = insertedUser.get().getUserId();
-                    mailSenderService.sendSimpleMessage(insertedUser.get().getEmail(),
+                    User userEntity = userService.addUser(newUser, roleName).get();
+                    userId = userEntity.getUserId();
+                    mailSenderService.sendSimpleMessage(userEntity.getEmail(),
                             "Your Account Has Been Created",
                             "Your password is YourBannerId_YourLastName");
                 }
