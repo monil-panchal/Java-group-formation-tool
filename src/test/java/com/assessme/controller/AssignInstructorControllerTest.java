@@ -5,8 +5,10 @@ import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.*;
 import com.opencsv.CSVReader;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,7 +24,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @ExtendWith(MockitoExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AssignInstructorControllerTest {
     private Logger logger = LoggerFactory.getLogger(AssignInstructorControllerTest.class);
     private MockMvc mockMvc;
@@ -55,13 +60,25 @@ class AssignInstructorControllerTest {
     @InjectMocks
     AssignInstructorController controller;
 
-    @BeforeEach
+    @BeforeAll
     void init() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(controller)
                 .addFilters()
                 .build();
+    }
+
+    @Test
+    void handleBadRequest() throws Exception{
+        mockMvc.perform(get("/assign_instructor"))
+        .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void handleGet() throws Exception{
+        mockMvc.perform(get("/assign_instructor/CSCI_TEST"))
+        .andExpect(status().isOk());
     }
 
     @Test

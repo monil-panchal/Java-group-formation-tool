@@ -64,7 +64,7 @@ public class AssignInstructorController {
     public String handleAssignInstructor(@RequestParam("user_email") String userEmail,
                                  @PathVariable String courseCode,
                                  RedirectAttributes redirectAttributes) {
-        logger.info(String.format("assigning %s as TA for course: %s", userEmail, courseCode));
+        logger.info(String.format("assigning %s as Instructor for course: %s", userEmail, courseCode));
         String roleName = "INSTRUCTOR";
         try {
             Optional<User> user = userService.getUserFromEmail(userEmail);

@@ -54,7 +54,7 @@ public class AssignTAController {
 
 
     @GetMapping("/assign_ta/{courseCode}")
-    public ModelAndView csvFileUploadForm(
+    public ModelAndView handleGET(
             @PathVariable String courseCode) {
         logger.info("Serving for course: " + courseCode);
         ModelAndView mav = new ModelAndView("assign_ta");
