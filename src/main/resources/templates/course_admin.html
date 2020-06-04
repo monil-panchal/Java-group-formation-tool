@@ -4,20 +4,52 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/app.css">
     <title>Course Admin Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <h1>Course Admin Page</h1>
 <div>
-    <button>Add Course</button>
-<br><br>
-<table>
-    <tr>
-        <th>Course ID</th>
-        <th>Course Name</th>
-        <th>Instructor</th>
-        <th>Edit Detail(Edit or remove)</th>
-    </tr>
-</table>
-</div>
+    <form th:action="@{/course_admin}" th:object="${course}" method="POST">
+        <label>Course Code </label><input type = "text" id = "course_code" name = "courseCode" th:field="*{courseCode}"><br><br>
+        <label>Course Name </label><input type = "text" id = "course_name" name = "courseName" th:field="*{courseName}"><br><br>
+        <button type = "submit">Add Course</button>
+    </form>
+
+<br>
+    <div id = "noCourse"></div>
+    <table id = "course_table">
+        <tr>
+            <th>Course ID</th>
+            <th>Course Name</th>
+            <th>Remove</th>
+        </tr>
+    </table>
+    </div>
+    <script>
+        $(document).ready(function () {
+            console.log("onload called");
+            $.getJSON("/course/all", function(response){
+                console.log("data", response.data);
+                if(response.data != null && response.data.length > 0){
+                    $.each(response.data, function (key, value) {
+                        $("#course_table").append("<tr><td>" + value['courseCode'] + "</td><td><a href class = 'course' id = " + value['courseCode'] + ">" + value['courseName'] +"</td><td id ="  + value['courseCode'] + "><a href id = 'remove'>Remove" + "</td></tr>");
+                    });
+                }
+                else{
+                    $("#course_table").remove();
+                    $("#noCourse").html("<h1>No courses to display yet</h1>")
+                }
+            });
+        });
+
+        $(".course").click(function(){
+            console.log("course clicked");
+            console.log("id:", $(this).attr('id'))
+        })
+
+        $("#remove").click(function(){
+            console.log("remove clicked")
+        });
+    </script>
 </body>
 </html>
