@@ -20,7 +20,6 @@ import java.util.*;
  */
 @Repository
 public class UserDAOImpl implements UserDAO {
-
     private Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
     private DBConnectionBuilder dbConnectionBuilder;
@@ -62,7 +61,6 @@ public class UserDAOImpl implements UserDAO {
                 // Iterating through the rows and constructing user object
                 while (resultSet.next()) {
                     user = Optional.of(new User());
-
                     user.get().setUserId(resultSet.getLong("user_id"));
                     user.get().setBannerId(resultSet.getString("banner_id"));
                     user.get().setFirstName(resultSet.getString("first_name"));
@@ -74,16 +72,19 @@ public class UserDAOImpl implements UserDAO {
                 String successString = String.format("User list retrieved successfully.");
                 logger.info(successString);
 
-                //Closing the connection
-                dbConnectionBuilder.closeConnection(connection.get());
+
             } else
                 throw new Exception(String.format("User email id cannot be null"));
 
         } catch (Exception e) {
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
         }
+        //Closing the connection
+        dbConnectionBuilder.closeConnection(connection.get());
         return user;
     }
 
@@ -119,13 +120,11 @@ public class UserDAOImpl implements UserDAO {
                 // Adding user to the list
                 userList.add(user);
             }
-
             logger.info(String.format("User list retrieved from the database: %s", userList));
-
+        } catch (Exception e) {
             //Closing the connection
             dbConnectionBuilder.closeConnection(connection.get());
 
-        } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
@@ -197,17 +196,20 @@ public class UserDAOImpl implements UserDAO {
                 String successString = String.format("User with email: %s retrieved successfully.", email);
                 logger.info(successString);
 
-                //Closing the connection
-                dbConnectionBuilder.closeConnection(connection.get());
-
-            } else
+            } else {
                 throw new Exception(String.format("User email id cannot be null"));
+            }
 
         } catch (Exception e) {
+            // Getting the DB connection
+            connection = dbConnectionBuilder.createDBConnection();
+
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;
         }
+        // Getting the DB connection
+        connection = dbConnectionBuilder.createDBConnection();
         return user;
     }
 
@@ -260,6 +262,9 @@ public class UserDAOImpl implements UserDAO {
             return newUser;
 
         } catch (Exception e) {
+            // Getting the DB connection
+            connection = dbConnectionBuilder.createDBConnection();
+
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;

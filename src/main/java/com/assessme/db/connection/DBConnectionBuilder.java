@@ -54,7 +54,7 @@ public class DBConnectionBuilder {
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("Error in creating the database connection connection");
+            logger.error("Error in creating the database connection");
             throw e;
         }
     }

@@ -41,7 +41,6 @@ public class CourseDAOImpl implements CourseDAO {
 
         // SQL query for fetching the course record based on the courseCode
         String selectQuery = "SELECT * FROM course WHERE course_code like\"" + courseCode+"\"";
-
         try {
             // Getting the DB connection
             connection = dbConnectionBuilder.createDBConnection();
@@ -64,6 +63,7 @@ public class CourseDAOImpl implements CourseDAO {
                     course = Optional.of(new Course());
                     course.get().setCourseId(resultSet.getLong("course_id"));
                     course.get().setCourseCode(resultSet.getString("course_code"));
+
                     course.get().setCourseName(resultSet.getString("course_name"));
                 }
                 String successString = String.format("Course with course code: %s retrieved successfully.", courseCode);
@@ -73,10 +73,15 @@ public class CourseDAOImpl implements CourseDAO {
                 throw new Exception(String.format("Course: %s record is not found in the Database.", courseCode));
 
         } catch (Exception e) {
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
         }
+        //Closing the connection
+        dbConnectionBuilder.closeConnection(connection.get());
         return course;
     }
 
@@ -158,17 +163,19 @@ public class CourseDAOImpl implements CourseDAO {
                 // Adding course to the list
                 courseList.add(course);
             }
-
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
-
             logger.info(String.format("Course list retrieved from the database: %s", courseList));
 
         } catch (Exception e) {
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
         }
+        //Closing the connection
+        dbConnectionBuilder.closeConnection(connection.get());
+
         return courseList;
     }
 

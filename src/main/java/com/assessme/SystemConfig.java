@@ -1,24 +1,29 @@
 package com.assessme;
 
-import com.assessme.config.StorageConfig;
-import com.assessme.service.StorageService;
+import com.assessme.config.*;
 
 public class SystemConfig {
 
     private static SystemConfig instance;
-    private StorageConfig storageConfig;
+    private IStorageConfig storageConfig;
+    private EmailConfig emailConfig;
 
     public SystemConfig() {
         storageConfig = new StorageConfig();
+        emailConfig = new EmailConfig();
     }
 
     public static SystemConfig getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new SystemConfig();
         return instance;
     }
 
-    public StorageConfig getStorageConfig() {
+    public IStorageConfig getStorageConfig() {
         return storageConfig;
+    }
+
+    public EmailConfig getEmailConfig(){
+        return emailConfig;
     }
 }

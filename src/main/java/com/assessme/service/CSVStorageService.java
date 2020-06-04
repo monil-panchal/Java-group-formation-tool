@@ -1,7 +1,10 @@
 package com.assessme.service;
 
 import com.assessme.SystemConfig;
+import com.assessme.config.IStorageConfig;
 import com.assessme.config.StorageConfig;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 
 
@@ -29,7 +33,7 @@ public class CSVStorageService implements StorageService{
     Path createdDirectoryPath;
 
     public CSVStorageService() {
-        StorageConfig config = SystemConfig.getInstance().getStorageConfig();
+        IStorageConfig config = SystemConfig.getInstance().getStorageConfig();
         this.rootLocation = Paths.get(config.getLocation());
         init();
     }
@@ -85,4 +89,27 @@ public class CSVStorageService implements StorageService{
     public Path load(String fileName) {
         return rootLocation.resolve(fileName);
     }
+
+    @Override
+    public List<String[]> storeAndParseAll(MultipartFile file) throws CsvException, IOException {
+        try {
+            String newFileName = store(file);
+            logger.info(String.format("New FileName: %s", newFileName));
+            Path newPath = load(newFileName);
+            CSVReader reader = CSVImport.importFromPath(newPath);
+            logger.info("CSVParsed Successfully");
+            List<String[]> allRows = reader.readAll();
+            return allRows;
+        } catch (CsvException e){
+            logger.info("Couldn't load all rows");
+            e.printStackTrace();
+            throw e;
+        }
+        catch (IOException e) {
+            logger.info("Error ");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
 }
