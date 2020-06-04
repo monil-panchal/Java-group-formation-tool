@@ -40,8 +40,9 @@ public class CourseDAOImpl implements CourseDAO {
         Optional<Course> course = Optional.empty();
 
         // SQL query for fetching the course record based on the courseCode
-        String selectQuery = "SELECT * FROM course WHERE course_code like\"" + courseCode+"\"";
 
+
+        String selectQuery = "SELECT * FROM course WHERE course_code =\"" + courseCode + "\"";
         try {
             // Getting the DB connection
             connection = dbConnectionBuilder.createDBConnection();
@@ -73,10 +74,15 @@ public class CourseDAOImpl implements CourseDAO {
                 throw new Exception(String.format("Course: %s record is not found in the Database.", courseCode));
 
         } catch (Exception e) {
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
         }
+        //Closing the connection
+        dbConnectionBuilder.closeConnection(connection.get());
         return course;
     }
 
@@ -158,17 +164,19 @@ public class CourseDAOImpl implements CourseDAO {
                 // Adding course to the list
                 courseList.add(course);
             }
-
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
-
             logger.info(String.format("Course list retrieved from the database: %s", courseList));
 
         } catch (Exception e) {
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
         }
+        //Closing the connection
+        dbConnectionBuilder.closeConnection(connection.get());
+
         return courseList;
     }
 
