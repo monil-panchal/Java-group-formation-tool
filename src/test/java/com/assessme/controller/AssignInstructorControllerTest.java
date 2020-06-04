@@ -1,6 +1,8 @@
 package com.assessme.controller;
 
-import com.assessme.model.*;
+import com.assessme.model.Course;
+import com.assessme.model.Role;
+import com.assessme.model.User;
 import com.assessme.service.*;
 import com.opencsv.CSVReader;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,24 +13,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,8 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AssignTAControllerTest {
-    private Logger logger = LoggerFactory.getLogger(AssignTAControllerTest.class);
+class AssignInstructorControllerTest {
+    private Logger logger = LoggerFactory.getLogger(AssignInstructorControllerTest.class);
     private MockMvc mockMvc;
 
     @Mock
@@ -61,7 +58,7 @@ class AssignTAControllerTest {
     CSVReader reader;
 
     @InjectMocks
-    AssignTAController controller;
+    AssignInstructorController controller;
 
     @BeforeAll
     void init() {
@@ -74,18 +71,18 @@ class AssignTAControllerTest {
 
     @Test
     void handleBadRequest() throws Exception{
-        mockMvc.perform(get("/assign_ta"))
+        mockMvc.perform(get("/assign_instructor"))
         .andExpect(status().isNotFound());
     }
 
     @Test
     void handleGet() throws Exception{
-        mockMvc.perform(get("/assign_ta/CSCI_TEST"))
+        mockMvc.perform(get("/assign_instructor/CSCI_TEST"))
         .andExpect(status().isOk());
     }
 
     @Test
-    void handleAssignTA() throws Exception {
+    void handleAssignInstuctor() throws Exception {
         User user = new User();
         user.setUserId(1L);
         when(userService.getUserFromEmail("email.com")).thenReturn(Optional.of(user));
@@ -94,12 +91,13 @@ class AssignTAControllerTest {
         course.setCourseId(1);
         when(courseService.getCourseWithCode("CSCI_TEST")).thenReturn(Optional.of(course));
 
-        when(roleService.getRoleFromRoleName("TA")).thenReturn(Optional.of(new Role(1, "TA")));
+        when(roleService.getRoleFromRoleName("INSTRUCTOR"))
+                .thenReturn(Optional.of(new Role(1, "INSTRUCTOR")));
 
-        mockMvc.perform(post("/assign_ta/CSCI_TEST")
+        mockMvc.perform(post("/assign_instructor/CSCI_TEST")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("user_email", "email.com"))
                 .andExpect(status().isFound())
-                .andExpect(header().string("Location", "/assign_ta/CSCI_TEST"));
+                .andExpect(header().string("Location", "/assign_instructor/CSCI_TEST"));
     }
 }

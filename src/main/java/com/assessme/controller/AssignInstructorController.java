@@ -5,36 +5,27 @@ package com.assessme.controller;
  * @created 30-May-2020 12:28 AM
  */
 
-import com.assessme.db.dao.EnrollmentDAO;
-import com.assessme.db.dao.EnrollmentDAOImpl;
 import com.assessme.model.Enrollment;
 import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.*;
-import com.assessme.service.CourseService;
-import com.assessme.util.AppConstant;
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class AssignTAController {
+public class AssignInstructorController {
 
-    private Logger logger = LoggerFactory.getLogger(AssignTAController.class);
+    private Logger logger = LoggerFactory.getLogger(AssignInstructorController.class);
 
     UserService userService;
     CourseService courseService;
@@ -42,9 +33,9 @@ public class AssignTAController {
     MailSenderService mailSenderService;
     RoleService roleService;
 
-    public AssignTAController(UserService userService, CourseService courseService,
-                              EnrollmentService enrollmentService, MailSenderService mailSenderService,
-                              RoleService roleService) {
+    public AssignInstructorController(UserService userService, CourseService courseService,
+                                      EnrollmentService enrollmentService, MailSenderService mailSenderService,
+                                      RoleService roleService) {
         this.userService = userService;
         this.courseService = courseService;
         this.enrollmentService = enrollmentService;
@@ -53,11 +44,11 @@ public class AssignTAController {
     }
 
 
-    @GetMapping("/assign_ta/{courseCode}")
-    public ModelAndView handleGET(
+    @GetMapping("/assign_instructor/{courseCode}")
+    public ModelAndView getPage(
             @PathVariable String courseCode) {
         logger.info("Serving for course: " + courseCode);
-        ModelAndView mav = new ModelAndView("assign_ta");
+        ModelAndView mav = new ModelAndView("assign_instructor");
         try {
             Optional<List<User>> userList = userService.getUserList();
             mav.addObject("course_code", courseCode);
@@ -69,12 +60,12 @@ public class AssignTAController {
         return mav;
     }
 
-    @PostMapping("/assign_ta/{courseCode}")
-    public String handleAssignTA(@RequestParam("user_email") String userEmail,
+    @PostMapping("/assign_instructor/{courseCode}")
+    public String handleAssignInstructor(@RequestParam("user_email") String userEmail,
                                  @PathVariable String courseCode,
                                  RedirectAttributes redirectAttributes) {
-        logger.info(String.format("assigning %s as TA for course: %s", userEmail, courseCode));
-        String roleName = "TA";
+        logger.info(String.format("assigning %s as Instructor for course: %s", userEmail, courseCode));
+        String roleName = "INSTRUCTOR";
         try {
             Optional<User> user = userService.getUserFromEmail(userEmail);
             long courseId = courseService.getCourseWithCode(courseCode).get().getCourseId();
@@ -84,7 +75,7 @@ public class AssignTAController {
                     taRole.get().getRoleId(), courseId);
             enrollmentService.insertEnrollment(enrollment);
             redirectAttributes.addFlashAttribute("message",
-                    String.format("TA has been assigned for course %s successfully.", courseCode));
+                    String.format("Instructor has been assigned for course %s successfully.", courseCode));
             redirectAttributes.addFlashAttribute("isSuccess", true);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -93,6 +84,6 @@ public class AssignTAController {
                     "Error while accessing database");
             redirectAttributes.addFlashAttribute("isSuccess", false);
         }
-        return String.format("redirect:/assign_ta/%s", courseCode);
+        return String.format("redirect:/assign_instructor/%s", courseCode);
     }
 }
