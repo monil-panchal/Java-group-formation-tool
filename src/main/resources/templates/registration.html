@@ -9,55 +9,35 @@
 <h1>AccessMe registration</h1>
 
 <form th:action="@{/registration}" th:object="${user}" method="POST">
+
+    <div class="message" th:if="${message}">
+        <h2 th:text="${message}"/>
+    </div>
+
     <div>
         <label>First Name</label>
-        <div>
-            <input type="text" id="firstName" name="firstName" th:field="*{firstName}">
-        </div>
-
+        <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
     </div>
     <div>
         <label>Last Name</label>
-        <div>
-            <input type="text" id="lastName" name="lastName" th:field="*{lastName}">
-        </div>
-
+        <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
     </div>
 
     <div>
         <label>Email</label>
-        <div>
-            <input type="text" id="email" name="email" th:field="*{email}">
-        </div>
-
+        <input type="text" id="email" name="email" th:field="*{email}" required>
     </div>
     <div>
         <label>BannerId</label>
-        <div>
-            <input type="text" id="bannerId" name="bannerId" th:field="*{bannerId}">
-        </div>
-
+        <input type="text" id="bannerId" name="bannerId" th:field="*{bannerId}" required>
     </div>
     <div>
         <label>Password</label>
-        <div>
-            <input type="password" id="password" name="password" th:field="*{password}">
-        </div>
-
+        <input type="password" id="password" name="password" th:field="*{password}" required>
     </div>
     <div>
         <label>Confirm password</label>
-        <div>
-            <input type="password" id="confirmPassword" name="confirmPassword">
-        </div>
-    </div>
-
-    <div>
-        <button type="submit">Register</button>
-    </div>
-
-    <div>
-        <input type="reset" value="clear"/>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
     </div>
 
 </form>

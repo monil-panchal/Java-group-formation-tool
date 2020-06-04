@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,23 +69,23 @@ public class MainController {
 
     @GetMapping("/registration")
     public String registerUser(WebRequest request, Model model) {
+        logger.info("Serving registration page.");
         User userDto = new User();
-
         model.addAttribute("user", userDto);
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String registerUserAccount(@ModelAttribute("user") User user) throws Exception {
+    public String registerUserAccount(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
+        logger.info(String.format("Saving Details for user %s", user));
         Optional<User> registered = Optional.empty();
         try {
             registered = userServiceImpl.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(e.getMessage());
-            throw e;
+            redirectAttributes.addFlashAttribute("message", "Registration Failed");
         }
-        return "redirect:/home";
+        return "redirect:/registration";
     }
 
     @GetMapping("/course_admin")
