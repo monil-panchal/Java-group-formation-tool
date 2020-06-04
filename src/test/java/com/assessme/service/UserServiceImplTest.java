@@ -3,10 +3,7 @@ package com.assessme.service;
 import com.assessme.db.dao.RoleDAOImpl;
 import com.assessme.db.dao.UserDAOImpl;
 import com.assessme.db.dao.UserRoleDAOImpl;
-import com.assessme.model.Role;
-import com.assessme.model.User;
-import com.assessme.model.UserRole;
-import com.assessme.model.UserRoleDTO;
+import com.assessme.model.*;
 import com.assessme.util.AppConstant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -45,14 +42,14 @@ public class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userServiceMock;
 
-//    @Mock
-//    private UserServiceImpl userServiceMock2;
-
     @Mock
     private UserRoleServiceImpl userRoleServiceImpl;
 
     @Mock
     private RoleServiceImpl roleServiceImpl;
+
+    @Mock
+    private UserTokenServiceImpl userTokenServiceImpl;
 
 
     @Mock
@@ -232,20 +229,77 @@ public class UserServiceImplTest {
 
     }
 
+    //Unit test
+    @Test
+    public void addUserTokenTest() throws Exception {
 
-    //Integration test
-//    @Test
-//    public void getUserFromEmailIntegrationTests() throws Exception {
-//
-//        String email = "monil.panchal@dal.ca";
-//        logger.info(String.format("Running Integration test for fetching user with emailId: " + email));
-//
-//        // Calling the actual service
-//        Optional<User> dbUser = userService.getUserFromEmail(email);
-//
-//        //verification
-//        Assert.notNull(dbUser, String.format("User with email id: %s should not be null", email));
-//        Assertions.assertEquals(dbUser.get().getEmail(), email);
-//
-//    }
+        User user = new User();
+        user.setBannerId("B00838558");
+        user.setFirstName("Monil");
+        user.setLastName("Panchal");
+        user.setEmail("test@email.com");
+        user.setUserId(1L);
+        Optional<User> optionalUserObject = Optional.of(user);
+
+        UserToken userToken = new UserToken(1L, "b655675a-aa70-42da-9827-25dc70439351");
+        Optional<UserToken> newUserToken = Optional.of(userToken);
+
+        Mockito.when(userServiceMock.getUserFromEmail(user.getEmail())).thenReturn(optionalUserObject);
+        Mockito.when(userTokenServiceImpl.addUserToken(userToken)).thenReturn(newUserToken);
+
+        Assert.isTrue(optionalUserObject.isPresent(), " User object should not be empty");
+        Assert.isTrue(newUserToken.isPresent(), " User token object should not be empty");
+        Assert.notNull(newUserToken.get().getToken(), "User token should not be null");
+
+    }
+
+    //Unit test
+    @Test
+    public void getUserTokenTest() throws Exception {
+
+        User user = new User();
+        user.setBannerId("B00838558");
+        user.setFirstName("Monil");
+        user.setLastName("Panchal");
+        user.setEmail("test@email.com");
+        user.setUserId(1L);
+        Optional<User> optionalUserObject = Optional.of(user);
+
+
+        UserToken userToken = new UserToken(1L, "b655675a-aa70-42da-9827-25dc70439351");
+        Optional<UserToken> newUserToken = Optional.of(userToken);
+
+        Mockito.when(userTokenServiceImpl.getUserToken(user.getUserId())).thenReturn(newUserToken);
+
+        Assert.isTrue(newUserToken.isPresent(), " User token object should not be empty");
+        Assert.notNull(newUserToken.get().getToken(), "User token should not be null");
+
+    }
+
+    @Test
+    public void updateUserPasswordTest() throws Exception {
+
+        logger.info("Running unit test for updating the user password");
+
+        User user = new User();
+        user.setBannerId("B00838558");
+        user.setActive(true);
+        user.setFirstName("Monil");
+        user.setLastName("Panchal");
+        user.setUserId(1l);
+        user.setEmail("testUser@email.com");
+
+        Optional<User> optionalUserObject = Optional.of(user);
+
+        Mockito.when(userServiceMock.getUserFromEmail(user.getEmail())).thenReturn(optionalUserObject);
+        Mockito.when(userDAO.updateUserPassword(user)).thenReturn(optionalUserObject);
+
+        Assert.isTrue(optionalUserObject.isPresent(), "Updated User object should not be empty");
+        userFromDB = userServiceMock.updateUserPassword(user, "new password");
+
+        Assert.isTrue(userFromDB.isPresent(), "Updated User object should not be empty");
+        Assert.notNull(userFromDB.get().getEmail(), "User email should not be null");
+
+    }
+
 }

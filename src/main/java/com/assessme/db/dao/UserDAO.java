@@ -25,7 +25,7 @@ public interface UserDAO {
 
     Optional<User> addUser(User user) throws Exception;
 
-    Optional<User> updateUser(User user) throws Exception;
+    Optional<User> updateUserPassword(User user) throws Exception;
 
 
 }

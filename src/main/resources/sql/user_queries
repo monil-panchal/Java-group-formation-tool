@@ -102,6 +102,14 @@ create table user_course_role
 
 
 
+CREATE TABLE user_token (
 
+user_id BIGINT NOT NULL,
+token varchar (255) NOT NULL,
+
+PRIMARY KEY (user_id),
+FOREIGN KEY (user_id) REFERENCES user(user_id)
+
+);
 
 
