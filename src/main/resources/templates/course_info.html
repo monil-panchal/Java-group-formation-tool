@@ -4,17 +4,58 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/app.css">
     <title>Course Admin Page</title>
+
 </head>
 <body>
-<h1>Course Information Page</h1>
-<div>
-    <table>
+<div align="center">
+	<h1 align="center">Course Information Page</h1>
+</div>
+
+<div align="center">
+    <table id="courseListTable" border="1">
+        <thead>
         <tr>
             <th>Course ID</th>
             <th>Course Name</th>
-            <th>Instructor</th>
-        </tr>
+      </tr>
+        </thead>
+		<tbody>
+		</tbody>
     </table>
 </div>
 </body>
 </html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+	$(document).ready(
+
+			function() {
+				getCourseList();
+			}		
+	);
+	
+	function getCourseList() {
+
+		$.ajax({
+					url : "/course/all",
+					type : "GET",
+					dataType : "json",
+					success : function(response) {
+						$("#courseListTable tbody").html("");
+						var tbody = "";
+						for (var i = 0; i < response.data.length; i++) {
+							tbody += '<tr>';
+							tbody += '<td>' + response.data[i].courseCode
+									+ '</td>';
+							tbody += '<td>'
+									+ response.data[i].courseName
+									+ '</td>';
+							tbody += '<tr>';
+							}
+						$("#courseListTable tbody").append(tbody);
+						}
+				});
+
+	}
+</script>

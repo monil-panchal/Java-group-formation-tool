@@ -1,10 +1,14 @@
 package com.assessme.controller;
 
+import com.assessme.model.Course;
+import com.assessme.model.ResponseDTO;
 import com.assessme.model.User;
+import com.assessme.service.CourseService;
 import com.assessme.service.UserServiceImpl;
 import com.assessme.util.AppConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,7 +31,9 @@ public class MainController {
 
     private Logger logger = LoggerFactory.getLogger(MainController.class);
 
-
+    private CourseController courseController;
+    
+    private CourseService courseService;
     private UserServiceImpl userServiceImpl;
 
     public MainController(UserServiceImpl userServiceImpl){
@@ -71,7 +78,7 @@ public class MainController {
 
     @GetMapping("/course_info")
     public String courseInfo(Model model) {
-        return "course_info";
+    	return "course_info";
     }
 
 }

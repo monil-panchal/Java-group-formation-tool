@@ -3,21 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/app.css">
+    <link
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css"
+	rel="stylesheet">
+<link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"
+	rel="stylesheet" />
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <title>Course Admin Page</title>
 </head>
 <body>
-<h1>Course Admin Page</h1>
-<div>
-    <button>Add Course</button>
+
+<h1 align="center">Course Admin Page</h1>
+
+<div align="center" id="CourseTable">
+    <table id="courseListTable" border="1">
+        <thead>
+        <tr>
+            <th>Course ID</th>
+            <th>Course Name</th>
+      </tr>
+        </thead>
+		<tbody>
+		</tbody>
+    </table>
+</div>
+
 <br><br>
-<table>
-    <tr>
-        <th>Course ID</th>
-        <th>Course Name</th>
-        <th>Instructor</th>
-        <th>Edit Detail(Edit or remove)</th>
-    </tr>
-</table>
+<div >
+<div  id="AddCourse" class="col-6" style="float: left; margin-left: 30px;    border: 2px solid grey;    width: 380px; padding:20px">
+			<center><h1>Add Course</h1></center>
+			<form id="AddCourseForm">
+			Course Code : <input type="text" name="CourseCode" >
+			<br/>
+			Course Name : <input type="text" name="CourseName" style="margin:20px" ><br/>
+			<button style="padding:5px;margin:10px" type="button" onclick="AddCourse()">Add Course</button>
+		</form>
+		</div>
+		<div class="col-6"  id="RemoveCourse" style="float: left;margin-left: 30px;    border: 2px solid grey;    width: 380px; padding:20px">
+		<center><h1>Remove Course</h1></center>
+		<form id="RemoveCourseForm">
+			<label>Remove using : </label>
+			<input type="radio" name="course" value="code"> Course Code 
+			<input type="radio" name="Course" value="name"> Course Name <br/>
+			Course : <input type="text" name="Course"  style="margin:20px"><br/>
+			<button style="padding:5px;margin:10px" type="button" onclick="RemoveCourse()">Remove Course</button>
+		</form>
+			
+		</div>
 </div>
 </body>
 </html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+	$(document).ready(
+	
+			function() {
+				getCourseList();
+			}		
+	);
+	
+	function getCourseList() {
+	
+		$.ajax({
+					url : "/course/all",
+					type : "GET",
+					dataType : "json",
+					success : function(response) {
+						$("#courseListTable tbody").html("");
+						var tbody = "";
+						for (var i = 0; i < response.data.length; i++) {
+							tbody += '<tr>';
+							tbody += '<td>' + response.data[i].courseCode
+									+ '</td>';
+							tbody += '<td>'
+									+ response.data[i].courseName
+									+ '</td>';
+							tbody += '<tr>';
+							}
+						$("#courseListTable tbody").append(tbody);
+						}
+				});
+	
+	}
+	
+
+	function AddCourse() {
+		var fromValues = $("#AddCourseForm").serialize();
+		var coursecode="";
+		var coursename="";
+		
+		coursecode = String($("#AddCourseForm").serialize().split("&")[0].split("=")[1])	
+		coursename = String($("#AddCourseForm").serialize().split("&")[1].split("=")[1])
+	
+		var Dataobj ='{"courseCode": ' + coursecode + ',"courseName" : ' + coursename +	'}';
+		
+		console.log("dataobj "  + Dataobj);
+		$.ajax({
+					url : "/course/addCourse",
+					type : "POST",
+					data: Dataobj,
+					dataType : "json",
+					success : function(result){
+						console.log(result)
+						getCourseList()
+					}
+				});
+
+	}
+
+</script>
