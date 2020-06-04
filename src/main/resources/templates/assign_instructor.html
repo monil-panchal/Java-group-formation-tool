@@ -9,7 +9,7 @@
     <h2 th:text="${message}"/>
 </div>
 <div>
-    <a th:href="@{/course/{course_code}(course_code=${course_code})}">Go to Course</a>
+    <a th:href="@{/course_admin}">Go Back</a>
     <form method="POST" th:action="@{/assign_instructor/{course_code}(course_code=${course_code})}">
         <table>
             <tr>

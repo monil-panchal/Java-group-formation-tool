@@ -9,7 +9,9 @@ import com.assessme.util.AppConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,7 +51,9 @@ public class MainController {
     }
 
     @GetMapping("/home")
-    public String homePage() {
+    public String homePage(Model model, @AuthenticationPrincipal UserDetails currentUser ) throws Exception {
+        Optional<User> user = userServiceImpl.getUserFromEmail(currentUser.getUsername());
+        model.addAttribute("currentUser", user.get());
         return "home";
     }
 

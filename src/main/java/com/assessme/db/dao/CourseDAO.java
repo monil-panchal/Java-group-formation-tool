@@ -26,4 +26,5 @@ public interface CourseDAO {
 
     //Optional<Course> updateCourse(Course course) throws Exception;
 
+    Optional<List<Course>> listCourseByUser(long user_id, int roleID) throws Exception;
 }

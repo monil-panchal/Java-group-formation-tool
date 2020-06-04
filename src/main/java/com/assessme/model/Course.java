@@ -37,4 +37,11 @@ public class Course implements Serializable{
 		this.courseName = courseName;
 	}
 
+	public String getCourseCode() {
+		return courseCode;
+	}
+
+	public void setCourseCode(String courseCode) {
+		this.courseCode = courseCode;
+	}
 }

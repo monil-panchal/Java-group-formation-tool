@@ -23,7 +23,6 @@ public class CourseService {
 
     private Logger logger = LoggerFactory.getLogger(CourseService.class);
 
-    @Autowired
     private CourseDAOImpl courseDAOImpl;
 
     public CourseService(CourseDAOImpl courseDAOImpl){
@@ -68,5 +67,9 @@ public class CourseService {
             throw e;
         }
         return course;
+    }
+
+    public Optional<List<Course>> getCoursesByUserAndRole(long userId, int roleId) throws Exception{
+        return courseDAOImpl.listCourseByUser(userId, roleId);
     }
 }
