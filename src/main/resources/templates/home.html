@@ -1,5 +1,7 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       layout:decorate="~{layout}" lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,13 +9,20 @@
 
 </head>
 <body>
-
+<div class="message" th:if="${message}">
+    <h2 th:text="${message}"/>
+</div>
 <div>
     <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
     <div th:align="right">
         <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
     </div>
-
+    <div sec:authorize="hasRole('INSTRUCTOR')">
+      <form th:action="@{/instructor_dashboard}" method="post">
+          <input hidden name="instructorId" th:value="${currentUser.getUserId()}">
+          <button>Go to Course Management</button>
+      </form>
+    </div>
 
 </div>
 

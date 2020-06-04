@@ -22,7 +22,7 @@ import java.util.Optional;
 @Repository
 public class UserRoleDAOImpl implements UserRoleDAO {
 
-    private Logger logger = LoggerFactory.getLogger(RoleDAOImpl.class);
+    private Logger logger = LoggerFactory.getLogger(UserRoleDAOImpl.class);
 
     private DBConnectionBuilder dbConnectionBuilder;
     private Optional<Connection> connection;

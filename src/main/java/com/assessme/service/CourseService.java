@@ -25,7 +25,6 @@ public class CourseService {
 
     private Logger logger = LoggerFactory.getLogger(CourseService.class);
 
-    @Autowired
     private CourseDAOImpl courseDAOImpl;
 
     public CourseService(CourseDAOImpl courseDAOImpl){
@@ -133,11 +132,11 @@ public class CourseService {
     /**
      * Service method for inserting course record
      */
-    public Optional<Course> addCourse(Course course) throws Exception{
-    	
-    	Optional<Course> newCourse;
+    public Optional<Course> addCourse(Course course) throws Exception {
+
+        Optional<Course> newCourse;
         try {
-        	newCourse = courseDAOImpl.addCourse(course);
+            newCourse = courseDAOImpl.addCourse(course);
             String resMessage = String.format("Course with course name: %s has been added to the database", course.getCourseName());
             logger.info(resMessage);
         } catch (Exception e) {
@@ -146,6 +145,11 @@ public class CourseService {
             e.printStackTrace();
             throw e;
         }
-    	return newCourse;
+        return newCourse;
+    }
+
+    public Optional<List<Course>> getCoursesByUserAndRole(long userId, int roleId) throws Exception{
+        return courseDAOImpl.listCourseByUser(userId, roleId);
+
     }
 }

@@ -289,9 +289,37 @@ public class CourseDAOImpl implements CourseDAO {
         }
 
     }
+
     /*
     @Override
     public Optional<Course> updateCourse(Course course) throws Exception {
         return Optional.empty();
     }*/
+
+    @Override
+    public Optional<List<Course>> listCourseByUser(long user_id, int roleId) throws Exception {
+        String sqlQuery = "SELECT c.course_id, c.course_code, c.course_name FROM user_course_role e" +
+                " JOIN course c ON e.course_id = c.course_id WHERE e.user_id = ? AND e.role_id=?";
+        List<Course> courseList = new ArrayList<>();
+        try (
+                Connection dbConnection = dbConnectionBuilder.createDBConnection().get();
+                PreparedStatement stmt = dbConnection.prepareStatement(sqlQuery);
+        ) {
+            stmt.setLong(1, user_id);
+            stmt.setInt(2,roleId);
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                Course course = new Course();
+                course.setCourseId(resultSet.getInt(1));
+                course.setCourseCode(resultSet.getString(2));
+                course.setCourseName(resultSet.getString(3));
+                logger.info(course.toString());
+                courseList.add(course);
+            }
+            return Optional.of(courseList);
+        } catch (Exception e) {
+            logger.error("Error Fetching Courses");
+            throw e;
+        }
+    }
 }

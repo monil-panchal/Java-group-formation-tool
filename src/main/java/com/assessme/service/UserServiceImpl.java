@@ -1,10 +1,7 @@
 package com.assessme.service;
 
 import com.assessme.db.dao.UserDAOImpl;
-import com.assessme.model.Role;
-import com.assessme.model.User;
-import com.assessme.model.UserRole;
-import com.assessme.model.UserRoleDTO;
+import com.assessme.model.*;
 import com.assessme.util.AppConstant;
 import com.assessme.util.BcryptPasswordEncoder;
 import org.slf4j.Logger;
@@ -15,10 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,10 +29,12 @@ public class UserServiceImpl implements UserService {
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private UserDAOImpl userDAOImpl;
+    private UserTokenServiceImpl userTokenServiceImpl;
     private RoleServiceImpl roleServiceImpl;
     private UserRoleServiceImpl userRoleServiceImpl;
 
-    public UserServiceImpl(UserDAOImpl userDAOImpl, RoleServiceImpl roleServiceImpl, UserRoleServiceImpl userRoleServiceImpl) {
+    public UserServiceImpl(UserDAOImpl userDAOImpl, RoleServiceImpl roleServiceImpl, UserRoleServiceImpl userRoleServiceImpl, UserTokenServiceImpl userTokenServiceImpl) {
+        this.userTokenServiceImpl = userTokenServiceImpl;
         this.userDAOImpl = userDAOImpl;
         this.roleServiceImpl = roleServiceImpl;
         this.userRoleServiceImpl = userRoleServiceImpl;
@@ -185,7 +181,7 @@ public class UserServiceImpl implements UserService {
 
 
         Optional<UserRoleDTO> updatedUserWithRole = Optional.empty();
-        try{
+        try {
             // fetching the user object from the db
             Optional<User> existingUser = getUserFromEmail(user.getEmail());
 
@@ -201,13 +197,92 @@ public class UserServiceImpl implements UserService {
             String resMessage = String.format("User: %s has been assigned with the role: %s in the system", user.getEmail(), userRole);
             logger.info(resMessage);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             String errMessage = String.format("Error in updating the user role in the database");
             logger.error(errMessage);
             e.printStackTrace();
             throw e;
         }
         return updatedUserWithRole;
+    }
+
+    @Override
+    public Optional<User> updateUserPassword(User user, String newPassword) throws Exception {
+        Optional<User> updatedUser = Optional.empty();
+        try {
+            // fetching the user object from the db
+            Optional<User> existingUser = getUserFromEmail(user.getEmail());
+
+            //encrypt password using bcryptEncoder
+            String encyptedPassword = BcryptPasswordEncoder.getbCryptPasswordFromPlainText(newPassword);
+            existingUser.get().setPassword(encyptedPassword);
+
+            //Fetch the updated user object with all roles
+            updatedUser = userDAOImpl.updateUserPassword(existingUser.get());
+
+            String resMessage = String.format("User: %s password has been updated in the system", user.getEmail());
+            logger.info(resMessage);
+
+        } catch (Exception e) {
+            String errMessage = String.format("Error in updating the user password in the system");
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
+        }
+        return updatedUser;
+    }
+
+    @Override
+    public Optional<UserToken> addUserToken(String email) throws Exception {
+
+        Optional<User> user = Optional.empty();
+        Optional<UserToken> newUserToken = Optional.empty();
+
+        try {
+            user = getUserFromEmail(email);
+            if (user.isEmpty()) {
+                throw new UsernameNotFoundException("No user found");
+            }
+            String token = UUID.randomUUID().toString();
+            UserToken userToken = new UserToken(user.get().getUserId(), token);
+            newUserToken = userTokenServiceImpl.addUserToken(userToken);
+
+            String resMessage = String.format("User: %s token has been generated in the system", email);
+            logger.info(resMessage);
+
+        } catch (Exception e) {
+            String errMessage = String.format("Error in generating the user token in the system");
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
+        }
+        return newUserToken;
+    }
+
+    @Override
+    public Optional<UserToken> getUserToken(String email) throws Exception {
+
+        Optional<User> user = Optional.empty();
+        Optional<UserToken> newUserToken = Optional.empty();
+
+        try {
+            user = getUserFromEmail(email);
+            if (user.isEmpty()) {
+                throw new UsernameNotFoundException("No user found");
+            }
+
+            newUserToken = userTokenServiceImpl.getUserToken(user.get().getUserId());
+
+            String resMessage = String.format("User: %s token has been retrieved from  the system", email, newUserToken.get().getToken());
+            logger.info(resMessage);
+
+        } catch (Exception e) {
+            String errMessage = String.format("Error in fetching the user token in the system");
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
+        }
+        return newUserToken;
     }
 
     @Override

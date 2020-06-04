@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/app.css">
+    <title>Course Admin Page</title>
+</head>
+<body>
+<h1>Course Admin Page</h1>
+<table>
+    <tr>
+        <th>Course ID</th>
+        <th>Course Name</th>
+        <th>Assign TA</th>
+        <th>Import CSV</th>
+    </tr>
+    <tr th:each="i : ${courses}">
+        <td th:text="${i.courseCode}"></td>
+        <td th:text="${i.courseName}"></td>
+        <td>
+            <form th:action="@{/assign_ta_page/{courseCode}(courseCode=${i.courseCode})}" method="post">
+                <input hidden name="instructorId" th:value="${instructorId}">
+                <button>Assign TA</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/upload_page/{courseCode}(courseCode=${i.courseCode})}" method="post">
+                <input hidden name="instructorId" th:value="${instructorId}">
+                <button>Import CSV</button>
+            </form>
+
+        </td>
+    </tr>
+</table>
+</div>
+</body>
+</html>
