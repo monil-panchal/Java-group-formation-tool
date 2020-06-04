@@ -134,12 +134,6 @@ public class UserDAOImpl implements UserDAO {
         return userList;
     }
 
-
-    @Override
-    public Optional<User> updateUser(User user) throws Exception {
-        return Optional.empty();
-    }
-
     @Override
     public Optional<UserRoleDTO> getUserWithRolesFromEmail(String email) throws Exception {
         Optional<UserRoleDTO> user = Optional.empty();
@@ -260,6 +254,52 @@ public class UserDAOImpl implements UserDAO {
             //Closing the connection
             dbConnectionBuilder.closeConnection(connection.get());
             return newUser;
+
+        } catch (Exception e) {
+            // Getting the DB connection
+            connection = dbConnectionBuilder.createDBConnection();
+
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public Optional<User> updateUserPassword(User user) throws Exception {
+
+        Optional<User> updatedUserObj = Optional.empty();
+        try {
+            // Getting the DB connection
+            connection = dbConnectionBuilder.createDBConnection();
+
+            // Insert user record
+            // SQL query for inserting user record
+            String updateUserSQLQuery = "UPDATE user set password = ? where email = ?";
+
+            PreparedStatement preparedStatement = connection.get().prepareStatement(updateUserSQLQuery, Statement.RETURN_GENERATED_KEYS);
+
+            //Setting the query params
+            preparedStatement.setString(1, user.getPassword());
+            preparedStatement.setString(2, user.getEmail());
+
+            // Executing the query to store the user record
+            int row = preparedStatement.executeUpdate();
+
+            // check if the record was inserted successfully
+            if (row > 0) {
+                String successString = String.format("User record with email: %s has been successfully updated in the DB", user.getEmail());
+                logger.info(successString);
+
+            } else {
+                String failureString = String.format("Failed to update the user with email: %s record in the DB", user.getEmail());
+                logger.error(failureString);
+                throw new Exception(failureString);
+            }
+
+            //Closing the connection
+            dbConnectionBuilder.closeConnection(connection.get());
+            return updatedUserObj;
 
         } catch (Exception e) {
             // Getting the DB connection

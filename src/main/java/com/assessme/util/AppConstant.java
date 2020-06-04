@@ -9,6 +9,6 @@ package com.assessme.util;
  * Application level constant class.
  */
 public class AppConstant {
-
     public static final String DEFAULT_USER_ROLE_CREATE = "GUEST";
+    public static final String PASSWORD_RESET_EMAIL_SUBJECT = "Reset your AssessME password";
 }
