@@ -82,15 +82,7 @@ public class MainController {
     public String addCourse(@ModelAttribute("course") Course course) throws Exception {
         logger.info("in add course");
         Optional<Course> courseToAdd = Optional.empty();
-//        CourseService courseService = new CourseService();
-//        CourseDAOImpl courseDAO = new CourseDAOImpl(new DBConnectionBuilder());
         try {
-//            registered = userServiceImpl.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
-            logger.info("course code:");
-            logger.info(course.getCourseCode());
-            logger.info("course name:");
-            logger.info(course.getCourseName());
-//            courseToAdd = courseDAO.addCourse(course);
             courseToAdd = courseService.addCourse(course);
         } catch (Exception e) {
             e.printStackTrace();
