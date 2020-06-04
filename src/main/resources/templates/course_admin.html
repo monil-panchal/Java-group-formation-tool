@@ -9,7 +9,7 @@
 <body>
 <h1>Course Admin Page</h1>
 <div>
-    <form th:action="@{/course_admin}" th:object="${course}" method="POST">
+    <form name="courseForm" th:action="@{/course_admin}" th:object="${course}" onsubmit="return validateForm()" method="POST">
         <label>Course Code </label><input type = "text" id = "course_code" name = "courseCode" th:field="*{courseCode}"><br><br>
         <label>Course Name </label><input type = "text" id = "course_name" name = "courseName" th:field="*{courseName}"><br><br>
         <button type = "submit">Add Course</button>
@@ -45,11 +45,21 @@
         $(".course").click(function(){
             console.log("course clicked");
             console.log("id:", $(this).attr('id'))
-        })
+            var courseId = $(this).attr('id');
+        });
 
         $("#remove").click(function(){
             console.log("remove clicked")
         });
+
+        function validateForm() {
+            var id = document.forms["courseForm"]["courseCode"].value;
+            var name = document.forms["courseForm"]["courseName"].value;
+            if (id == "" || name == "") {
+                alert("CourseID and Course Name must be filled out");
+                return false;
+            }
+        }
     </script>
 </body>
 </html>
