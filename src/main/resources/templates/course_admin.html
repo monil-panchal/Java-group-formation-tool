@@ -38,7 +38,16 @@
                 console.log("data", response.data);
                 if(response.data != null && response.data.length > 0){
                     $.each(response.data, function (key, value) {
-                        $("#course_table").append("<tr><td>" + value['courseCode'] + "</td><td><a href class = 'course' id = " + value['courseCode'] + ">" + value['courseName'] +"</td></tr>");
+                        $("#course_table").append(
+                            "<tr><td>"
+                            + value['courseCode']
+                            + "</td><td><a href=\"/assign_instructor/"
+                            + value['courseCode']
+                            + "\" class = 'course' id = "
+                            + value['courseCode']
+                            + ">"
+                            + value['courseName']
+                            +"</td></tr>");
                     });
                 }
                 else{
@@ -48,15 +57,15 @@
             });
         });
 
-        $(".course").click(function(){
-            console.log("course clicked");
-            console.log("id:", $(this).attr('id'))
-            var courseId = $(this).attr('id');
-        });
-
-        $("#remove").click(function(){
-            console.log("remove clicked")
-        });
+        // $(".course").click(function(){
+        //     console.log("course clicked");
+        //     console.log("id:", $(this).attr('id'))
+        //     var courseId = $(this).attr('id');
+        // });
+        //
+        // $("#remove").click(function(){
+        //     console.log("remove clicked")
+        // });
 
         function validateForm() {
             var id = document.forms["courseForm"]["courseCode"].value;
