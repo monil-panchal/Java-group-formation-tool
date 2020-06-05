@@ -1,0 +1,4 @@
+spring:
+  profiles:
+    active: prod
+    include:  application-${spring.profiles.active}.yml

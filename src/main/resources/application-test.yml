@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: AssessMe
+  jackson:
+    default-property-inclusion: non_null
+
+logging:
+  level:
+    root: info
+
+db:
+  host: db-5308.cs.dal.ca
+  port: 3306
+  database: CSCI5308_13_TEST
+  username: CSCI5308_13_TEST_USER
+  password: CSCI5308_13_TEST_13417
+
+email:
+  host: smtp.mailtrap.io
+  port: 2525
+  username: 6612d1ce0bdec9
+  password: 432f71435e7ae5

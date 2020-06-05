@@ -1,0 +1,51 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" lang="en">
+<head>
+    <title>AssessMe registration</title>
+</head>
+<body>
+
+<h1>AssessMe registration</h1>
+
+<form th:action="@{/registration}" th:object="${user}" method="POST">
+
+    <div class="message" th:if="${message}">
+        <h2 th:text="${message}"/>
+    </div>
+
+    <div>
+        <label>First Name</label>
+        <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
+    </div>
+    <div>
+        <label>Last Name</label>
+        <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input type="text" id="email" name="email" th:field="*{email}" required>
+    </div>
+    <div>
+        <label>BannerId</label>
+        <input type="text" id="bannerId" name="bannerId" th:field="*{bannerId}" required>
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" id="password" name="password" th:field="*{password}" required>
+    </div>
+    <div>
+        <label>Confirm password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+    </div>
+
+    <div>
+        <input type="submit" value="Sign in"/>
+    </div>
+
+</form>
+
+<a th:href="@{/login}">login</a>
+</body>
+</html>
