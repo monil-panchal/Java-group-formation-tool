@@ -17,3 +17,9 @@ db:
   database: CSCI5308_13_PRODUCTION
   username: CSCI5308_13_PRODUCTION_USER
   password: CSCI5308_13_PRODUCTION_13807
+
+email:
+  host: smtp.mailtrap.io
+  port: 2525
+  username: 6612d1ce0bdec9
+  password: 432f71435e7ae5
