@@ -53,8 +53,9 @@ public class AssignTAController {
     }
 
 
-    @GetMapping("/assign_ta/{courseCode}")
+    @PostMapping("/assign_ta_page/{courseCode}")
     public ModelAndView handleGET(
+            @RequestParam long instructorId,
             @PathVariable String courseCode) {
         logger.info("Serving for course: " + courseCode);
         ModelAndView mav = new ModelAndView("assign_ta");
@@ -62,7 +63,7 @@ public class AssignTAController {
             Optional<List<User>> userList = userService.getUserList();
             mav.addObject("course_code", courseCode);
             mav.addObject("users", userList.get());
-            mav.addObject("user_id", -1);
+            mav.addObject("instructorId", instructorId);
         } catch (Exception e) {
             mav.addObject("message", "Error Fetching Users");
         }
@@ -71,6 +72,7 @@ public class AssignTAController {
 
     @PostMapping("/assign_ta/{courseCode}")
     public String handleAssignTA(@RequestParam("user_email") String userEmail,
+                                 @RequestParam long instructorId,
                                  @PathVariable String courseCode,
                                  RedirectAttributes redirectAttributes) {
         logger.info(String.format("assigning %s as TA for course: %s", userEmail, courseCode));
@@ -93,6 +95,7 @@ public class AssignTAController {
                     "Error while accessing database");
             redirectAttributes.addFlashAttribute("isSuccess", false);
         }
-        return String.format("redirect:/assign_ta/%s", courseCode);
+        redirectAttributes.addFlashAttribute("instructorId", instructorId);
+        return String.format("forward:/assign_ta_page/%s", courseCode);
     }
 }

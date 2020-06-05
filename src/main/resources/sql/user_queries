@@ -112,4 +112,3 @@ FOREIGN KEY (user_id) REFERENCES user(user_id)
 
 );
 
-

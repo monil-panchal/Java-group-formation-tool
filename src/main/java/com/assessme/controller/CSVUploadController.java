@@ -54,17 +54,20 @@ public class CSVUploadController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/csvupload/{courseCode}")
+    @PostMapping("/upload_page/{courseCode}")
     public ModelAndView csvFileUploadForm(
+            @RequestParam long instructorId,
             @PathVariable String courseCode) {
         ModelAndView mav = new ModelAndView("csvupload");
         logger.info("Serving for course: " + courseCode);
         mav.addObject("course_code", courseCode);
+        mav.addObject("instructorId",instructorId);
         return mav;
     }
 
     @PostMapping("/csvupload/{courseCode}")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                   @RequestParam long instructorId,
                                    @PathVariable String courseCode,
                                    RedirectAttributes redirectAttributes) {
         String roleName = "STUDENT";
@@ -112,6 +115,7 @@ public class CSVUploadController {
                     "Error while accessing database");
             redirectAttributes.addFlashAttribute("isSuccess", false);
         }
-        return String.format("redirect:/csvupload/%s", courseCode);
+        redirectAttributes.addFlashAttribute("instructorId", instructorId);
+        return String.format("forward:/upload_page/%s", courseCode);
     }
 }

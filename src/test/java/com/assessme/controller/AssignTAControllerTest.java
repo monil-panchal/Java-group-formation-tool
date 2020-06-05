@@ -80,7 +80,10 @@ class AssignTAControllerTest {
 
     @Test
     void handleGet() throws Exception{
-        mockMvc.perform(get("/assign_ta/CSCI_TEST"))
+        mockMvc.perform(post("/assign_ta_page/CSCI_TEST")
+        .contentType(MediaType.APPLICATION_JSON)
+        .param("instructorId", "1")
+        )
         .andExpect(status().isOk());
     }
 
@@ -98,8 +101,9 @@ class AssignTAControllerTest {
 
         mockMvc.perform(post("/assign_ta/CSCI_TEST")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("user_email", "email.com"))
-                .andExpect(status().isFound())
-                .andExpect(header().string("Location", "/assign_ta/CSCI_TEST"));
+                .param("user_email", "email.com")
+                .param("instructorId", "1")
+        )
+                .andExpect(status().isOk());
     }
 }

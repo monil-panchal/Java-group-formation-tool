@@ -1,27 +1,30 @@
 package com.assessme.controller;
 
-import com.assessme.model.PasswordDTO;
+import com.assessme.model.Course;
 import com.assessme.model.User;
 import com.assessme.model.UserToken;
+import com.assessme.service.CourseService;
 import com.assessme.service.MailSenderService;
 import com.assessme.service.UserServiceImpl;
 import com.assessme.util.AppConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * @author: monil
@@ -34,12 +37,15 @@ public class MainController {
 
     private Logger logger = LoggerFactory.getLogger(MainController.class);
 
+
     private UserServiceImpl userServiceImpl;
+    private CourseService courseService;
     private MailSenderService mailSenderService;
 
-    public MainController(UserServiceImpl userServiceImpl, MailSenderService mailSenderService) {
+    public MainController(UserServiceImpl userServiceImpl, MailSenderService mailSenderService, CourseService courseService) {
         this.mailSenderService = mailSenderService;
         this.userServiceImpl = userServiceImpl;
+        this.courseService = courseService;
     }
 
     @GetMapping("/login")
@@ -48,7 +54,9 @@ public class MainController {
     }
 
     @GetMapping("/home")
-    public String homePage() {
+    public String homePage(Model model, @AuthenticationPrincipal UserDetails currentUser) throws Exception {
+        Optional<User> user = userServiceImpl.getUserFromEmail(currentUser.getUsername());
+        model.addAttribute("currentUser", user.get());
         return "home";
     }
 
@@ -68,27 +76,43 @@ public class MainController {
 
     @GetMapping("/registration")
     public String registerUser(WebRequest request, Model model) {
+        logger.info("Serving registration page.");
         User userDto = new User();
-
         model.addAttribute("user", userDto);
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String registerUserAccount(@ModelAttribute("user") User user) throws Exception {
+    public String registerUserAccount(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
+        logger.info(String.format("Saving Details for user %s", user));
         Optional<User> registered = Optional.empty();
         try {
             registered = userServiceImpl.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(e.getMessage());
-            throw e;
+            redirectAttributes.addFlashAttribute("message", "Registration Failed");
         }
-        return "redirect:/home";
+        return "redirect:/login";
     }
 
     @GetMapping("/course_admin")
     public String courseAdmin(Model model) {
+        Course course = new Course();
+        model.addAttribute("course", course);
+        return "course_admin";
+    }
+
+    @PostMapping("/course_admin")
+    public String addCourse(@ModelAttribute("course") Course course) throws Exception {
+        logger.info("in add course");
+        Optional<Course> courseToAdd = Optional.empty();
+        try {
+            courseToAdd = courseService.addCourse(course);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw e;
+        }
         return "course_admin";
     }
 
@@ -133,7 +157,7 @@ public class MainController {
     }
 
     @GetMapping("/newPassword")
-    public String changePassword(@ModelAttribute("user") User user , @RequestParam("email") String email, @RequestParam("token") String token ) throws Exception {
+    public String changePassword(@ModelAttribute("user") User user, @RequestParam("email") String email, @RequestParam("token") String token) throws Exception {
         Optional<UserToken> userToken = userServiceImpl.getUserToken(email);
         if (userToken.isEmpty()) {
             return "redirect:/login";
@@ -151,7 +175,7 @@ public class MainController {
             logger.error(e.getMessage());
             throw e;
         }
-        return "redirect:/home";
+        return "redirect:/login";
     }
 
 }
