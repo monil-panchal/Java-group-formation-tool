@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<h1>AccessMe registration</h1>
+<h1>AssessMe registration</h1>
 
 <form th:action="@{/registration}" th:object="${user}" method="POST">
 
@@ -38,6 +38,10 @@
     <div>
         <label>Confirm password</label>
         <input type="password" id="confirmPassword" name="confirmPassword" required>
+    </div>
+
+    <div>
+        <input type="submit" value="Sign in"/>
     </div>
 
 </form>

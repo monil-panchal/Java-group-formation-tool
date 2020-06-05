@@ -41,7 +41,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/css/**",
                         "/img/**",
                         "/registration",
-                        "/home",
                         "/course/**",
                         "/newPassword",
                         "/forgetPassword"

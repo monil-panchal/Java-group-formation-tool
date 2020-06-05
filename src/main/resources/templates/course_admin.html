@@ -9,6 +9,12 @@
 <body>
 <h1>Course Admin Page</h1>
 <div>
+    <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+    <div th:align="right">
+        <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+    </div>
+</div>
+<div>
     <form name="courseForm" th:action="@{/course_admin}" th:object="${course}" onsubmit="return validateForm()" method="POST">
         <label>Course Code </label><input type = "text" id = "course_code" name = "courseCode" th:field="*{courseCode}"><br><br>
         <label>Course Name </label><input type = "text" id = "course_name" name = "courseName" th:field="*{courseName}"><br><br>
@@ -21,7 +27,7 @@
         <tr>
             <th>Course ID</th>
             <th>Course Name</th>
-            <th>Remove</th>
+<!--            <th>Remove</th>-->
         </tr>
     </table>
     </div>
@@ -32,7 +38,7 @@
                 console.log("data", response.data);
                 if(response.data != null && response.data.length > 0){
                     $.each(response.data, function (key, value) {
-                        $("#course_table").append("<tr><td>" + value['courseCode'] + "</td><td><a href class = 'course' id = " + value['courseCode'] + ">" + value['courseName'] +"</td><td id ="  + value['courseCode'] + "><a href id = 'remove'>Remove" + "</td></tr>");
+                        $("#course_table").append("<tr><td>" + value['courseCode'] + "</td><td><a href class = 'course' id = " + value['courseCode'] + ">" + value['courseName'] +"</td></tr>");
                     });
                 }
                 else{

@@ -9,6 +9,12 @@
     <h2 th:text="${message}"/>
 </div>
 <div>
+    <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+    <div th:align="right">
+        <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+    </div>
+</div>
+<div>
     <form th:action="@{/instructor_dashboard}" method="post">
           <input hidden name="instructorId" th:value="${instructorId}">
           <button>Go Back</button>
