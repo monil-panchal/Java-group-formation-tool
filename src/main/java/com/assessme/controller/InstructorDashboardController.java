@@ -40,13 +40,15 @@ public class InstructorDashboardController {
     }
 
     @PostMapping("/instructor_dashboard")
-    public String getDashboard(@RequestParam long instructorId, Model model){
-        logger.info(String.format("Getting Dashboard for Instructor %d", instructorId));
+    public String getDashboard(@RequestParam long userId, Model model){
+        logger.info(String.format("Getting Dashboard for Instructor %d", userId));
         try{
-            int roleId = roleService.getRoleFromRoleName("INSTRUCTOR").get().getRoleId();
-            List<Course> courseList = courseService.getCoursesByUserAndRole(instructorId, roleId).get();
+            int roleIdIns = roleService.getRoleFromRoleName("INSTRUCTOR").get().getRoleId();
+            int roleIdTa = roleService.getRoleFromRoleName("TA").get().getRoleId();
+            List<Course> courseList = courseService.getCoursesByUserAndRole(userId, roleIdTa).get();
+            courseList.addAll(courseService.getCoursesByUserAndRole(userId, roleIdIns).get());
             model.addAttribute("courses", courseList);
-            model.addAttribute("instructorId", instructorId);
+            model.addAttribute("userId", userId);
         }catch(Exception e){
             logger.error("Error Getting Courses");
             model.addAttribute("message", "Error Fetching Courses");

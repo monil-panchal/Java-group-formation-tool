@@ -297,7 +297,7 @@ public class CourseDAOImpl implements CourseDAO {
     }*/
 
     @Override
-    public Optional<List<Course>> listCourseByUser(long user_id, int roleId) throws Exception {
+    public Optional<List<Course>> listCourseByUserAndRole(long user_id, int roleId) throws Exception {
         String sqlQuery = "SELECT c.course_id, c.course_code, c.course_name FROM user_course_role e" +
                 " JOIN course c ON e.course_id = c.course_id WHERE e.user_id = ? AND e.role_id=?";
         List<Course> courseList = new ArrayList<>();
