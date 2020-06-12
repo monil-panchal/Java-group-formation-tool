@@ -1,5 +1,6 @@
 package com.assessme.service;
 
+import com.assessme.db.dao.UserDAO;
 import com.assessme.db.dao.UserDAOImpl;
 import com.assessme.model.*;
 import com.assessme.util.AppConstant;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,16 +30,22 @@ public class UserServiceImpl implements UserService {
 
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private UserDAOImpl userDAOImpl;
+    private UserDAO userDAOImpl;
     private UserTokenServiceImpl userTokenServiceImpl;
     private RoleServiceImpl roleServiceImpl;
     private UserRoleServiceImpl userRoleServiceImpl;
+    private EnrollmentService enrollmentService;
+    private CourseService courseService;
 
-    public UserServiceImpl(UserDAOImpl userDAOImpl, RoleServiceImpl roleServiceImpl, UserRoleServiceImpl userRoleServiceImpl, UserTokenServiceImpl userTokenServiceImpl) {
-        this.userTokenServiceImpl = userTokenServiceImpl;
-        this.userDAOImpl = userDAOImpl;
-        this.roleServiceImpl = roleServiceImpl;
-        this.userRoleServiceImpl = userRoleServiceImpl;
+    public UserServiceImpl(UserDAOImpl userDAO, RoleServiceImpl roleService,
+                           UserRoleServiceImpl userRoleService, UserTokenServiceImpl userTokenService,
+                           EnrollmentService enrollmentService, CourseService courseService) {
+        this.userTokenServiceImpl = userTokenService;
+        this.userDAOImpl = userDAO;
+        this.roleServiceImpl = roleService;
+        this.userRoleServiceImpl = userRoleService;
+        this.enrollmentService = enrollmentService;
+        this.courseService = courseService;
     }
 
     /**
@@ -283,6 +291,28 @@ public class UserServiceImpl implements UserService {
             throw e;
         }
         return newUserToken;
+    }
+
+    @Override
+    public Optional<List<User>> getUsersNotAssignedForCourse(String courseCode, String roleName) throws Exception {
+
+        Optional<List<User>> userList = Optional.empty();
+        try {
+            Optional<Course> courseWithCode = courseService.getCourseWithCode(courseCode);
+            Optional<Role> roleFromRoleName = roleServiceImpl.getRoleFromRoleName(roleName);
+            userList = Optional.of(
+                    userDAOImpl.getUserNotAssignedForCourse(courseWithCode.get().getCourseId(),
+                            roleFromRoleName.get().getRoleId())
+            );
+            String resMessage = String.format("User list has been retrieved from the database");
+            logger.info(resMessage);
+        } catch (Exception e) {
+            String errMessage = String.format("Error in retrieving the user list from the database");
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
+        }
+        return userList;
     }
 
     @Override
