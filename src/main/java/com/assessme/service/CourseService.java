@@ -149,7 +149,7 @@ public class CourseService {
     }
 
     public Optional<List<Course>> getCoursesByUserAndRole(long userId, int roleId) throws Exception{
-        return courseDAOImpl.listCourseByUser(userId, roleId);
+        return courseDAOImpl.listCourseByUserAndRole(userId, roleId);
 
     }
 }

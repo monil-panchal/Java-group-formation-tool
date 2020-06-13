@@ -17,9 +17,9 @@
     <div th:align="right">
         <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
     </div>
-    <div sec:authorize="hasRole('INSTRUCTOR')">
+    <div sec:authorize="hasAnyRole('INSTRUCTOR', 'TA')">
       <form th:action="@{/instructor_dashboard}" method="post">
-          <input hidden name="instructorId" th:value="${currentUser.getUserId()}">
+          <input hidden name="userId" th:value="${currentUser.getUserId()}">
           <button>Go to Course Management</button>
       </form>
     </div>

@@ -44,8 +44,10 @@ public class UserRoleDAOImpl implements UserRoleDAO {
             // Insert user_role record
 
             // SQL query for inserting the user_role record
-            String insertUserSQLQuery = "INSERT INTO user_role values (?,?)";
-            PreparedStatement preparedStatement = connection.get().prepareStatement(insertUserSQLQuery, Statement.RETURN_GENERATED_KEYS);
+            String insertUserSQLQuery = "INSERT INTO user_role values (?,?) ON DUPLICATE KEY UPDATE user_id=LAST_INSERT_ID(user_id)";
+
+            PreparedStatement preparedStatement = connection.get().prepareStatement(insertUserSQLQuery,
+                    Statement.RETURN_GENERATED_KEYS);
 
             //Setting the query params
             preparedStatement.setLong(1, userRole.getUserId());

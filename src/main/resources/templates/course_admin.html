@@ -31,7 +31,7 @@
         </tr>
     </table>
     </div>
-    <script>
+    <script th:inline="javascript">
         $(document).ready(function () {
             console.log("onload called");
             $.getJSON("/course/all", function(response){

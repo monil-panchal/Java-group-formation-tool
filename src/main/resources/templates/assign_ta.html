@@ -16,25 +16,62 @@
 </div>
 <div>
     <form th:action="@{/instructor_dashboard}" method="post">
-          <input hidden name="instructorId" th:value="${instructorId}">
-          <button>Go Back</button>
-      </form>
-    <form method="POST" th:action="@{/assign_ta/{course_code}(course_code=${course_code})}">
-        <input hidden name="instructorId" th:value="${instructorId}">
-        <table>
-            <tr>
-                <td>Select User:</td>
-                <td>
+        <input hidden name="userId" th:value="${userId}">
+        <button>Go Back</button>
+    </form>
+    <!--    <form method="POST" th:action="@{/assign_ta/{course_code}(course_code=${course_code})}">-->
+
+    <table>
+        <tr>
+            <td>Select User:</td>
+            <td>
+                <form action="" onsubmit="return ">
+                    <input hidden name="userId" th:value="${userId}">
+                    <input hidden name="courseCode" th:value="${courseCode}">
                     <select name="user_email">
                         <option th:each="i : ${users}" th:value="${i.email}"
                                 th:text="${i.firstName}+' '+${i.lastName}">
                         </option>
                     </select>
-                </td>
-                <td><input type="submit" value="Assign"/></td>
-            </tr>
-        </table>
-    </form>
+                </form>
+            </td>
+            <td>
+                <button onclick="submitAssignTA()">Assign</button>
+            </td>
+        </tr>
+    </table>
+
 </div>
+<script>
+    function submitAssignTA() {
+        const courseCode = document.querySelector('input[name="courseCode"]').value;
+        const currentUserId = document.querySelector('input[name="userId"]').value;
+        const userEmail = document.querySelector('select[name="user_email"]').value;
+        if (courseCode == null || currentUserId == null || userEmail == null) {
+            alert("Could not get Course or User Details");
+            return;
+        }
+        let formData = new FormData();
+        formData.append("courseCode", courseCode);
+        formData.append("currentUserId", currentUserId);
+        formData.append("userEmail", userEmail);
+        fetch("/assign_ta/" + courseCode,
+            {
+                method: "POST",
+                body: formData
+            }
+        ).then(r => r.json())
+            .then(json => {
+                console.log(typeof json['success']);
+                // console.log(json);
+                if (json['success']) {
+                    alert("TA Assigned Successfully");
+                    location.reload();
+                }else {
+                    alert("Error assigning TA");
+                }
+            });
+    }
+</script>
 </body>
 </html>

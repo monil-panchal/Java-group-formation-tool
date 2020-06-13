@@ -25,13 +25,13 @@
         <td th:text="${i.courseName}"></td>
         <td>
             <form th:action="@{/assign_ta_page/{courseCode}(courseCode=${i.courseCode})}" method="post">
-                <input hidden name="instructorId" th:value="${instructorId}">
+                <input hidden name="userId" th:value="${userId}">
                 <button>Assign TA</button>
             </form>
         </td>
         <td>
             <form th:action="@{/upload_page/{courseCode}(courseCode=${i.courseCode})}" method="post">
-                <input hidden name="instructorId" th:value="${instructorId}">
+                <input hidden name="userId" th:value="${userId}">
                 <button>Import CSV</button>
             </form>
 
