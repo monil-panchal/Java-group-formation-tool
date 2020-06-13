@@ -1,0 +1,50 @@
+package com.assessme.service;
+
+import com.assessme.config.EmailConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+/**
+ * @author Darshan Kathiriya
+ * @created 31-May-2020 11:33 AM
+ */
+@Service
+public class MailSenderServiceImpl implements MailSenderService {
+
+  private Logger logger = LoggerFactory.getLogger(MailSenderServiceImpl.class);
+
+  private EmailConfig emailConfig;
+  private JavaMailSenderImpl mailSender;
+
+  public MailSenderServiceImpl(EmailConfig emailConfig) {
+    this.emailConfig = emailConfig;
+    mailSender = getConfigured();
+  }
+
+  @Override
+  public JavaMailSenderImpl getConfigured() {
+    JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+    javaMailSender.setHost(emailConfig.getHost());
+    javaMailSender.setPort(emailConfig.getPort());
+    javaMailSender.setUsername(emailConfig.getUsername());
+    javaMailSender.setPassword(emailConfig.getPassword());
+    javaMailSender.setJavaMailProperties(emailConfig.getProps());
+    return javaMailSender;
+  }
+
+  @Override
+  @Async
+  public void sendSimpleMessage(String to, String subject, String text) {
+    logger.info(String.format("Sending Mail to %s", to));
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setTo(to);
+    message.setSubject(subject);
+    message.setText(text);
+    mailSender.send(message);
+    logger.info(String.format("Mail Sent Successfully to %s", to));
+  }
+}

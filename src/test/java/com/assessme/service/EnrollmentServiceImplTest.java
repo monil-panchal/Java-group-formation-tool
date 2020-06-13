@@ -24,8 +24,8 @@ import static org.mockito.Mockito.verify;
  * @created 30-May-2020 11:29 PM
  */
 @SpringBootTest
-public class EnrollmentServiceTest {
-    private Logger logger = LoggerFactory.getLogger(EnrollmentServiceTest.class);
+public class EnrollmentServiceImplTest {
+    private Logger logger = LoggerFactory.getLogger(EnrollmentServiceImplTest.class);
 
     @Mock
     private UserService userService;

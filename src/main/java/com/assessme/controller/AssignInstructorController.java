@@ -10,6 +10,7 @@ import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.CourseService;
 import com.assessme.service.EnrollmentService;
+import com.assessme.service.EnrollmentServiceImpl;
 import com.assessme.service.MailSenderService;
 import com.assessme.service.RoleService;
 import com.assessme.service.UserService;

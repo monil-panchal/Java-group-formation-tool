@@ -40,12 +40,12 @@ public class UserServiceImpl implements UserService {
   private UserTokenServiceImpl userTokenServiceImpl;
   private RoleServiceImpl roleServiceImpl;
   private UserRoleServiceImpl userRoleServiceImpl;
-  private EnrollmentService enrollmentService;
+  private EnrollmentServiceImpl enrollmentService;
   private CourseService courseService;
 
   public UserServiceImpl(UserDAOImpl userDAO, RoleServiceImpl roleService,
       UserRoleServiceImpl userRoleService, UserTokenServiceImpl userTokenService,
-      EnrollmentService enrollmentService, CourseService courseService) {
+      EnrollmentServiceImpl enrollmentService, CourseService courseService) {
     this.userTokenServiceImpl = userTokenService;
     this.userDAOImpl = userDAO;
     this.roleServiceImpl = roleService;

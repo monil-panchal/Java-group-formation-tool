@@ -7,13 +7,14 @@ import com.assessme.model.ResponseDTO;
 import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.CourseService;
-import com.assessme.service.EnrollmentService;
+import com.assessme.service.EnrollmentServiceImpl;
 import com.assessme.service.MailSenderService;
 import com.assessme.service.RoleService;
 import com.assessme.service.StorageService;
 import com.assessme.service.UserService;
 import com.opencsv.exceptions.CsvException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -39,14 +40,14 @@ public class InstructorCourseController {
   StorageService storageService;
   UserService userService;
   CourseService courseService;
-  EnrollmentService enrollmentService;
+  EnrollmentServiceImpl enrollmentService;
   MailSenderService mailSenderService;
   RoleService roleService;
   CurrentUserService currentUserService;
   private Logger logger = LoggerFactory.getLogger(InstructorCourseController.class);
 
   public InstructorCourseController(StorageService storageService, UserService userService,
-      CourseService courseService, EnrollmentService enrollmentService,
+      CourseService courseService, EnrollmentServiceImpl enrollmentService,
       MailSenderService mailSenderService, RoleService roleService,
       CurrentUserService currentUserService) {
     this.storageService = storageService;
@@ -141,6 +142,8 @@ public class InstructorCourseController {
       @PathVariable String courseCode,
       RedirectAttributes redirectAttributes) {
     String roleName = "STUDENT";
+    List<String> successResults = new ArrayList<>();
+    List<String> failureResults = new ArrayList<>();
     try {
       Optional<Role> studentRole = roleService.getRoleFromRoleName(roleName);
       for (String[] csvRow : storageService.storeAndParseAll(file)) {
@@ -151,6 +154,7 @@ public class InstructorCourseController {
           logger.info("User: " + userEntity);
           userId = userEntity.getUserId();
           userService.updateUserRole(userEntity, roleName);
+          successResults.add("Updated: " + userEntity);
         } catch (Exception e) {
           User newUser = new User();
           newUser.setBannerId(csvRow[0]);
@@ -162,15 +166,19 @@ public class InstructorCourseController {
           mailSenderService.sendSimpleMessage(userEntity.getEmail(),
               "Your Account Has Been Created",
               "Your password is YourBannerId_YourLastName");
+          successResults.add("Created: " + userEntity);
         }
         Enrollment enrollment = new Enrollment(userId, studentRole.get().getRoleId(),
             (long) courseService.getCourseWithCode(courseCode).get().getCourseId()
         );
         enrollmentService.insertEnrollment(enrollment);
+        successResults.add("Enrolled: " + enrollment);
       }
       redirectAttributes.addFlashAttribute("message",
           "Users has been successfully created!");
       redirectAttributes.addFlashAttribute("isSuccess", true);
+      redirectAttributes.addFlashAttribute("successResults", successResults);
+      redirectAttributes.addFlashAttribute("failureResults", failureResults);
     } catch (IOException e) {
       redirectAttributes.addFlashAttribute("message",
           "empty file was selected!");
