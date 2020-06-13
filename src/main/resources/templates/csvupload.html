@@ -21,7 +21,7 @@
       </form>
     <form method="POST" enctype="multipart/form-data"
           th:action="@{/csvupload/{course_code}(course_code=${course_code})}">
-        <input hidden name="instructorId" th:value="${instructorId}">
+        <input hidden name="instructorId" th:value="${userId}">
         <table>
             <tr>
                 <td>File to upload:</td>
