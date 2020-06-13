@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,8 +58,9 @@ public class InstructorCourseController {
     this.currentUserService = currentUserService;
   }
 
-  @PostMapping("/instructor_dashboard")
+  @GetMapping("/instructor_dashboard")
   public ModelAndView getDashboard() {
+    logger.info("Serving Instructor Dashboard");
     ModelAndView mav = new ModelAndView("instructor_dashboard");
     try {
       long userId = currentUserService.getAuthenticatedUser().get().getUserId();
@@ -75,7 +77,7 @@ public class InstructorCourseController {
     return mav;
   }
 
-  @PostMapping("/assign_ta_page/{courseCode}")
+  @GetMapping("/assign_ta_page/{courseCode}")
   public ModelAndView handleGET(
       @PathVariable String courseCode) {
     logger.info("Serving for course: " + courseCode);
@@ -125,7 +127,7 @@ public class InstructorCourseController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  @PostMapping("/upload_page/{courseCode}")
+  @GetMapping("/csvupload/{courseCode}")
   public ModelAndView csvFileUploadForm(
       @PathVariable String courseCode) {
     ModelAndView mav = new ModelAndView("csvupload");
@@ -183,6 +185,6 @@ public class InstructorCourseController {
           "Error while accessing database");
       redirectAttributes.addFlashAttribute("isSuccess", false);
     }
-    return String.format("forward:/upload_page/%s", courseCode);
+    return String.format("redirect:/csvupload/%s", courseCode);
   }
 }
