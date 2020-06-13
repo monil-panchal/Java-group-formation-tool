@@ -310,4 +310,38 @@ public class UserDAOImpl implements UserDAO {
             throw e;
         }
     }
+
+    @Override
+    public List<User> getUserNotAssignedForCourse(long courseId, int roleId) throws Exception{
+        List<User> userList = new ArrayList<>();
+        String query = String.format("SELECT * FROM user u JOIN user_course_role e ON " +
+                "u.user_id=e.user_id WHERE e.course_id!=? AND role_id!=?");
+        try (
+                Connection connection = dbConnectionBuilder.createDBConnection().get();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ) {
+            preparedStatement.setLong(1, courseId);
+            preparedStatement.setLong(2, roleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                // Instantiating new user
+                User user = new User();
+                //Setting the attributes
+                user.setBannerId(resultSet.getString("banner_id"));
+                user.setFirstName(resultSet.getString("first_name"));
+                user.setLastName(resultSet.getString("last_name"));
+                user.setEmail(resultSet.getString("email"));
+                user.setActive(resultSet.getBoolean("isActive"));
+                // Adding user to the list
+                userList.add(user);
+            }
+            logger.info(String.format("User list retrieved from the database: %s", userList));
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+        return userList;
+    }
+
 }
