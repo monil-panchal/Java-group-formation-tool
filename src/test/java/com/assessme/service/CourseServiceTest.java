@@ -19,7 +19,7 @@ import java.util.Optional;
  * @author: hardik
  * Created on: 2020-05-30
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 public class CourseServiceTest {
 
     private Logger logger = LoggerFactory.getLogger(CourseServiceTest.class);

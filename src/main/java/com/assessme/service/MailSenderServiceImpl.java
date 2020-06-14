@@ -1,5 +1,6 @@
 package com.assessme.service;
 
+import com.assessme.SystemConfig;
 import com.assessme.config.EmailConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,8 @@ public class MailSenderServiceImpl implements MailSenderService {
   private EmailConfig emailConfig;
   private JavaMailSenderImpl mailSender;
 
-  public MailSenderServiceImpl(EmailConfig emailConfig) {
-    this.emailConfig = emailConfig;
-    mailSender = getConfigured();
+  public MailSenderServiceImpl() {
+    emailConfig = SystemConfig.getInstance().getEmailConfig();
   }
 
   @Override

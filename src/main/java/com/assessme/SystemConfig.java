@@ -13,7 +13,7 @@ public class SystemConfig {
 
     public SystemConfig() {
         storageConfig = new StorageConfig();
-        emailConfig = new EmailConfig();
+        emailConfig = new EmailConfigImpl();
         databaseConfiguration = new DefaultDatabaseConfiguration();
     }
 
