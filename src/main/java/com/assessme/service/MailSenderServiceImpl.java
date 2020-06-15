@@ -23,6 +23,7 @@ public class MailSenderServiceImpl implements MailSenderService {
 
   public MailSenderServiceImpl() {
     emailConfig = SystemConfig.getInstance().getEmailConfig();
+    mailSender = getConfigured();
   }
 
   @Override

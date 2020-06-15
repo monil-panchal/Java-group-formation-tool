@@ -36,4 +36,10 @@ public class EnrollmentServiceImpl implements EnrollmentService{
             throw e;
         }
     }
+
+    @Override
+    public void insertEnrollment(Long userId, Integer roleId, long courseId) throws Exception {
+        Enrollment enrollment = new Enrollment(userId, roleId, courseId);
+        this.insertEnrollment(enrollment);
+    }
 }

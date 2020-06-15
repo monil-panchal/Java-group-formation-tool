@@ -8,13 +8,11 @@ import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.CourseService;
 import com.assessme.service.EnrollmentServiceImpl;
-import com.assessme.service.MailSenderService;
 import com.assessme.service.RoleService;
-import com.assessme.service.StorageService;
+import com.assessme.service.StudentCSVImport;
+import com.assessme.service.StudentCSVParser;
+import com.assessme.service.StudentCSVParserImpl;
 import com.assessme.service.UserService;
-import com.opencsv.exceptions.CsvException;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -37,26 +35,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class InstructorCourseController {
 
-  StorageService storageService;
+
   UserService userService;
   CourseService courseService;
   EnrollmentServiceImpl enrollmentService;
-  MailSenderService mailSenderService;
   RoleService roleService;
   CurrentUserService currentUserService;
+  StudentCSVImport studentCSVImport;
   private Logger logger = LoggerFactory.getLogger(InstructorCourseController.class);
 
-  public InstructorCourseController(StorageService storageService, UserService userService,
-      CourseService courseService, EnrollmentServiceImpl enrollmentService,
-      MailSenderService mailSenderService, RoleService roleService,
-      CurrentUserService currentUserService) {
-    this.storageService = storageService;
+  public InstructorCourseController(UserService userService, CourseService courseService,
+      EnrollmentServiceImpl enrollmentService, RoleService roleService,
+      CurrentUserService currentUserService, StudentCSVImport studentCSVImport) {
     this.userService = userService;
     this.courseService = courseService;
     this.enrollmentService = enrollmentService;
-    this.mailSenderService = mailSenderService;
     this.roleService = roleService;
     this.currentUserService = currentUserService;
+    this.studentCSVImport = studentCSVImport;
   }
 
   @GetMapping("/instructor_dashboard")
@@ -141,52 +137,16 @@ public class InstructorCourseController {
   public String handleFileUpload(@RequestParam("file") MultipartFile file,
       @PathVariable String courseCode,
       RedirectAttributes redirectAttributes) {
-    String roleName = "STUDENT";
-    List<String> successResults = new ArrayList<>();
-    List<String> failureResults = new ArrayList<>();
+    StudentCSVParser parser = new StudentCSVParserImpl(file);
     try {
-      Optional<Role> studentRole = roleService.getRoleFromRoleName(roleName);
-      for (String[] csvRow : storageService.storeAndParseAll(file)) {
-        logger.info(String.format("UserEmail: %s", csvRow[3]));
-        long userId;
-        try {
-          User userEntity = userService.getUserFromEmail(csvRow[3]).get();
-          logger.info("User: " + userEntity);
-          userId = userEntity.getUserId();
-          userService.updateUserRole(userEntity, roleName);
-          successResults.add("Updated: " + userEntity);
-        } catch (Exception e) {
-          User newUser = new User();
-          newUser.setBannerId(csvRow[0]);
-          newUser.setLastName(csvRow[1]);
-          newUser.setFirstName(csvRow[2]);
-          newUser.setEmail(csvRow[3]);
-          User userEntity = userService.addUser(newUser, roleName).get();
-          userId = userEntity.getUserId();
-          mailSenderService.sendSimpleMessage(userEntity.getEmail(),
-              "Your Account Has Been Created",
-              "Your password is YourBannerId_YourLastName");
-          successResults.add("Created: " + userEntity);
-        }
-        Enrollment enrollment = new Enrollment(userId, studentRole.get().getRoleId(),
-            (long) courseService.getCourseWithCode(courseCode).get().getCourseId()
-        );
-        enrollmentService.insertEnrollment(enrollment);
-        successResults.add("Enrolled: " + enrollment);
-      }
+      studentCSVImport.importStudents(parser, courseCode);
       redirectAttributes.addFlashAttribute("message",
           "Users has been successfully created!");
       redirectAttributes.addFlashAttribute("isSuccess", true);
-      redirectAttributes.addFlashAttribute("successResults", successResults);
-      redirectAttributes.addFlashAttribute("failureResults", failureResults);
-    } catch (IOException e) {
-      redirectAttributes.addFlashAttribute("message",
-          "empty file was selected!");
-      redirectAttributes.addFlashAttribute("isSuccess", false);
-    } catch (CsvException e) {
-      redirectAttributes.addFlashAttribute("message",
-          "Error Parsing CSV File");
-      redirectAttributes.addFlashAttribute("isSuccess", false);
+      redirectAttributes.addFlashAttribute("successResults",
+          studentCSVImport.getSuccessResults());
+      redirectAttributes.addFlashAttribute("failureResults",
+          studentCSVImport.getFailureResults());
     } catch (Exception e) {
       e.printStackTrace();
       redirectAttributes.addFlashAttribute("message",
