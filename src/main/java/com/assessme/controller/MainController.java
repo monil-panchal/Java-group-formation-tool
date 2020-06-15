@@ -5,6 +5,7 @@ import com.assessme.model.User;
 import com.assessme.model.UserToken;
 import com.assessme.service.CourseService;
 import com.assessme.service.MailSenderService;
+import com.assessme.service.UserService;
 import com.assessme.service.UserServiceImpl;
 import com.assessme.util.AppConstant;
 import java.net.URL;
@@ -40,14 +41,14 @@ public class MainController {
   private Logger logger = LoggerFactory.getLogger(MainController.class);
 
 
-  private UserServiceImpl userServiceImpl;
+  private UserService userService;
   private CourseService courseService;
   private MailSenderService mailSenderService;
 
-  public MainController(UserServiceImpl userServiceImpl, MailSenderService mailSenderService,
+  public MainController(UserService userService, MailSenderService mailSenderService,
       CourseService courseService) {
     this.mailSenderService = mailSenderService;
-    this.userServiceImpl = userServiceImpl;
+    this.userService = userService;
     this.courseService = courseService;
   }
 
@@ -59,7 +60,7 @@ public class MainController {
   @GetMapping("/home")
   public String homePage(Model model, @AuthenticationPrincipal UserDetails currentUser)
       throws Exception {
-    Optional<User> user = userServiceImpl.getUserFromEmail(currentUser.getUsername());
+    Optional<User> user = userService.getUserFromEmail(currentUser.getUsername());
     model.addAttribute("currentUser", user.get());
     return "home";
   }
@@ -92,7 +93,7 @@ public class MainController {
     logger.info(String.format("Saving Details for user %s", user));
     Optional<User> registered = Optional.empty();
     try {
-      registered = userServiceImpl.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
+      registered = userService.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
     } catch (Exception e) {
       e.printStackTrace();
       redirectAttributes.addFlashAttribute("message", "Registration Failed");
@@ -137,7 +138,7 @@ public class MainController {
 
     try {
 
-      Optional<UserToken> token = userServiceImpl.addUserToken(user.getEmail());
+      Optional<UserToken> token = userService.addUserToken(user.getEmail());
       String recipient = user.getEmail();
       String subject = AppConstant.PASSWORD_RESET_EMAIL_SUBJECT;
 
@@ -165,7 +166,7 @@ public class MainController {
   @GetMapping("/newPassword")
   public String changePassword(@ModelAttribute("user") User user,
       @RequestParam("email") String email, @RequestParam("token") String token) throws Exception {
-    Optional<UserToken> userToken = userServiceImpl.getUserToken(email);
+    Optional<UserToken> userToken = userService.getUserToken(email);
     if (userToken.isEmpty()) {
       return "redirect:/login";
     } else {
@@ -176,7 +177,7 @@ public class MainController {
   @PostMapping("/newPassword")
   public String changePassword(@ModelAttribute("user") User user) throws Exception {
     try {
-      userServiceImpl.updateUserPassword(user, user.getPassword());
+      userService.updateUserPassword(user, user.getPassword());
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e.getMessage());

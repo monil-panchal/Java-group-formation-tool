@@ -7,7 +7,7 @@ import com.assessme.model.ResponseDTO;
 import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.CourseService;
-import com.assessme.service.EnrollmentServiceImpl;
+import com.assessme.service.EnrollmentService;
 import com.assessme.service.RoleService;
 import com.assessme.service.StudentCSVImport;
 import com.assessme.service.StudentCSVParser;
@@ -38,14 +38,14 @@ public class InstructorCourseController {
 
   UserService userService;
   CourseService courseService;
-  EnrollmentServiceImpl enrollmentService;
+  EnrollmentService enrollmentService;
   RoleService roleService;
   CurrentUserService currentUserService;
   StudentCSVImport studentCSVImport;
   private Logger logger = LoggerFactory.getLogger(InstructorCourseController.class);
 
   public InstructorCourseController(UserService userService, CourseService courseService,
-      EnrollmentServiceImpl enrollmentService, RoleService roleService,
+      EnrollmentService enrollmentService, RoleService roleService,
       CurrentUserService currentUserService, StudentCSVImport studentCSVImport) {
     this.userService = userService;
     this.courseService = courseService;
@@ -106,21 +106,14 @@ public class InstructorCourseController {
       Enrollment enrollment = new Enrollment(user.get().getUserId(),
           taRole.get().getRoleId(), courseId);
       enrollmentService.insertEnrollment(enrollment);
-//            redirectAttributes.addFlashAttribute("message",
-//                    String.format("TA has been assigned for course %s successfully.", courseCode));
-//            redirectAttributes.addFlashAttribute("isSuccess", true);
       responseDTO = new ResponseDTO(true, null, null, null);
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
       logger.error(e.getMessage());
       e.printStackTrace();
-//            redirectAttributes.addFlashAttribute("message",
-//                    "Error while accessing database");
-//            redirectAttributes.addFlashAttribute("isSuccess", false);
       responseDTO = new ResponseDTO(false, null, null, null);
       httpStatus = HttpStatus.OK;
     }
-//        redirectAttributes.addFlashAttribute("currentUserId", currentUserId);
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
