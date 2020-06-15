@@ -74,7 +74,7 @@ public class StudentCSVImport {
         }
       }
     } catch (Exception e) {
-      failureResults.add("Failed to Enroll all Students: "+ e.getMessage());
+      failureResults.add("Failed to Enroll all Students: " + e.getMessage());
     }
   }
 
