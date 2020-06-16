@@ -79,7 +79,7 @@ public class UserTokenDAOImpl implements UserTokenDAO {
   @Override
   public Optional<UserToken> addUserToken(UserToken userToken) throws Exception {
     Optional<UserToken> newToken;
-    String insertUserTokenSQLQuery = "INSERT INTO user_token values (?,?)";
+    String insertUserTokenSQLQuery = "REPLACE INTO user_token values (?,?)";
 
     try (
         Connection connection = connectionManager.getDBConnection().get();

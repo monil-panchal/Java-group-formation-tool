@@ -6,7 +6,6 @@ import com.assessme.model.UserToken;
 import com.assessme.service.CourseService;
 import com.assessme.service.MailSenderService;
 import com.assessme.service.UserService;
-import com.assessme.service.UserServiceImpl;
 import com.assessme.util.AppConstant;
 import java.net.URL;
 import java.util.Optional;
@@ -127,12 +126,12 @@ public class MainController {
     return "course_info";
   }
 
-  @GetMapping("/forgetPassword")
+  @GetMapping("/forget_password")
   public String forgetPassword(@ModelAttribute("user") User user) {
-    return "forgetPassword";
+    return "forget_password";
   }
 
-  @PostMapping("/forgetPassword")
+  @PostMapping("/forget_password")
   public ModelAndView forgotUserPassword(ModelAndView modelAndView,
       @ModelAttribute("user") User user, HttpServletRequest request) throws Exception {
 
@@ -146,7 +145,7 @@ public class MainController {
       String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
       String serverUrl = requestURL.getProtocol() + "://" + requestURL.getHost() + port;
 
-      String body = serverUrl + "/newPassword?" +
+      String body = serverUrl + "/new_password?" +
           "email=" + user.getEmail() +
           "&" +
           "token=" + token.get().getToken();
@@ -163,18 +162,18 @@ public class MainController {
     return modelAndView;
   }
 
-  @GetMapping("/newPassword")
+  @GetMapping("/new_password")
   public String changePassword(@ModelAttribute("user") User user,
       @RequestParam("email") String email, @RequestParam("token") String token) throws Exception {
     Optional<UserToken> userToken = userService.getUserToken(email);
     if (userToken.isEmpty()) {
       return "redirect:/login";
     } else {
-      return "/newPassword";
+      return "new_password";
     }
   }
 
-  @PostMapping("/newPassword")
+  @PostMapping("/new_password")
   public String changePassword(@ModelAttribute("user") User user) throws Exception {
     try {
       userService.updateUserPassword(user, user.getPassword());
