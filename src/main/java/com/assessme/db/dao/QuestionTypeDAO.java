@@ -9,6 +9,5 @@ import java.util.Optional;
  * @created 16-June-2020 11:49 AM
  */
 public interface QuestionTypeDAO {
-
   Optional<List<QuestionType>> getAllQuestionTypes() throws Exception;
 }
