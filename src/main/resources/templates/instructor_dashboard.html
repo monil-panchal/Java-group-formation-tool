@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="/css/app.css">
@@ -24,16 +27,19 @@
     <td th:text="${i.courseCode}"></td>
     <td th:text="${i.courseName}"></td>
     <td>
-      <a th:href="@{/assign_ta_page/{courseCode}(courseCode=${i.courseCode})}" >
+      <a th:href="@{/assign_ta_page/{courseCode}(courseCode=${i.courseCode})}">
         Assign TA</a>
     </td>
     <td>
-      <a th:href="@{/csvupload/{courseCode}(courseCode=${i.courseCode})}" >
+      <a th:href="@{/csvupload/{courseCode}(courseCode=${i.courseCode})}">
         Import CSV
       </a>
 
     </td>
   </tr>
+  <div sec:authorize="hasAnyRole('INSTRUCTOR',)">
+    <a href="/question_manager">Go to Question Manager</a>
+  </div>
 </table>
 </div>
 </body>
