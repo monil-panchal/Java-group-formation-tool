@@ -112,7 +112,6 @@ FOREIGN KEY (user_id) REFERENCES user(user_id)
 
 );
 
-<<<<<<< HEAD
 
 
 CREATE TABLE user_password_history (
@@ -124,8 +123,6 @@ modified_on TIMESTAMP NOT NULL,
 FOREIGN KEY (user_id) REFERENCES user(user_id)
 
 );
-=======
->>>>>>> 24eda1a955c119b1c9d4d3a439b31265dc20cc4b
 create table question_type
 (
     question_type_id  int auto_increment
