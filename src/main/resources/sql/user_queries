@@ -6,7 +6,7 @@ banner_id varchar (255) NOT NULL UNIQUE,
 first_name varchar (255) NOT NULL,
 last_name varchar (255) NOT NULL,
 email varchar (255) NOT NULL UNIQUE,
-passsword varchar (255) NOT NULL,
+password varchar (255) NOT NULL,
 isActive boolean NOT NULL,
 
 PRIMARY KEY (user_id)
@@ -112,3 +112,14 @@ FOREIGN KEY (user_id) REFERENCES user(user_id)
 
 );
 
+
+
+CREATE TABLE user_password_history (
+
+user_id BIGINT NOT NULL,
+password varchar (255) NOT NULL,
+modified_on TIMESTAMP NOT NULL,
+
+FOREIGN KEY (user_id) REFERENCES user(user_id)
+
+);
