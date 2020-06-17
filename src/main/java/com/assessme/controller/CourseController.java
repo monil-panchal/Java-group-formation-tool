@@ -5,6 +5,9 @@ import com.assessme.model.ResponseDTO;
 import com.assessme.service.CourseService;
 import java.util.List;
 import java.util.Optional;
+
+import com.assessme.service.RoleService;
+import com.assessme.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,10 +32,13 @@ public class CourseController {
   private Logger logger = LoggerFactory.getLogger(CourseController.class);
 
   private CourseService courseService;
+  private UserService userService;
+  private RoleService roleService;
 
-  public CourseController(CourseService courseService) {
+  public CourseController(CourseService courseService, UserService userService, RoleService roleService) {
     this.courseService = courseService;
-
+    this.userService = userService;
+    this.roleService = roleService;
   }
 
   // API endpoint method for fetching all courses
@@ -171,4 +177,27 @@ public class CourseController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
+  // API endpoint method for fetching courses enrolled by a student
+  @GetMapping("/getEnrolledCourses")
+  public ResponseEntity<ResponseDTO> getEnrolledCourses(@RequestParam("email") String email) throws Exception {
+    logger.info("Calling API for enrolled courses.");
+    HttpStatus httpStatus = null;
+    ResponseDTO<List<Course>> responseDTO = null;
+
+    int roleIdStudent = roleService.getRoleFromRoleName("STUDENT").get().getRoleId();;
+    Long userId = userService.getUserFromEmail(email).get().getUserId();
+
+    try {
+      Optional<List<Course>> courseList = courseService.getCoursesByUserAndRole(userId,roleIdStudent);
+      String resMessage = String.format("course list has been retrieved from the database");
+      responseDTO = new ResponseDTO(true, resMessage, null, courseList);
+      httpStatus = HttpStatus.OK;
+
+    } catch (Exception e) {
+      String errMessage = String.format("Error in retrieving the course list from the database");
+      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+      httpStatus = HttpStatus.CONFLICT;
+    }
+    return new ResponseEntity(responseDTO, httpStatus);
+  }
 }

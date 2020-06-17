@@ -150,7 +150,17 @@ public class CourseServiceImpl implements CourseService{
   }
 
   public Optional<List<Course>> getCoursesByUserAndRole(long userId, int roleId) throws Exception {
-    return courseDAOImpl.listCourseByUserAndRole(userId, roleId);
-
+    Optional<List<Course>> courseList = Optional.empty();
+    try {
+      courseList = (courseDAOImpl.listCourseByUserAndRole(userId,roleId));
+      String resMessage = String.format("Course list has been retrieved from the database");
+      logger.info(resMessage);
+    } catch (Exception e) {
+      String errMessage = String.format("Error in retrieving the course list from the database");
+      logger.error(errMessage);
+      e.printStackTrace();
+      throw e;
+    }
+    return courseList;
   }
 }

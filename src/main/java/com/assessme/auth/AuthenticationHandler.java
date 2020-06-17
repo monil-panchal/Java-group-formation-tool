@@ -28,7 +28,9 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler {
             response.sendRedirect("/home");
         } else if (roles.contains("TA")) {
             response.sendRedirect("/home");
-        } else if (roles.contains("GUEST") || roles.contains("STUDENT")) {
+        } else if (roles.contains("STUDENT")) {
+            response.sendRedirect("/enrolled_courses");
+        } else if (roles.contains("GUEST")) {
             response.sendRedirect("/course_info");
         } else {
             response.sendRedirect("/home");

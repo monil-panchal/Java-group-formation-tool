@@ -126,6 +126,9 @@ public class MainController {
     return "course_info";
   }
 
+  @GetMapping("/enrolled_courses")
+  public String enrolledCourses(Model model) { return "enrolledCourses"; }
+
   @GetMapping("/forget_password")
   public String forgetPassword(@ModelAttribute("user") User user) {
     return "forget_password";
