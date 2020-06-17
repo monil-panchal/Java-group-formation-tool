@@ -135,8 +135,6 @@ create table questions
     question_title varchar(255)                          not null,
     question_text  varchar(1023)                         not null,
     question_date  timestamp default current_timestamp() not null,
-    constraint questions_question_title_uindex
-        unique (question_title),
     constraint questions_question_type_question_type_id_fk
         foreign key (question_type) references question_type (question_type_id),
     constraint questions_user_user_id_fk

@@ -34,10 +34,9 @@
       <a th:href="@{/csvupload/{courseCode}(courseCode=${i.courseCode})}">
         Import CSV
       </a>
-
     </td>
   </tr>
-  <div sec:authorize="hasAnyRole('INSTRUCTOR',)">
+  <div th:if="${isInstructor}">
     <a href="/question_manager">Go to Question Manager</a>
   </div>
 </table>
