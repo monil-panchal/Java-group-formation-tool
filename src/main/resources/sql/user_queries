@@ -150,7 +150,6 @@ create table question_options
         foreign key (question_id) references questions (question_id) on delete cascade
 );
 
-
 CREATE TABLE user_password_history (
 
 user_id BIGINT NOT NULL,
