@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Optional;
 
+import com.assessme.db.CallStoredProcedure;
+
 /**
  * @author: monil
  * Created on: 2020-05-30
@@ -25,7 +27,6 @@ public class RoleDAOImpl implements RoleDAO {
     private Logger logger = LoggerFactory.getLogger(RoleDAOImpl.class);
 
     private DBConnectionBuilder dbConnectionBuilder;
-    private Optional<Connection> connection;
 
     public RoleDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
         this.dbConnectionBuilder = dbConnectionBuilder;
@@ -37,21 +38,14 @@ public class RoleDAOImpl implements RoleDAO {
 
         Optional<Role> role = Optional.empty();
 
-        // SQL query for fetching the role record based on the role_name
-        roleName = '\'' + roleName + '\'';
-        String selectQuery = "SELECT * FROM role WHERE role_name=" + roleName;
-
-        logger.info(String.format("selectQuery: %s", selectQuery));
+//        roleName = '\'' + roleName + '\'';
+        CallStoredProcedure procedure = null;
 
         try {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
-
-            // Preparing the statement
-            Statement statement = connection.get().createStatement();
-
             if ((roleName != null && !roleName.isEmpty())) {
-                ResultSet resultSet = statement.executeQuery(selectQuery);
+                procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindRoleByRoleName(?)");
+                procedure.setParameter(1, roleName);
+                ResultSet resultSet = procedure.getResultSet();
 
                 if (!resultSet.isBeforeFirst()) {
                     logger.error(String.format("No role found in the database"));
@@ -76,14 +70,19 @@ public class RoleDAOImpl implements RoleDAO {
 
         } catch (Exception e) {
             //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
-
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
-        //Closing the connection
-        dbConnectionBuilder.closeConnection(connection.get());
+
         return role;
     }
 }

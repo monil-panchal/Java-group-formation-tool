@@ -35,6 +35,10 @@ public class CallStoredProcedure {
         callableStatement.setInt(index, value);
     }
 
+    public void setParameter(int index, boolean value) throws SQLException{
+        callableStatement.setBoolean(index, value);
+    }
+
     public ResultSet getResultSet() throws SQLException{
         if(callableStatement.execute()){
             return callableStatement.getResultSet();
@@ -52,6 +56,10 @@ public class CallStoredProcedure {
     public int executeUpdate() throws SQLException
     {
          return callableStatement.executeUpdate();
+    }
+
+    public ResultSet getGeneratedKeys() throws SQLException{
+        return callableStatement.getGeneratedKeys();
     }
 
     public void finalSteps(){

@@ -1,5 +1,6 @@
 package com.assessme.db.dao;
 
+import com.assessme.db.CallStoredProcedure;
 import com.assessme.db.connection.DBConnectionBuilder;
 import com.assessme.model.User;
 import com.assessme.model.UserRoleDTO;
@@ -23,7 +24,6 @@ public class UserDAOImpl implements UserDAO {
     private Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
     private DBConnectionBuilder dbConnectionBuilder;
-    private Optional<Connection> connection;
 
     public UserDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
         this.dbConnectionBuilder = dbConnectionBuilder;
@@ -33,23 +33,20 @@ public class UserDAOImpl implements UserDAO {
     // UserDAO method for retrieving user using email
     @Override
     public Optional<User> getUserByEmail(String email) throws Exception {
-        email = '\'' + email + '\'';
+        CallStoredProcedure procedure = null;
 
         Optional<User> user = Optional.empty();
 
-        // SQL query for fetching the user record based on the email
-        String selectQuery = "SELECT u.user_id, u.banner_id, u.first_name, u.last_name, u.email, u.isActive FROM user AS u WHERE email =" + email;
-
         try {
             if ((!email.isEmpty() && email != null)) {
+                //calling procedure
+                procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindUserByEmail(?)");
 
-                // Getting the DB connection
-                connection = dbConnectionBuilder.createDBConnection();
+                //setting query parameters
+                procedure.setParameter(1, email);
 
-                // Preparing the statement
-                Statement statement = connection.get().createStatement();
-
-                ResultSet resultSet = statement.executeQuery(selectQuery);
+                //obtaining result set
+                ResultSet resultSet = procedure.getResultSet();
 
                 if (!resultSet.isBeforeFirst()) {
                     logger.error(String.format("No user found in the database"));
@@ -77,14 +74,15 @@ public class UserDAOImpl implements UserDAO {
                 throw new Exception(String.format("User email id cannot be null"));
 
         } catch (Exception e) {
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
-        //Closing the connection
-        dbConnectionBuilder.closeConnection(connection.get());
         return user;
     }
 
@@ -92,19 +90,17 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public List<User> getAllUser() throws SQLException, ClassNotFoundException {
 
-        // SQL query for fetching the all user
-        String selectUserQuery = "SELECT u.banner_id, u.first_name, u.last_name, u.email, u.isActive FROM user AS u";
+        CallStoredProcedure procedure = null;
 
         List<User> userList = new ArrayList<>();
 
         try {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
+            // Calling procedure
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindAllUsers()");
 
-            // Preparing the statement
-            PreparedStatement preparedStatement = connection.get().prepareStatement(selectUserQuery);
+            // Obtaining result set
+            ResultSet resultSet = procedure.getResultSet();
 
-            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
                 // Instantiating new user
@@ -122,42 +118,34 @@ public class UserDAOImpl implements UserDAO {
             }
             logger.info(String.format("User list retrieved from the database: %s", userList));
         } catch (Exception e) {
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
-
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
-        //Closing the connection
-        dbConnectionBuilder.closeConnection(connection.get());
         return userList;
     }
 
     @Override
     public Optional<UserRoleDTO> getUserWithRolesFromEmail(String email) throws Exception {
         Optional<UserRoleDTO> user = Optional.empty();
-        email = '\'' + email + '\'';
-
-
-        // SQL query for fetching the user record with role_name based on the email.
-        String selectQuery = "SELECT u.banner_id, u.first_name, u.last_name, u.email, u.isActive, u.password, r.role_name FROM user AS u" +
-                " INNER JOIN user_role AS ur " +
-                " ON u.user_id = ur.user_id " +
-                " INNER JOIN role AS r " +
-                " ON ur.role_id = r.role_id " +
-                " WHERE u.email =" + email;
+        CallStoredProcedure procedure = null;
 
         try {
             if ((!email.isEmpty() && email != null)) {
 
-                // Getting the DB connection
-                connection = dbConnectionBuilder.createDBConnection();
+                // Calling procedure
+                procedure = new CallStoredProcedure(dbConnectionBuilder, "spGetUserWithRolesFromEmail(?)");
 
-                // Preparing the statement
-                Statement statement = connection.get().createStatement();
+                // Setting query parameters
+                procedure.setParameter(1, email);
 
-                ResultSet resultSet = statement.executeQuery(selectQuery);
+                // Obtaining result set
+                ResultSet resultSet = procedure.getResultSet();
 
                 if (!resultSet.isBeforeFirst()) {
                     logger.error(String.format("User: %s is not found in the database", email));
@@ -195,15 +183,15 @@ public class UserDAOImpl implements UserDAO {
             }
 
         } catch (Exception e) {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
-
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
-        // Getting the DB connection
-        connection = dbConnectionBuilder.createDBConnection();
         return user;
     }
 
@@ -211,26 +199,28 @@ public class UserDAOImpl implements UserDAO {
     public Optional<User> addUser(User user) throws Exception {
 
         Optional<User> newUser = Optional.empty();
+        CallStoredProcedure procedure = null;
 
         try {
             // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
+//            connection = dbConnectionBuilder.createDBConnection();
 
             // Insert user record
             // SQL query for inserting user record
-            String insertUserSQLQuery = "INSERT INTO user(banner_id, first_name, last_name, email, password, isActive)  values (?,?,?,?,?,?)";
-            PreparedStatement preparedStatement = connection.get().prepareStatement(insertUserSQLQuery, Statement.RETURN_GENERATED_KEYS);
-
+//            String insertUserSQLQuery = "INSERT INTO user(banner_id, first_name, last_name, email, password, isActive)  values (?,?,?,?,?,?)";
+//            PreparedStatement preparedStatement = connection.get().prepareStatement(insertUserSQLQuery, Statement.RETURN_GENERATED_KEYS);
+            // Calling procedure
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddUser(?,?,?,?,?)");
             //Setting the query params
-            preparedStatement.setString(1, user.getBannerId());
-            preparedStatement.setString(2, user.getFirstName());
-            preparedStatement.setString(3, user.getLastName());
-            preparedStatement.setString(4, user.getEmail());
-            preparedStatement.setString(5, user.getPassword());
-            preparedStatement.setBoolean(6, user.getActive());
+            procedure.setParameter(1, user.getBannerId());
+            procedure.setParameter(2, user.getFirstName());
+            procedure.setParameter(3, user.getLastName());
+            procedure.setParameter(4, user.getEmail());
+            procedure.setParameter(5, user.getPassword());
+            procedure.setParameter(6, user.getActive());
 
             // Executing the query to store the user record
-            int row = preparedStatement.executeUpdate();
+            int row = procedure.executeUpdate();
 
             // check if the record was inserted successfully
             if (row > 0) {
@@ -243,7 +233,7 @@ public class UserDAOImpl implements UserDAO {
                 throw new Exception(failureString);
             }
 
-            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = procedure.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     user.setUserId(generatedKeys.getLong(1));
                     newUser = Optional.of(user);
@@ -251,17 +241,17 @@ public class UserDAOImpl implements UserDAO {
                     throw new SQLException("Creation of user failed. Cannot obtain user_id.");
                 }
             }
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
             return newUser;
 
         } catch (Exception e) {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
-
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;
+        }  finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
     }
 
@@ -269,22 +259,17 @@ public class UserDAOImpl implements UserDAO {
     public Optional<User> updateUserPassword(User user) throws Exception {
 
         Optional<User> updatedUserObj = Optional.empty();
+        CallStoredProcedure procedure = null;
         try {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
-
-            // Insert user record
-            // SQL query for inserting user record
-            String updateUserSQLQuery = "UPDATE user set password = ? where email = ?";
-
-            PreparedStatement preparedStatement = connection.get().prepareStatement(updateUserSQLQuery, Statement.RETURN_GENERATED_KEYS);
+            // Calling stored procedure
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spUpdatePasswordWithEmail(?,?)");
 
             //Setting the query params
-            preparedStatement.setString(1, user.getPassword());
-            preparedStatement.setString(2, user.getEmail());
+            procedure.setParameter(1, user.getPassword());
+            procedure.setParameter(2, user.getEmail());
 
             // Executing the query to store the user record
-            int row = preparedStatement.executeUpdate();
+            int row = procedure.executeUpdate();
 
             // check if the record was inserted successfully
             if (row > 0) {
@@ -296,33 +281,29 @@ public class UserDAOImpl implements UserDAO {
                 logger.error(failureString);
                 throw new Exception(failureString);
             }
-
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
             return updatedUserObj;
 
         } catch (Exception e) {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
-
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
     }
 
     @Override
     public List<User> getUserNotAssignedForCourse(long courseId, int roleId) throws Exception{
         List<User> userList = new ArrayList<>();
-        String query = String.format("SELECT * FROM user u JOIN user_course_role e ON " +
-                "u.user_id=e.user_id WHERE e.course_id!=? AND role_id!=?");
-        try (
-                Connection connection = dbConnectionBuilder.createDBConnection().get();
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-        ) {
-            preparedStatement.setLong(1, courseId);
-            preparedStatement.setLong(2, roleId);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        CallStoredProcedure procedure = null;
+        try{
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "getUserNotAssignedForCourse(?,?)");
+            procedure.setParameter(1, courseId);
+            procedure.setParameter(2, roleId);
+            ResultSet resultSet = procedure.getResultSet();
             while (resultSet.next()) {
                 // Instantiating new user
                 User user = new User();
@@ -340,6 +321,11 @@ public class UserDAOImpl implements UserDAO {
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
         return userList;
     }

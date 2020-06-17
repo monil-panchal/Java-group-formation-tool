@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Optional;
 
+import com.assessme.db.CallStoredProcedure;
+
 /**
  * @author: monil
  * Created on: 2020-05-30
@@ -25,7 +27,6 @@ public class UserRoleDAOImpl implements UserRoleDAO {
     private Logger logger = LoggerFactory.getLogger(UserRoleDAOImpl.class);
 
     private DBConnectionBuilder dbConnectionBuilder;
-    private Optional<Connection> connection;
 
     public UserRoleDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
         this.dbConnectionBuilder = dbConnectionBuilder;
@@ -34,27 +35,22 @@ public class UserRoleDAOImpl implements UserRoleDAO {
     @Override
     public Boolean addUserRole(UserRole userRole) throws Exception {
 
-        // Getting the DB connection
-        connection = dbConnectionBuilder.createDBConnection();
-
+        CallStoredProcedure procedure = null;
         try {
             if (userRole == null || userRole.getRoleId() == null || userRole.getUserId() == null)
                 throw new Exception("UserRole cannot be null");
 
             // Insert user_role record
-
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddUserRole(?,?)");
             // SQL query for inserting the user_role record
-            String insertUserSQLQuery = "INSERT INTO user_role values (?,?) ON DUPLICATE KEY UPDATE user_id=LAST_INSERT_ID(user_id)";
-
-            PreparedStatement preparedStatement = connection.get().prepareStatement(insertUserSQLQuery,
-                    Statement.RETURN_GENERATED_KEYS);
 
             //Setting the query params
-            preparedStatement.setLong(1, userRole.getUserId());
-            preparedStatement.setInt(2, userRole.getRoleId());
 
-            // Executing the query to store the user role record
-            int row = preparedStatement.executeUpdate();
+            procedure.setParameter(1, userRole.getUserId());
+            procedure.setParameter(2, userRole.getRoleId());
+
+//            // Executing the query to store the user role record
+            int row = procedure.executeUpdate();
 
             // check if the record was inserted successfully
             if (row > 0) {
@@ -66,17 +62,21 @@ public class UserRoleDAOImpl implements UserRoleDAO {
                 logger.error(failureString);
                 throw new Exception(failureString);
             }
-
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
             return true;
 
         } catch (Exception e) {
             //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
     }
 }

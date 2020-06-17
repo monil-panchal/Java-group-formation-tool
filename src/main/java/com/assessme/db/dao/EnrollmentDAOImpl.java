@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Optional;
 
+import com.assessme.db.CallStoredProcedure;
+
 /**
  * @author Darshan Kathiriya
  * @created 30-May-2020 11:42 PM
@@ -35,19 +37,16 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
 
     @Override
     public boolean insertEnrollment(Enrollment enrollment) throws Exception {
-        connection = dbConnectionBuilder.createDBConnection();
+        CallStoredProcedure procedure = null;
         try {
             if (enrollment.getUserId() != null && enrollment.getCourseId() != null && enrollment.getRoleId() != null) {
-                String insertUserSQLQuery = "INSERT INTO user_course_role values (?,?,?)";
-                PreparedStatement preparedStatement = connection.get().prepareStatement(insertUserSQLQuery, Statement.RETURN_GENERATED_KEYS);
 
-                //Setting the query params
-                preparedStatement.setLong(1, enrollment.getUserId());
-                preparedStatement.setLong(2, enrollment.getCourseId());
-                preparedStatement.setInt(3, enrollment.getRoleId());
+                procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddUserCourseRole(?,?,?)");
+                procedure.setParameter(1, enrollment.getCourseId());
+                procedure.setParameter(2, enrollment.getCourseId());
+                procedure.setParameter(3, enrollment.getRoleId());
 
-                // Executing the query to store the user role record
-                int row = preparedStatement.executeUpdate();
+                int row = procedure.executeUpdate();
 
                 // check if the record was inserted successfully
                 if (row > 0) {
@@ -58,8 +57,6 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
                     logger.error(failureString);
                     throw new Exception(failureString);
                 }
-                //Closing the connection
-                dbConnectionBuilder.closeConnection(connection.get());
                 return true;
             } else {
                 throw new Exception("Missing Fields for Enrollment");
@@ -71,6 +68,11 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
     }
 }

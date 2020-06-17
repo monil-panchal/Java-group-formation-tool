@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.assessme.db.CallStoredProcedure;
+
 /**
  * @author: hardik
  * Created on: 2020-05-30
@@ -25,7 +27,6 @@ import java.util.Optional;
 public class CourseDAOImpl implements CourseDAO {
 
     private Logger logger = LoggerFactory.getLogger(CourseDAOImpl.class);
-    private Optional<Connection> connection;
 
     private DBConnectionBuilder dbConnectionBuilder;
 
@@ -40,19 +41,15 @@ public class CourseDAOImpl implements CourseDAO {
         Optional<Course> course = Optional.empty();
 
         // SQL query for fetching the course record based on the courseCode
-
-
-        String selectQuery = "SELECT * FROM course WHERE course_code =\"" + courseCode + "\"";
+        CallStoredProcedure procedure = null;
         try {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
 
-            // Preparing the statement
-            Statement statement = connection.get().createStatement();
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindCourseByCode(?)");
 
             if ((!courseCode.isEmpty() && courseCode != null)) {
 
-                ResultSet resultSet = statement.executeQuery(selectQuery);
+                procedure.setParameter(1,courseCode);
+                ResultSet resultSet = procedure.getResultSet();
 
                 if (!resultSet.isBeforeFirst()) {
                     logger.error(String.format("Course: %s is not found in the database", courseCode));
@@ -74,15 +71,16 @@ public class CourseDAOImpl implements CourseDAO {
                 throw new Exception(String.format("Course: %s record is not found in the Database.", courseCode));
 
         } catch (Exception e) {
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
-
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
+        }finally {
+            if(procedure != null){
+                procedure.finalSteps();
+            }
         }
         //Closing the connection
-        dbConnectionBuilder.closeConnection(connection.get());
+//        dbConnectionBuilder.closeConnection(connection.get());
         return course;
     }
 
@@ -94,18 +92,22 @@ public class CourseDAOImpl implements CourseDAO {
         Optional<Course> course = Optional.empty();
 
         // SQL query for fetching the course record based on the courseName
-        String selectQuery = "SELECT * FROM course WHERE course_name =\"" +  courseName+"\"";
+//        String selectQuery = "SELECT * FROM course WHERE course_name =\"" +  courseName+"\"";
+        CallStoredProcedure procedure = null;
 
 		try {
             // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
+//            connection = dbConnectionBuilder.createDBConnection();
 
             // Preparing the statement
-            Statement statement = connection.get().createStatement();
+//            Statement statement = connection.get().createStatement();
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindCourseByName(?)");
 
             if ((!courseName.isEmpty() && courseName != null)) {
 
-                ResultSet resultSet = statement.executeQuery(selectQuery);
+//                ResultSet resultSet = statement.executeQuery(selectQuery);
+                procedure.setParameter(1, courseName);
+                ResultSet resultSet = procedure.getResultSet();
 
                 if (!resultSet.isBeforeFirst()) {
                     logger.error(String.format("Course: %s is not found in the database", courseName));
@@ -130,6 +132,10 @@ public class CourseDAOImpl implements CourseDAO {
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
+        }finally {
+            if(procedure != null){
+                procedure.finalSteps();
+            }
         }
         return course;
     }
@@ -141,16 +147,14 @@ public class CourseDAOImpl implements CourseDAO {
         // SQL query for fetching all the courses
         String selectCourseQuery = "SELECT * FROM course";
 
+        CallStoredProcedure procedure = null;
+
         List<Course> courseList = new ArrayList<>();
 
         try {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAllCourses()");
+            ResultSet resultSet = procedure.getResultSet();
 
-            // Preparing the statement
-            PreparedStatement preparedStatement = connection.get().prepareStatement("SELECT * FROM course");
-
-            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
                 // Instantiating new course
@@ -167,15 +171,14 @@ public class CourseDAOImpl implements CourseDAO {
             logger.info(String.format("Course list retrieved from the database: %s", courseList));
 
         } catch (Exception e) {
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
-
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
-        //Closing the connection
-        dbConnectionBuilder.closeConnection(connection.get());
 
         return courseList;
     }
@@ -185,19 +188,14 @@ public class CourseDAOImpl implements CourseDAO {
         //returns true if course added else returns false
         
     	Optional<Course> newCourse = Optional.empty();
+    	CallStoredProcedure procedure = null;
     	
         try {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
-
-            // Preparing the statement
-            String insertCourseQuery = "INSERT INTO course(course_code, course_name) VALUES(?, ?)";
-            PreparedStatement preparedStatement = connection.get().prepareStatement(insertCourseQuery); // create a statement
-            preparedStatement.setString(1, course.getCourseCode()); // set input parameter 1
-            preparedStatement.setString(2, course.getCourseName()); // set input parameter 2
-            
-            // Executing the query to store the user record
-            int row = preparedStatement.executeUpdate();
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddCourse(?,?)");
+            procedure.setParameter(1, course.getCourseCode());
+            procedure.setParameter(2, course.getCourseName());
+            int row = procedure.executeUpdate();
+            logger.info(String.format("%d rows updated", row));
 
             // check if the record was inserted successfully
             if (row > 0) {
@@ -209,15 +207,17 @@ public class CourseDAOImpl implements CourseDAO {
                 logger.error(failureString);
                 throw new Exception(failureString);
             }
-            
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
+
             return newCourse;
 
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            if(procedure != null){
+                procedure.finalSteps();
+            }
         }
 
     }
@@ -225,20 +225,13 @@ public class CourseDAOImpl implements CourseDAO {
     @Override
     public Boolean removeCourseByCourseCode(String courseCode) throws Exception{
         //returns true if course added else returns false
+        CallStoredProcedure procedure = null;
     	
         try {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spRemoveCourseByCode(?)");
+            procedure.setParameter(1, courseCode);
 
-            // Preparing the statement
-            String SQL_DELETE = "DELETE FROM course WHERE course_code=?";
-
-            PreparedStatement preparedStatement = connection.get().prepareStatement(SQL_DELETE); // create a statement
-            preparedStatement.setString(1, courseCode); // set input parameter 2
-            int row = preparedStatement.executeUpdate(); // execute insert statement
-            
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
+            int row = procedure.executeUpdate();
             
             if (row==1){ //one row deleted
             	logger.info(String.format("Deletion Successfull! Course with course code: %s", courseCode));
@@ -253,27 +246,22 @@ public class CourseDAOImpl implements CourseDAO {
             e.printStackTrace();
             throw e;
         }
-
+        finally {
+            if(procedure != null){
+                procedure.finalSteps();
+            }
+        }
     }
 
     @Override
     public Boolean removeCourseByCourseName(String courseName) throws Exception{
         //returns true if course added else returns false
-        
+        CallStoredProcedure procedure = null;
         try {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spDeleteCourseByName(?)");
+            procedure.setParameter(1, courseName);
+            int row = procedure.executeUpdate();
 
-            // Preparing the statement
-            String SQL_DELETE = "DELETE FROM course WHERE course_name=?";
-
-            PreparedStatement preparedStatement = connection.get().prepareStatement(SQL_DELETE); // create a statement
-            preparedStatement.setString(1, courseName); // set input parameter 2
-            int row = preparedStatement.executeUpdate(); // execute insert statement
-            
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
-            
             if (row==1){ //one row deleted
             	logger.info(String.format("Deletion Successfull! Course with course name: %s", courseName));
             	return true;
@@ -286,8 +274,12 @@ public class CourseDAOImpl implements CourseDAO {
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
-
     }
 
     /*
@@ -298,16 +290,20 @@ public class CourseDAOImpl implements CourseDAO {
 
     @Override
     public Optional<List<Course>> listCourseByUserAndRole(long user_id, int roleId) throws Exception {
-        String sqlQuery = "SELECT c.course_id, c.course_code, c.course_name FROM user_course_role e" +
-                " JOIN course c ON e.course_id = c.course_id WHERE e.user_id = ? AND e.role_id=?";
+
         List<Course> courseList = new ArrayList<>();
-        try (
-                Connection dbConnection = dbConnectionBuilder.createDBConnection().get();
-                PreparedStatement stmt = dbConnection.prepareStatement(sqlQuery);
-        ) {
-            stmt.setLong(1, user_id);
-            stmt.setInt(2,roleId);
-            ResultSet resultSet = stmt.executeQuery();
+
+        CallStoredProcedure procedure = null;
+        try{
+            // Calling Procedure
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindCourseByUserAndRole(?,?)");
+
+            // Setting Query parameters
+            procedure.setParameter(1, user_id);
+            procedure.setParameter(2,roleId);
+
+            // Obtain Result Set
+            ResultSet resultSet = procedure.getResultSet();
             while (resultSet.next()) {
                 Course course = new Course();
                 course.setCourseId(resultSet.getInt(1));
@@ -320,6 +316,11 @@ public class CourseDAOImpl implements CourseDAO {
         } catch (Exception e) {
             logger.error("Error Fetching Courses");
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
     }
 }

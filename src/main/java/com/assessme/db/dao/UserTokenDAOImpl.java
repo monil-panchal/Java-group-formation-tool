@@ -2,6 +2,7 @@ package com.assessme.db.dao;
 
 import com.assessme.db.connection.DBConnectionBuilder;
 import com.assessme.model.UserToken;
+import com.assessme.db.CallStoredProcedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -26,7 +27,7 @@ public class UserTokenDAOImpl implements UserTokenDAO {
     private Logger logger = LoggerFactory.getLogger(UserTokenDAOImpl.class);
 
     private DBConnectionBuilder dbConnectionBuilder;
-    private Optional<Connection> connection;
+//    private Optional<Connection> connection;
 
     public UserTokenDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
         this.dbConnectionBuilder = dbConnectionBuilder;
@@ -36,20 +37,18 @@ public class UserTokenDAOImpl implements UserTokenDAO {
     public Optional<UserToken> getUserToken(Long userId) throws Exception {
 
         Optional<UserToken> userToken = Optional.empty();
+        CallStoredProcedure procedure = null;
 
         // SQL query for fetching the user_token
-        String selectQuery = "SELECT * FROM user_token u WHERE user_id =" + userId;
+//        String selectQuery = "SELECT * FROM user_token u WHERE user_id =" + userId;
 
         try {
             if ((userId != null)) {
 
-                // Getting the DB connection
-                connection = dbConnectionBuilder.createDBConnection();
+                //calling procedure
+                procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindUserTokenById(?)");
 
-                // Preparing the statement
-                Statement statement = connection.get().createStatement();
-
-                ResultSet resultSet = statement.executeQuery(selectQuery);
+                ResultSet resultSet = procedure.getResultSet();
 
                 if (!resultSet.isBeforeFirst()) {
                     logger.error(String.format("No user token found in the database"));
@@ -72,13 +71,14 @@ public class UserTokenDAOImpl implements UserTokenDAO {
                 throw new Exception(String.format("UserId cannot be null"));
 
         } catch (Exception e) {
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
             logger.error(e.getLocalizedMessage());
             e.printStackTrace();
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
-        //Closing the connection
-        dbConnectionBuilder.closeConnection(connection.get());
         return userToken;
     }
 
@@ -87,21 +87,18 @@ public class UserTokenDAOImpl implements UserTokenDAO {
     public Optional<UserToken> addUserToken(UserToken userToken) throws Exception {
         Optional<UserToken> newToken = Optional.empty();
 
-        try {
-            // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
+        CallStoredProcedure procedure = null;
 
-            // Insert user token record
-            // SQL query for inserting user_token record
-            String insertUserTokenSQLQuery = "INSERT INTO user_token values (?,?)";
-            PreparedStatement preparedStatement = connection.get().prepareStatement(insertUserTokenSQLQuery, Statement.RETURN_GENERATED_KEYS);
+        try {
+            //calling procedure
+            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddUserToken(?,?)");
 
             //Setting the query params
-            preparedStatement.setLong(1, userToken.getUserId());
-            preparedStatement.setString(2, userToken.getToken());
+            procedure.setParameter(1, userToken.getUserId());
+            procedure.setParameter(2, userToken.getToken());
 
             // Executing the query to store the user record
-            int row = preparedStatement.executeUpdate();
+            int row = procedure.executeUpdate();
 
             // check if the record was inserted successfully
             if (row > 0) {
@@ -126,14 +123,17 @@ public class UserTokenDAOImpl implements UserTokenDAO {
 
         } catch (Exception e) {
             // Getting the DB connection
-            connection = dbConnectionBuilder.createDBConnection();
+//            connection = dbConnectionBuilder.createDBConnection();
 
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;
+        } finally {
+            //Closing the connection
+            if (procedure != null) {
+                procedure.finalSteps();
+            }
         }
-        //Closing the connection
-        dbConnectionBuilder.closeConnection(connection.get());
         return newToken;
     }
 }
