@@ -7,12 +7,10 @@ import com.assessme.db.connection.IDatabaseConfiguration;
 public class SystemConfig {
 
     private static SystemConfig instance;
-    private IStorageConfig storageConfig;
     private EmailConfig emailConfig;
     private IDatabaseConfiguration databaseConfiguration;
 
     public SystemConfig() {
-        storageConfig = new StorageConfig();
         emailConfig = new EmailConfigImpl();
         databaseConfiguration = new DefaultDatabaseConfiguration();
     }
@@ -23,13 +21,6 @@ public class SystemConfig {
         return instance;
     }
 
-    public IStorageConfig getStorageConfig() {
-        return storageConfig;
-    }
-
-    public void setStorageConfig(IStorageConfig storageConfig) {
-        this.storageConfig = storageConfig;
-    }
 
     public EmailConfig getEmailConfig(){
         return emailConfig;

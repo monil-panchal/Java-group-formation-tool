@@ -4,6 +4,7 @@ import com.assessme.model.User;
 import com.assessme.service.UserService;
 import com.assessme.service.UserServiceImpl;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -36,4 +37,10 @@ public class CurrentUserService {
     return user;
   }
 
+  public boolean isInstructor() throws Exception {
+    User user = getAuthenticatedUser().get();
+    Set<String> userRoles = userService.getUserWithRolesFromEmail(user.getEmail()).get()
+        .getUserRoles();
+    return userRoles.contains("INSTRUCTOR");
+  }
 }
