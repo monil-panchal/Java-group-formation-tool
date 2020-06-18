@@ -47,7 +47,7 @@ public class CourseServiceTest {
     @InjectMocks
     private RoleServiceImpl roleService;
 
-    @InjectMocks
+    @Mock
     private RoleDAOImpl roleDAO;
 
     // Unit test
@@ -166,6 +166,8 @@ public class CourseServiceTest {
         Assertions.assertEquals(userFromDB.get().getUserId(), userId);
         Assertions.assertEquals(userFromDB.get().getEmail(), email);
 
+        Mockito.when(roleDAO.getRolebyName("STUDENT")).
+            thenReturn(Optional.of(new Role(4, "STUDENT")));
         roleFromDB = roleDAO.getRolebyName("STUDENT");
         int roleId = roleFromDB.get().getRoleId();
 
