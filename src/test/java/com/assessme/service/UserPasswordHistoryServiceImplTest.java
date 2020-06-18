@@ -1,6 +1,5 @@
 package com.assessme.service;
 
-import com.assessme.db.dao.UserPasswordHistoryDAO;
 import com.assessme.db.dao.UserPasswordHistoryDAOImpl;
 import com.assessme.model.UserPasswordHistory;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -55,6 +56,24 @@ public class UserPasswordHistoryServiceImplTest {
         Assert.notNull(passwordHistory.get().getPassword(), "user password id should not be null");
         Assertions.assertEquals(passwordHistory.get().getUserId(), userId);
         Assertions.assertEquals(passwordHistory.get().getPassword(), encryptedPassword);
+
+    }
+
+    @Test
+    public void getUserPasswordHistory() throws Exception {
+
+        logger.info("Running unit test for getting user's password history");
+
+        Long userId = 1L;
+        String encryptedPassword = "$2a$10$3r12JVLTMrpCWaCEyKsvCe7Y6qBTveyqjzU.Bh/S8VtNIkYLKLl2W";
+        Timestamp passwordModifiedOn = new Timestamp(Calendar.getInstance().getTime().getTime());
+        UserPasswordHistory userPasswordHistory = new UserPasswordHistory(userId, encryptedPassword, passwordModifiedOn);
+
+        List<UserPasswordHistory> userPasswordHistoryList = new ArrayList<>();
+        userPasswordHistoryList.add(userPasswordHistory);
+
+        Mockito.when(userPasswordHistoryDAO.getUserPasswordHistory(userId, 1)).thenReturn(userPasswordHistoryList);
+        Assert.notEmpty(userPasswordHistoryService.getUserPasswordHistory(userId, 1), "user password list is not null");
 
     }
 }

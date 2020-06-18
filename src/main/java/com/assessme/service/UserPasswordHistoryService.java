@@ -11,7 +11,7 @@ import java.util.Optional;
  */
 public interface UserPasswordHistoryService {
 
-    Optional<List<UserPasswordHistory>> getUserPasswordHistory(Long userId, Integer lastPasswords) throws Exception;
+    List<UserPasswordHistory> getUserPasswordHistory(Long userId, Integer lastPasswords);
 
     Optional<UserPasswordHistory> addUserPasswordRecord(UserPasswordHistory userPasswordHistory) throws Exception;
 }

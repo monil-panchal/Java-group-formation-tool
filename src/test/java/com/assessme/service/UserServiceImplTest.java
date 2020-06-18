@@ -1,5 +1,7 @@
 package com.assessme.service;
 
+import com.assessme.auth.password.restriction.PasswordChangePolicyImpl;
+import com.assessme.auth.password.restriction.RegisterPasswordPolicyImpl;
 import com.assessme.db.dao.RoleDAOImpl;
 import com.assessme.db.dao.UserDAOImpl;
 import com.assessme.db.dao.UserPasswordHistoryDAOImpl;
@@ -17,10 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
@@ -65,6 +64,12 @@ public class UserServiceImplTest {
 
     @Mock
     private UserPasswordHistoryDAOImpl userPasswordHistoryDAOImpl;
+
+    @Mock
+    private PasswordChangePolicyImpl passwordChangePolicy;
+
+    @Mock
+    private RegisterPasswordPolicyImpl registerPasswordPolicy;
 
     @Test
     public void getUserFromEmailTest() throws Exception {
@@ -163,6 +168,8 @@ public class UserServiceImplTest {
         role.setRoleId(2);
 
         Optional<Role> optionalRole = Optional.of(role);
+
+        Mockito.when(registerPasswordPolicy.isSatisfied(user.getPassword())).thenReturn(true);
 
         Mockito.when(userDAO.addUser(user)).thenReturn(Optional.of(user));
         Mockito.when(roleServiceImpl.getRoleFromRoleName(AppConstant.DEFAULT_USER_ROLE_CREATE)).thenReturn(optionalRole);
@@ -288,10 +295,13 @@ public class UserServiceImplTest {
         user.setFirstName("Monil");
         user.setLastName("Panchal");
         user.setUserId(1l);
-        user.setPassword("newPassword");
+        user.setPassword("PassWord");
         user.setEmail("testUser@email.com");
 
         Optional<User> optionalUserObject = Optional.of(user);
+
+        passwordChangePolicy.addPasswordRestrictions(user.getUserId());
+        Mockito.when(passwordChangePolicy.isSatisfied(user.getPassword())).thenReturn(true);
 
         Mockito.when(userServiceMock.getUserFromEmail(user.getEmail())).thenReturn(optionalUserObject);
         Mockito.when(userDAO.updateUserPassword(user)).thenReturn(optionalUserObject);

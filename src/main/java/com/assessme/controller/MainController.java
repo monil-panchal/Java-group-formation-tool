@@ -8,6 +8,7 @@ import com.assessme.service.MailSenderService;
 import com.assessme.service.UserService;
 import com.assessme.util.AppConstant;
 import java.net.URL;
+import java.util.Date;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,11 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -88,15 +85,17 @@ public class MainController {
 
   @PostMapping("/registration")
   public String registerUserAccount(@ModelAttribute("user") User user,
-      RedirectAttributes redirectAttributes) {
+      RedirectAttributes redirectAttributes) throws Exception {
     logger.info(String.format("Saving Details for user %s", user));
     Optional<User> registered = Optional.empty();
     try {
       registered = userService.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
     } catch (Exception e) {
       e.printStackTrace();
-      redirectAttributes.addFlashAttribute("message", "Registration Failed");
+      logger.error(e.getMessage());
+      throw e;
     }
+
     return "redirect:/login";
   }
 
@@ -155,11 +154,11 @@ public class MainController {
 
       mailSenderService.sendSimpleMessage(recipient, subject, body);
 
-      modelAndView.addObject("message", "An email is sent to your mailbox for password recovery.");
+     // modelAndView.addObject("message", "An email is sent to your mailbox for password recovery.");
       // modelAndView.setViewName("successForgotPassword");
 
     } catch (Exception e) {
-      modelAndView.addObject("message", e.getLocalizedMessage());
+   //   modelAndView.addObject("message", e.getLocalizedMessage());
       modelAndView.setViewName("error");
     }
     return modelAndView;
@@ -186,6 +185,18 @@ public class MainController {
       throw e;
     }
     return "redirect:/login";
+  }
+
+  @ExceptionHandler(Exception.class)
+  public ModelAndView exceptionHandler(HttpServletRequest request, Exception exception) {
+    logger.error("Request: " + request.getRequestURL() + " raised " + exception);
+
+    ModelAndView modelAndView = new ModelAndView();
+    modelAndView.addObject("error", exception.getLocalizedMessage());
+    modelAndView.addObject("path", request.getRequestURL());
+    modelAndView.addObject("timestamp", new Date().toInstant());
+    modelAndView.setViewName("error");
+    return modelAndView;
   }
 
 }
