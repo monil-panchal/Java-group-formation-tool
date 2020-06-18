@@ -1,10 +1,12 @@
 package com.assessme.service;
 
+import com.assessme.auth.password.restriction.PasswordChangePolicyImpl;
+import com.assessme.auth.password.restriction.RegisterPasswordPolicyImpl;
 import com.assessme.db.dao.UserDAO;
 import com.assessme.db.dao.UserDAOImpl;
 import com.assessme.model.*;
 import com.assessme.util.AppConstant;
-import com.assessme.util.BcryptPasswordEncoder;
+import com.assessme.util.BcryptPasswordEncoderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -143,11 +145,18 @@ public class UserServiceImpl implements UserService {
                         .info(String
                                 .format("User: %s default password is: %s", user.getEmail(), userPassword));
             } else {
+
                 userPassword = user.getPassword();
+//                RegisterPasswordPolicyImpl registerPasswordRestriction = new RegisterPasswordPolicyImpl();
+//                registerPasswordRestriction.isSatisfied(userPassword);
+//
+//                logger.info(String.format("RegisterPasswordPolicyImpl while creating user: %s", registerPasswordRestriction));
+
+
             }
 
             //encrypt password using bcryptEncoder
-            String encyptedPassword = BcryptPasswordEncoder.getbCryptPasswordFromPlainText(userPassword);
+            String encyptedPassword = BcryptPasswordEncoderUtil.getbCryptPasswordFromPlainText(userPassword);
             user.setPassword(encyptedPassword);
 
             // Step-3 Insert user record in the user table
@@ -237,11 +246,18 @@ public class UserServiceImpl implements UserService {
     public Optional<User> updateUserPassword(User user, String newPassword) throws Exception {
         Optional<User> updatedUser = Optional.empty();
         try {
+
             // fetching the user object from the db
             Optional<User> existingUser = getUserFromEmail(user.getEmail());
 
+//            PasswordChangePolicyImpl passwordChangePolicy = new PasswordChangePolicyImpl(existingUser.get().getUserId());
+//            boolean b = passwordChangePolicy.isSatisfied(newPassword);
+
+//            logger.info(String.format("RegisterPasswordPolicyImpl while creating user: %s", b));
+
+
             //encrypt password using bcryptEncoder
-            String encyptedPassword = BcryptPasswordEncoder.getbCryptPasswordFromPlainText(newPassword);
+            String encyptedPassword = BcryptPasswordEncoderUtil.getbCryptPasswordFromPlainText(newPassword);
             existingUser.get().setPassword(encyptedPassword);
 
             //Fetch the updated user object with all roles
@@ -253,6 +269,7 @@ public class UserServiceImpl implements UserService {
             String resMessage = String
                     .format("User: %s password has been updated in the system", user.getEmail());
             logger.info(resMessage);
+
 
         } catch (Exception e) {
             String errMessage = String.format("Error in updating the user password in the system");

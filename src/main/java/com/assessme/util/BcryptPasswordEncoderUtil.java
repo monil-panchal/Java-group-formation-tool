@@ -8,7 +8,7 @@ import java.security.SecureRandom;
  * @author: monil
  * Created on: 2020-05-31
  */
-public class BcryptPasswordEncoder {
+public class BcryptPasswordEncoderUtil {
 
     private static final int encodingStrength = 10;
 
@@ -16,5 +16,11 @@ public class BcryptPasswordEncoder {
         BCryptPasswordEncoder passwordEncoder =
                 new BCryptPasswordEncoder(encodingStrength, new SecureRandom());
         return passwordEncoder.encode(plainTextPassword);
+    }
+
+    public static Boolean matchPassword(String plainTextPassword, String encodedPassword){
+        BCryptPasswordEncoder passwordEncoder =
+                new BCryptPasswordEncoder(encodingStrength, new SecureRandom());
+        return passwordEncoder.matches(plainTextPassword, encodedPassword);
     }
 }

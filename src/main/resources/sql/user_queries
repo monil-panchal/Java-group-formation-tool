@@ -163,3 +163,21 @@ modified_on TIMESTAMP NOT NULL,
 FOREIGN KEY (user_id) REFERENCES user(user_id)
 
 );
+
+CREATE TABLE password_policy (
+
+policy_id BIGINT NOT NULL AUTO_INCREMENT,
+policy varchar (255) NOT NULL UNIQUE,
+value varchar (255) NOT NULL,
+
+PRIMARY KEY (policy_id)
+
+);
+
+INSERT INTO password_policy(policy, value) values('minUppercaseCharacters', 2);
+INSERT INTO password_policy(policy, value) values('minLowercaseCharacters', 2);
+INSERT INTO password_policy(policy, value) values('minSpecialCharacters', 1);
+INSERT INTO password_policy(policy, value) values('minPasswordLength', 3);
+INSERT INTO password_policy(policy, value) values('maxPasswordLength', 10);
+INSERT INTO password_policy(policy, value) values('passwordHistoryConstraint', 2);
+INSERT INTO password_policy(policy, value) values('blockSpecialCharacters', "%");

@@ -28,8 +28,28 @@ public class UserPasswordHistoryServiceImpl implements UserPasswordHistoryServic
     }
 
     @Override
-    public Optional<List<UserPasswordHistory>> getUserPasswordHistory(Long userId, Integer lastPasswords) throws Exception {
-        return Optional.empty();
+    public List<UserPasswordHistory> getUserPasswordHistory(Long userId, Integer lastPasswords) {
+        List<UserPasswordHistory> userPasswordHistoryList = null;
+        try {
+            if (userId == null || lastPasswords == null) {
+                throw new Exception("UserId or password cannot be null");
+            }
+
+            userPasswordHistoryList = userPasswordHistoryDAO.getUserPasswordHistory(userId, lastPasswords);
+
+            if (userPasswordHistoryList == null || userPasswordHistoryList.isEmpty()) {
+                String resMessage = String.format("User password history is empty");
+                logger.info(resMessage);
+            } else {
+                String resMessage = String.format("User password history exists");
+            }
+
+        } catch (Exception e) {
+            String errMessage = String.format("Error retrieving the password history record.");
+            logger.error(errMessage);
+            e.printStackTrace();
+        }
+        return userPasswordHistoryList;
     }
 
     @Override

@@ -1,11 +1,14 @@
 server:
   port: 8080
+  error:
+    include-stacktrace: always
 
 spring:
   application:
     name: AssessMe
   jackson:
     default-property-inclusion: non_null
+
 
 
 logging:
