@@ -39,42 +39,33 @@ public class RegisterPasswordPolicyTest {
     @BeforeEach
     public void init() throws Exception {
 
-        String userExistingPassword = "PassWord$";
-        String encodedPassword1 = BcryptPasswordEncoderUtil.getbCryptPasswordFromPlainText(userExistingPassword);
-
         policyMap = new HashMap<>();
         policyMap.put(AppConstant.MIN_UPPER_CASE_CHARACTERS, "2");
         policyMap.put(AppConstant.MIN_SPECIAL_CHARACTERS, "1");
         policyMap.put(AppConstant.BLOCK_SPECIAL_CHARACTERS, "@");
-        policyMap.put(AppConstant.PASSWORD_HISTORY_CONSTRAINT, "1");
+
 
         registerPasswordPolicies = new ArrayList<>();
         registerPasswordPolicies.add(new MinLengthValidatorImpl(2));
         registerPasswordPolicies.add(new SpecialCharacterLengthValidatorImpl(1));
         registerPasswordPolicies.add(new DisallowSpecialCharacterValidatorImpl("@"));
 
-        List<UserPasswordHistory> userPasswordHistoryList = new ArrayList<>();
-        userPasswordHistoryList.add(new UserPasswordHistory(1L, encodedPassword1, new Timestamp(Calendar.getInstance().getTime().getTime())));
-        registerPasswordPolicies.add(new PasswordHistoryValidatorImpl(userPasswordHistoryList));
-
-        registerPasswordPolicy.setPolicyMap(policyMap);
-        registerPasswordPolicy.setRegisterPasswordPolicies(registerPasswordPolicies);
-
-        registerPasswordPolicy.addPasswordRestrictions();
-
     }
 
     @Test
     public void isSatisfiedTest() throws Exception {
 
+        registerPasswordPolicy.setPolicyMap(policyMap);
+        registerPasswordPolicy.setRegisterPasswordPolicies(registerPasswordPolicies);
+
         Mockito.when(storedPasswordPolicyService.getPasswordPolicies()).thenReturn(policyMap);
         Assertions.assertTrue(registerPasswordPolicy.isSatisfied("PassWord$"));
 
-        Throwable exception = Assertions.assertThrows(Exception.class, () -> registerPasswordPolicy.isSatisfied("Password"));
-        Assertions.assertEquals("Password should match the policy: "+ policyMap , exception.getMessage());
+        Throwable minUpperCaseException = Assertions.assertThrows(Exception.class, () -> registerPasswordPolicy.isSatisfied("Password"));
+        Assertions.assertEquals("Password should match the policy: "+ policyMap , minUpperCaseException.getMessage());
 
-        Throwable exception1 = Assertions.assertThrows(Exception.class, () -> registerPasswordPolicy.isSatisfied("PassWord@"));
-        Assertions.assertEquals("Password should match the policy: "+ policyMap , exception1.getMessage());
+        Throwable disallowSpecialCharacterException = Assertions.assertThrows(Exception.class, () -> registerPasswordPolicy.isSatisfied("PassWord@"));
+        Assertions.assertEquals("Password should match the policy: "+ policyMap , disallowSpecialCharacterException.getMessage());
 
 
     }
