@@ -8,10 +8,10 @@ import java.util.Properties;
  */
 public class EmailConfigImpl implements EmailConfig {
 
-  String host = "smtp.mailtrap.io";
-  int port = 2525;
-  String username = "6612d1ce0bdec9";
-  String password = "432f71435e7ae5";
+  String HOST = System.getenv("EMAIL_HOST");
+  int PORT = 2525;
+  String USERNAME = System.getenv("EMAIL_USERNAME");
+  String PASSWORD = System.getenv("EMAIL_PASSWORD");
   Properties props;
 
   public EmailConfigImpl() {
@@ -25,19 +25,19 @@ public class EmailConfigImpl implements EmailConfig {
   }
 
   public String getHost() {
-    return host;
+    return HOST;
   }
 
   public int getPort() {
-    return port;
+    return PORT;
   }
 
   public String getUsername() {
-    return username;
+    return USERNAME;
   }
 
   public String getPassword() {
-    return password;
+    return PASSWORD;
   }
 
 }
