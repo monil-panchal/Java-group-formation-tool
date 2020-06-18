@@ -67,7 +67,8 @@ public class InstructorCourseController {
       List<Course> courseList = courseService.getCoursesByUserAndRole(userId, roleIdTa).get();
       courseList.addAll(courseService.getCoursesByUserAndRole(userId, roleIdIns).get());
       mav.addObject("courses", courseList);
-      mav.addObject("isInstructor",currentUserService.isInstructor());
+      logger.info("is user Instructor: " + currentUserService.isInstructor());
+      mav.addObject("isInstructor", currentUserService.isInstructor());
     } catch (Exception e) {
       logger.error("Error Getting Courses");
       mav.addObject("message", "Error Fetching Courses");
