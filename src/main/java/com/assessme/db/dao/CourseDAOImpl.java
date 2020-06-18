@@ -1,8 +1,7 @@
 package com.assessme.db.dao;
 
-import com.assessme.db.connection.DBConnectionBuilder;
+import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.Course;
-import com.assessme.model.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +27,10 @@ public class CourseDAOImpl implements CourseDAO {
 
     private Logger logger = LoggerFactory.getLogger(CourseDAOImpl.class);
 
-    private DBConnectionBuilder dbConnectionBuilder;
+    private final ConnectionManager connectionManager;
 
-    public CourseDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
-        this.dbConnectionBuilder = dbConnectionBuilder;
+    public CourseDAOImpl() {
+        connectionManager = new ConnectionManager();
     }
 
     // CourseDAO method for retrieving course by using courseCode
@@ -44,7 +43,7 @@ public class CourseDAOImpl implements CourseDAO {
         CallStoredProcedure procedure = null;
         try {
 
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindCourseByCode(?)");
+            procedure = new CallStoredProcedure("spFindCourseByCode(?)");
 
             if ((!courseCode.isEmpty() && courseCode != null)) {
 
@@ -101,7 +100,7 @@ public class CourseDAOImpl implements CourseDAO {
 
             // Preparing the statement
 //            Statement statement = connection.get().createStatement();
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindCourseByName(?)");
+            procedure = new CallStoredProcedure("spFindCourseByName(?)");
 
             if ((!courseName.isEmpty() && courseName != null)) {
 
@@ -152,7 +151,7 @@ public class CourseDAOImpl implements CourseDAO {
         List<Course> courseList = new ArrayList<>();
 
         try {
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAllCourses()");
+            procedure = new CallStoredProcedure("spAllCourses()");
             ResultSet resultSet = procedure.getResultSet();
 
             while (resultSet.next()) {
@@ -191,7 +190,7 @@ public class CourseDAOImpl implements CourseDAO {
     	CallStoredProcedure procedure = null;
     	
         try {
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddCourse(?,?)");
+            procedure = new CallStoredProcedure("spAddCourse(?,?)");
             procedure.setParameter(1, course.getCourseCode());
             procedure.setParameter(2, course.getCourseName());
             int row = procedure.executeUpdate();
@@ -228,7 +227,7 @@ public class CourseDAOImpl implements CourseDAO {
         CallStoredProcedure procedure = null;
     	
         try {
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spRemoveCourseByCode(?)");
+            procedure = new CallStoredProcedure( "spRemoveCourseByCode(?)");
             procedure.setParameter(1, courseCode);
 
             int row = procedure.executeUpdate();
@@ -258,7 +257,7 @@ public class CourseDAOImpl implements CourseDAO {
         //returns true if course added else returns false
         CallStoredProcedure procedure = null;
         try {
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spDeleteCourseByName(?)");
+            procedure = new CallStoredProcedure( "spDeleteCourseByName(?)");
             procedure.setParameter(1, courseName);
             int row = procedure.executeUpdate();
 
@@ -296,7 +295,7 @@ public class CourseDAOImpl implements CourseDAO {
         CallStoredProcedure procedure = null;
         try{
             // Calling Procedure
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindCourseByUserAndRole(?,?)");
+            procedure = new CallStoredProcedure("spFindCourseByUserAndRole(?,?)");
 
             // Setting Query parameters
             procedure.setParameter(1, user_id);

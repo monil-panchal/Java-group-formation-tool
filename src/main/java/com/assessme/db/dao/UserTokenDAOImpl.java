@@ -1,16 +1,13 @@
 package com.assessme.db.dao;
 
-import com.assessme.db.connection.DBConnectionBuilder;
+import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.UserToken;
 import com.assessme.db.CallStoredProcedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Optional;
 
 /**
@@ -26,11 +23,11 @@ public class UserTokenDAOImpl implements UserTokenDAO {
 
     private Logger logger = LoggerFactory.getLogger(UserTokenDAOImpl.class);
 
-    private DBConnectionBuilder dbConnectionBuilder;
+    private final ConnectionManager connectionManager;
 //    private Optional<Connection> connection;
 
-    public UserTokenDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
-        this.dbConnectionBuilder = dbConnectionBuilder;
+    public UserTokenDAOImpl() {
+        connectionManager = new ConnectionManager();
     }
 
     @Override
@@ -46,7 +43,7 @@ public class UserTokenDAOImpl implements UserTokenDAO {
             if ((userId != null)) {
 
                 //calling procedure
-                procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindUserTokenById(?)");
+                procedure = new CallStoredProcedure("spFindUserTokenById(?)");
 
                 ResultSet resultSet = procedure.getResultSet();
 
@@ -91,7 +88,7 @@ public class UserTokenDAOImpl implements UserTokenDAO {
 
         try {
             //calling procedure
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddUserToken(?,?)");
+            procedure = new CallStoredProcedure("spAddUserToken(?,?)");
 
             //Setting the query params
             procedure.setParameter(1, userToken.getUserId());

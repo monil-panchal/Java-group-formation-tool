@@ -1,15 +1,10 @@
 package com.assessme.db.dao;
 
-import com.assessme.db.connection.DBConnectionBuilder;
+import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.Optional;
 
 import com.assessme.db.CallStoredProcedure;
 
@@ -26,10 +21,10 @@ public class UserRoleDAOImpl implements UserRoleDAO {
 
     private Logger logger = LoggerFactory.getLogger(UserRoleDAOImpl.class);
 
-    private DBConnectionBuilder dbConnectionBuilder;
+    private final ConnectionManager connectionManager;
 
-    public UserRoleDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
-        this.dbConnectionBuilder = dbConnectionBuilder;
+    public UserRoleDAOImpl() {
+        connectionManager = new ConnectionManager();
     }
 
     @Override
@@ -41,7 +36,7 @@ public class UserRoleDAOImpl implements UserRoleDAO {
                 throw new Exception("UserRole cannot be null");
 
             // Insert user_role record
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddUserRole(?,?)");
+            procedure = new CallStoredProcedure("spAddUserRole(?,?)");
             // SQL query for inserting the user_role record
 
             //Setting the query params

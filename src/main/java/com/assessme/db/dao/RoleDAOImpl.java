@@ -1,14 +1,12 @@
 package com.assessme.db.dao;
 
-import com.assessme.db.connection.DBConnectionBuilder;
+import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Optional;
 
 import com.assessme.db.CallStoredProcedure;
@@ -26,10 +24,10 @@ public class RoleDAOImpl implements RoleDAO {
 
     private Logger logger = LoggerFactory.getLogger(RoleDAOImpl.class);
 
-    private DBConnectionBuilder dbConnectionBuilder;
+    private final ConnectionManager connectionManager;
 
-    public RoleDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
-        this.dbConnectionBuilder = dbConnectionBuilder;
+    public RoleDAOImpl() {
+        connectionManager = new ConnectionManager();
     }
 
     // RoleDAO method for retrieving role using role_name
@@ -38,12 +36,11 @@ public class RoleDAOImpl implements RoleDAO {
 
         Optional<Role> role = Optional.empty();
 
-//        roleName = '\'' + roleName + '\'';
         CallStoredProcedure procedure = null;
 
         try {
             if ((roleName != null && !roleName.isEmpty())) {
-                procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindRoleByRoleName(?)");
+                procedure = new CallStoredProcedure( "spFindRoleByRoleName(?)");
                 procedure.setParameter(1, roleName);
                 ResultSet resultSet = procedure.getResultSet();
 
@@ -82,7 +79,6 @@ public class RoleDAOImpl implements RoleDAO {
                 procedure.finalSteps();
             }
         }
-
         return role;
     }
 }

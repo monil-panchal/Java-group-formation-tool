@@ -1,26 +1,25 @@
 package com.assessme.db;
 
-import com.assessme.db.connection.DBConnectionBuilder;
+import com.assessme.db.connection.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.Optional;
 
 public class CallStoredProcedure {
 
-    private Logger logger = LoggerFactory.getLogger(DBConnectionBuilder.class);
+    private Logger logger = LoggerFactory.getLogger(CallStoredProcedure.class);
 
-    private DBConnectionBuilder dbConnectionBuilder;
+    private ConnectionManager connectionManager;
     private String procedureName;
-    private Optional<Connection> connection;
+    private Connection connection;
     private CallableStatement callableStatement;
 
-    public CallStoredProcedure(DBConnectionBuilder dbConnectionBuilder, String procedureName) throws SQLException, ClassNotFoundException{
+    public CallStoredProcedure(String procedureName) throws SQLException, ClassNotFoundException{
         this.procedureName = procedureName;
-        this.dbConnectionBuilder = dbConnectionBuilder;
-        connection = dbConnectionBuilder.createDBConnection();
-        callableStatement = connection.get().prepareCall("{call " +  procedureName + "}");
+//        connection = dbConnectionBuilder.createDBConnection();
+        connection = new ConnectionManager().getDBConnection().get();
+        callableStatement = connection.prepareCall("{call " +  procedureName + "}");
     }
 
     public void setParameter(int index, String value) throws SQLException{
@@ -69,8 +68,8 @@ public class CallStoredProcedure {
             }
 
             if(connection != null){
-                if(connection.get().isClosed()){
-                    connection.get().close();
+                if(connection.isClosed()){
+                    connection.close();
                 }
             }
         }catch (Exception e){

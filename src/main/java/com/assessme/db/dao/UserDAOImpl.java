@@ -1,7 +1,7 @@
 package com.assessme.db.dao;
 
 import com.assessme.db.CallStoredProcedure;
-import com.assessme.db.connection.DBConnectionBuilder;
+import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.User;
 import com.assessme.model.UserRoleDTO;
 import org.slf4j.Logger;
@@ -23,10 +23,10 @@ import java.util.*;
 public class UserDAOImpl implements UserDAO {
     private Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
-    private DBConnectionBuilder dbConnectionBuilder;
+    private final ConnectionManager connectionManager;
 
-    public UserDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
-        this.dbConnectionBuilder = dbConnectionBuilder;
+    public UserDAOImpl() {
+        connectionManager = new ConnectionManager();
     }
 
 
@@ -40,7 +40,7 @@ public class UserDAOImpl implements UserDAO {
         try {
             if ((!email.isEmpty() && email != null)) {
                 //calling procedure
-                procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindUserByEmail(?)");
+                procedure = new CallStoredProcedure( "spFindUserByEmail(?)");
 
                 //setting query parameters
                 procedure.setParameter(1, email);
@@ -96,7 +96,7 @@ public class UserDAOImpl implements UserDAO {
 
         try {
             // Calling procedure
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spFindAllUsers()");
+            procedure = new CallStoredProcedure( "spFindAllUsers()");
 
             // Obtaining result set
             ResultSet resultSet = procedure.getResultSet();
@@ -139,7 +139,7 @@ public class UserDAOImpl implements UserDAO {
             if ((!email.isEmpty() && email != null)) {
 
                 // Calling procedure
-                procedure = new CallStoredProcedure(dbConnectionBuilder, "spGetUserWithRolesFromEmail(?)");
+                procedure = new CallStoredProcedure("spGetUserWithRolesFromEmail(?)");
 
                 // Setting query parameters
                 procedure.setParameter(1, email);
@@ -210,7 +210,7 @@ public class UserDAOImpl implements UserDAO {
 //            String insertUserSQLQuery = "INSERT INTO user(banner_id, first_name, last_name, email, password, isActive)  values (?,?,?,?,?,?)";
 //            PreparedStatement preparedStatement = connection.get().prepareStatement(insertUserSQLQuery, Statement.RETURN_GENERATED_KEYS);
             // Calling procedure
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddUser(?,?,?,?,?)");
+            procedure = new CallStoredProcedure("spAddUser(?,?,?,?,?)");
             //Setting the query params
             procedure.setParameter(1, user.getBannerId());
             procedure.setParameter(2, user.getFirstName());
@@ -262,7 +262,7 @@ public class UserDAOImpl implements UserDAO {
         CallStoredProcedure procedure = null;
         try {
             // Calling stored procedure
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "spUpdatePasswordWithEmail(?,?)");
+            procedure = new CallStoredProcedure("spUpdatePasswordWithEmail(?,?)");
 
             //Setting the query params
             procedure.setParameter(1, user.getPassword());
@@ -300,7 +300,7 @@ public class UserDAOImpl implements UserDAO {
         List<User> userList = new ArrayList<>();
         CallStoredProcedure procedure = null;
         try{
-            procedure = new CallStoredProcedure(dbConnectionBuilder, "getUserNotAssignedForCourse(?,?)");
+            procedure = new CallStoredProcedure("getUserNotAssignedForCourse(?,?)");
             procedure.setParameter(1, courseId);
             procedure.setParameter(2, roleId);
             ResultSet resultSet = procedure.getResultSet();

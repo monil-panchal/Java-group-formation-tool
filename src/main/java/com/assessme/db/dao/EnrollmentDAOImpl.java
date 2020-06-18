@@ -1,14 +1,12 @@
 package com.assessme.db.dao;
 
-import com.assessme.db.connection.DBConnectionBuilder;
+import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.Enrollment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.Optional;
 
 import com.assessme.db.CallStoredProcedure;
@@ -22,12 +20,12 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
     private Logger logger = LoggerFactory.getLogger(EnrollmentDAOImpl.class);
 
 
-    private DBConnectionBuilder dbConnectionBuilder;
+    private final ConnectionManager connectionManager;
 
     private Optional<Connection> connection;
 
-    public EnrollmentDAOImpl(DBConnectionBuilder dbConnectionBuilder) {
-        this.dbConnectionBuilder = dbConnectionBuilder;
+    public EnrollmentDAOImpl() {
+        connectionManager = new ConnectionManager();
     }
 
     @Override
@@ -41,7 +39,7 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
         try {
             if (enrollment.getUserId() != null && enrollment.getCourseId() != null && enrollment.getRoleId() != null) {
 
-                procedure = new CallStoredProcedure(dbConnectionBuilder, "spAddUserCourseRole(?,?,?)");
+                procedure = new CallStoredProcedure("spAddUserCourseRole(?,?,?)");
                 procedure.setParameter(1, enrollment.getCourseId());
                 procedure.setParameter(2, enrollment.getCourseId());
                 procedure.setParameter(3, enrollment.getRoleId());
@@ -62,9 +60,6 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
                 throw new Exception("Missing Fields for Enrollment");
             }
         } catch (Exception e) {
-            //Closing the connection
-            dbConnectionBuilder.closeConnection(connection.get());
-
             logger.error(e.getMessage());
             e.printStackTrace();
             throw e;
