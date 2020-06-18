@@ -178,7 +178,6 @@ public class CourseServiceTest {
 
         Mockito.when(courseDAO.listCourseByUserAndRole(userId,roleId)).thenReturn(Optional.of(courseList));
         Assert.notEmpty(courseServiceMock.getCoursesByUserAndRole(userId,roleId).get(), "Course list is not null");
-
     }
 
     //Unit test
