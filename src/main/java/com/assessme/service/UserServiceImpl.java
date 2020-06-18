@@ -1,6 +1,7 @@
 package com.assessme.service;
 
 import com.assessme.auth.password.restriction.PasswordChangePolicyImpl;
+import com.assessme.auth.password.restriction.PasswordPolicy;
 import com.assessme.auth.password.restriction.RegisterPasswordPolicyImpl;
 import com.assessme.db.dao.UserDAO;
 import com.assessme.db.dao.UserDAOImpl;
@@ -37,11 +38,15 @@ public class UserServiceImpl implements UserService {
     private EnrollmentServiceImpl enrollmentService;
     private CourseService courseService;
     private UserPasswordHistoryService userPasswordHistoryService;
+    private PasswordChangePolicyImpl passwordChangePolicy;
+    private RegisterPasswordPolicyImpl registerPasswordPolicy;
 
     public UserServiceImpl(UserDAOImpl userDAO, RoleServiceImpl roleService,
                            UserRoleServiceImpl userRoleService, UserTokenServiceImpl userTokenService,
                            EnrollmentServiceImpl enrollmentService, CourseService courseService,
-                           UserPasswordHistoryService userPasswordHistoryService) {
+                           UserPasswordHistoryService userPasswordHistoryService,
+                           PasswordChangePolicyImpl passwordChangePolicy,
+                           RegisterPasswordPolicyImpl registerPasswordPolicy) {
         this.userTokenServiceImpl = userTokenService;
         this.userDAOImpl = userDAO;
         this.roleServiceImpl = roleService;
@@ -49,6 +54,8 @@ public class UserServiceImpl implements UserService {
         this.enrollmentService = enrollmentService;
         this.courseService = courseService;
         this.userPasswordHistoryService = userPasswordHistoryService;
+        this.passwordChangePolicy = passwordChangePolicy;
+        this.registerPasswordPolicy = registerPasswordPolicy;
     }
 
     /**
@@ -118,15 +125,11 @@ public class UserServiceImpl implements UserService {
      */
     public Optional<User> addUser(User user, String userRole) throws Exception {
 
-        logger.info("user: " + user);
-
         Optional<User> newUser = Optional.empty();
         Optional<Role> role = Optional.empty();
         Optional<UserRole> newUserRole = Optional.empty();
         try {
 
-            //TODO
-            //Step -1
             //Validate the User object
 
             if (user.getActive() == null) {
@@ -137,20 +140,21 @@ public class UserServiceImpl implements UserService {
             // Check for password
             String userPassword = null;
 
-            if (user.getPassword() == null || user.getPassword().isBlank() || user.getPassword()
-                    .isEmpty()) {
+            if (user.getPassword() == null || user.getPassword().isBlank() || user.getPassword().isEmpty()) {
                 // generate default Password
                 userPassword = user.getBannerId() + "_" + user.getLastName();
-                logger
-                        .info(String
-                                .format("User: %s default password is: %s", user.getEmail(), userPassword));
+                logger.info(String.format("User: %s default password is: %s", user.getEmail(), userPassword));
             } else {
 
                 userPassword = user.getPassword();
-//                RegisterPasswordPolicyImpl registerPasswordRestriction = new RegisterPasswordPolicyImpl();
-//                registerPasswordRestriction.isSatisfied(userPassword);
-//
-//                logger.info(String.format("RegisterPasswordPolicyImpl while creating user: %s", registerPasswordRestriction));
+
+                registerPasswordPolicy.addPasswordRestrictions();
+                boolean hasPasswordSatisfied = registerPasswordPolicy.isSatisfied(userPassword);
+                if (hasPasswordSatisfied) {
+                    logger.info("User password has satisfied the password policy");
+                } else {
+                    logger.info("User password has not satisfied the password policy");
+                }
 
 
             }
@@ -180,10 +184,8 @@ public class UserServiceImpl implements UserService {
             role = roleServiceImpl.getRoleFromRoleName(userRole);
 
             if (role.isPresent()) {
-
                 // Step-5 Update user_role table
-                newUserRole = userRoleServiceImpl
-                        .addUserRole(newUser.get().getUserId(), role.get().getRoleId());
+                newUserRole = userRoleServiceImpl.addUserRole(newUser.get().getUserId(), role.get().getRoleId());
 
             } else {
                 throw new Exception("Unable to fetch role id for the user from the role table.");
@@ -250,11 +252,14 @@ public class UserServiceImpl implements UserService {
             // fetching the user object from the db
             Optional<User> existingUser = getUserFromEmail(user.getEmail());
 
-//            PasswordChangePolicyImpl passwordChangePolicy = new PasswordChangePolicyImpl(existingUser.get().getUserId());
-//            boolean b = passwordChangePolicy.isSatisfied(newPassword);
+            passwordChangePolicy.addPasswordRestrictions(existingUser.get().getUserId());
+            boolean hasPasswordSatisfied = passwordChangePolicy.isSatisfied(newPassword);
 
-//            logger.info(String.format("RegisterPasswordPolicyImpl while creating user: %s", b));
-
+            if (hasPasswordSatisfied) {
+                logger.info(String.format("RegisterPasswordPolicyImpl while creating user: %s", hasPasswordSatisfied));
+            } else {
+                logger.info("User password has not satisfied the password policy");
+            }
 
             //encrypt password using bcryptEncoder
             String encyptedPassword = BcryptPasswordEncoderUtil.getbCryptPasswordFromPlainText(newPassword);
@@ -269,7 +274,6 @@ public class UserServiceImpl implements UserService {
             String resMessage = String
                     .format("User: %s password has been updated in the system", user.getEmail());
             logger.info(resMessage);
-
 
         } catch (Exception e) {
             String errMessage = String.format("Error in updating the user password in the system");

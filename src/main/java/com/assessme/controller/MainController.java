@@ -85,15 +85,17 @@ public class MainController {
 
   @PostMapping("/registration")
   public String registerUserAccount(@ModelAttribute("user") User user,
-      RedirectAttributes redirectAttributes) {
+      RedirectAttributes redirectAttributes) throws Exception {
     logger.info(String.format("Saving Details for user %s", user));
     Optional<User> registered = Optional.empty();
     try {
       registered = userService.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
     } catch (Exception e) {
       e.printStackTrace();
-      redirectAttributes.addFlashAttribute("message", "Registration Failed");
+      logger.error(e.getMessage());
+      throw e;
     }
+
     return "redirect:/login";
   }
 

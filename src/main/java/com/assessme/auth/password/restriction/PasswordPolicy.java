@@ -6,7 +6,6 @@ package com.assessme.auth.password.restriction;
  */
 public interface PasswordPolicy {
 
-    void addPasswordRestrictions();
     Boolean isSatisfied(String password) throws Exception;
 
 }

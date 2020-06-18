@@ -28,6 +28,7 @@ public class PasswordHistoryValidatorImpl implements PasswordValidator {
             throw new IllegalArgumentException("Password cannot be null or blank");
         }
 
+        System.out.println("userPasswordHistoryList: "+ userPasswordHistoryList.toString());
         // No password update exists for the user
         if (userPasswordHistoryList == null || userPasswordHistoryList.isEmpty()) {
             return true;
