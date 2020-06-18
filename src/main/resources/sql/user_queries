@@ -112,10 +112,6 @@ FOREIGN KEY (user_id) REFERENCES user(user_id)
 
 );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ae48fa20b5cc8a8fc7ebbee0b001cbe4933cfba3
 create table question_type
 (
     question_type_id  int auto_increment
