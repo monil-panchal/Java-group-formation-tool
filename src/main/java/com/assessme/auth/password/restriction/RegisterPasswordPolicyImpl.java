@@ -58,9 +58,9 @@ public class RegisterPasswordPolicyImpl implements PasswordPolicy {
         }
     }
 
-    public void addPasswordRestrictions() {
+    public void addPasswordRestrictions() throws Exception {
         logger.info(String.format("Calling addPasswordRestrictions"));
-
+        policyMap = storedPasswordPolicyService.getPasswordPolicies();
         registerPasswordPolicies = new ArrayList<>();
 
         for (Map.Entry<String, Object> entry : policyMap.entrySet()) {

@@ -35,41 +35,52 @@ public class PasswordChangePolicyTest {
     private Map<String, Object> policyMap;
     private List<PasswordValidator> passwordValidators;
 
+    private String userExistingPassword;
+
     @BeforeEach
     public void init() throws Exception {
+
+         userExistingPassword = "PassWord$";
+
+        String encodedPassword1 = BcryptPasswordEncoderUtil.getbCryptPasswordFromPlainText(userExistingPassword);
 
         policyMap = new HashMap<>();
 
         policyMap.put(AppConstant.MIN_UPPER_CASE_CHARACTERS, "2");
         policyMap.put(AppConstant.MIN_SPECIAL_CHARACTERS, "1");
         policyMap.put(AppConstant.BLOCK_SPECIAL_CHARACTERS, "@");
+        policyMap.put(AppConstant.PASSWORD_HISTORY_CONSTRAINT, "1");
 
         passwordValidators = new ArrayList<>();
         passwordValidators.add(new MinLengthValidatorImpl(2));
         passwordValidators.add(new SpecialCharacterLengthValidatorImpl(1));
         passwordValidators.add(new DisallowSpecialCharacterValidatorImpl("@"));
 
-        passwordChangePolicy.setPolicyMap(policyMap);
-        passwordChangePolicy.setRegisterPasswordPolicies(passwordValidators);
-
-
-        passwordChangePolicy.addPasswordRestrictions(1L);
+        List<UserPasswordHistory> userPasswordHistoryList = new ArrayList<>();
+        userPasswordHistoryList.add(new UserPasswordHistory(1L, encodedPassword1, new Timestamp(Calendar.getInstance().getTime().getTime())));
+        passwordValidators.add(new PasswordHistoryValidatorImpl(userPasswordHistoryList));
 
     }
 
     @Test
     public void isSatisfiedTest() throws Exception {
 
-        Mockito.when(storedPasswordPolicyService.getPasswordPolicies()).thenReturn(policyMap);
+        passwordChangePolicy.addPasswordRestrictions(1L);
+        passwordChangePolicy.setPolicyMap(policyMap);
+        passwordChangePolicy.setRegisterPasswordPolicies(passwordValidators);
 
+        Mockito.when(storedPasswordPolicyService.getPasswordPolicies()).thenReturn(policyMap);
 
         Assertions.assertTrue(passwordChangePolicy.isSatisfied("PassWord#"));
 
-        Throwable exception = Assertions.assertThrows(Exception.class, () -> passwordChangePolicy.isSatisfied("Password"));
-        Assertions.assertEquals("Password should match the policy: " + policyMap, exception.getMessage());
+        Throwable minUpperCaseException = Assertions.assertThrows(Exception.class, () -> passwordChangePolicy.isSatisfied("Password"));
+        Assertions.assertEquals("Password should match the policy: " + policyMap, minUpperCaseException.getMessage());
 
-        Throwable exception1 = Assertions.assertThrows(Exception.class, () -> passwordChangePolicy.isSatisfied("PassWord@"));
-        Assertions.assertEquals("Password should match the policy: " + policyMap, exception1.getMessage());
+        Throwable disallowSpecialCharacterException = Assertions.assertThrows(Exception.class, () -> passwordChangePolicy.isSatisfied("PassWord@"));
+        Assertions.assertEquals("Password should match the policy: " + policyMap, disallowSpecialCharacterException.getMessage());
+
+        Throwable oldPasswordException = Assertions.assertThrows(Exception.class, () -> passwordChangePolicy.isSatisfied(userExistingPassword));
+        Assertions.assertEquals("Password should match the policy: " + policyMap, oldPasswordException.getMessage());
 
 
     }
