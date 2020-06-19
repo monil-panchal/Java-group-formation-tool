@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/app.css">
-    <title>Course Admin Page</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/app.css">
+  <title>Course Admin Page</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <div>
-    <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
-    <div th:align="right">
-        <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
-    </div>
+  <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+  <div th:align="right">
+    <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+  </div>
 </div>
-    <h1>Course Information Page</h1>
-    <div id ="course_div">
-        <table id="course_table">
-            <tr>
-                <th>Course ID</th>
-                <th>Course Name</th>
-            </tr>
-        </table>
-    </div>
-    <script>
-        $(document).ready(function () {
-            console.log("onload called");
-            $.getJSON("/course/all", function(response){
-                console.log("data", response.data);
-                if(response.data != null && response.data.length > 0){
-                    $.each(response.data, function (key, value) {
-                        $("#course_table").append("<tr><td>" + value['courseCode'] + "</td><td>" + value['courseName'] +"</td></tr>")
-                    });
-                }
-                else{
-                    $("#course_table").remove();
-                    $("#course_div").html("<h1>No courses to display yet</h1>")
-                }
-            });
+<h1>Course Information Page</h1>
+<div id="course_div">
+  <table id="course_table">
+    <tr>
+      <th>Course ID</th>
+      <th>Course Name</th>
+    </tr>
+  </table>
+</div>
+<script>
+  $(document).ready(function () {
+    console.log("onload called");
+    $.getJSON("/course/all", function (response) {
+      console.log("data", response.data);
+      if (response.data != null && response.data.length > 0) {
+        $.each(response.data, function (key, value) {
+          $("#course_table").append(
+              "<tr><td>" + value['courseCode'] + "</td><td>" + value['courseName'] + "</td></tr>")
         });
-    </script>
+      } else {
+        $("#course_table").remove();
+        $("#course_div").html("<h1>No courses to display yet</h1>")
+      }
+    });
+  });
+</script>
 </body>
 </html>

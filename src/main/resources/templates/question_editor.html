@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  var multiChoiceCounter = 0;
+  var singleChoiceCounter = 0;
+
+  function responseType_changed(dropDown) {
+    multiChoiceCounter = 0;
+    singleChoiceCounter = 0;
+    //If the checkbox has been checked
+    if (dropDown.value == "2") {
+      //choices with radio button
+      try {
+        document.getElementById("courseListTable").remove()
+        document.getElementById("addOption").remove()
+      } catch (e) {
+
+      }
+      table = ""
+      table += '<table id="courseListTable" border="1">'
+      table += '<thead>'
+      table += '	<tr>'
+      table += '		<th style="padding:10px">Display Text</th>'
+      table += '		<th style="padding:10px">Stored As</th>'
+      table += '	</tr>'
+      table += '</thead>'
+      table += '<tbody id="sortableBody">'
+      table += '	<tr>'
+      table += '		<td align="center"><input type="text" name="choiceText[]" placeholder="Enter Text"></td>'
+      table += '		<td align="center"><input type="text" name="choiceValue[]" value="'
+          + ++singleChoiceCounter
+          + '"></td>'
+      table += '	</tr>'
+      table += '	<tr>'
+      table += '		<td align="center"><input type="text" name="choiceText[]" placeholder="Enter Text"></td>'
+      table += '		<td align="center"><input type="text" name="choiceValue[]" value="'
+          + ++singleChoiceCounter
+          + '"></td>'
+      table += '	</tr>'
+      table += '</tbody>'
+      table += '</table>'
+      table += '<input type="button" onclick=addRadio() id=addOption value="Add Option">'
+      $("#ChoiceDiv").append(table)
+    } else if (dropDown.value == "3") {
+      //choices with checkbox
+      try {
+        document.getElementById("courseListTable").remove()
+        document.getElementById("addOption").remove()
+      } catch (e) {
+
+      }
+      table = ""
+      table += '<table id="courseListTable" border="1">'
+      table += '<thead>'
+      table += '	<tr>'
+      table += '		<th style="padding:10px">Choice Text</th>'
+      table += '		<th style="padding:10px">Choice Control</th>'
+      table += '	</tr>'
+      table += '</thead>'
+      table += '<tbody>'
+      table += '	<tr>'
+      table += '		<td align="center"><input type="text" name="choiceText[]" placeholder="Enter Text"></td>'
+      table += '		<td align="center"><input type="text" name="choiceValue[]" value="'
+          + ++multiChoiceCounter
+          + '"></td>'
+      table += '	</tr>'
+      table += '	<tr>'
+      table += '		<td align="center"><input type="text" name="choiceText[]" placeholder="Enter Text"></td>'
+      table += '		<td align="center"><input type="text" name="choiceValue[]" value="'
+          + ++multiChoiceCounter
+          + '"></td>'
+      table += '	</tr>'
+      table += '</tbody>'
+      table += '</table>'
+      table += '<input type="button" onclick=addCheckBox() id=addOption value="Add Option">'
+      $("#ChoiceDiv").append(table)
+    } else {
+      //choices with checkbox
+      try {
+        document.getElementById("courseListTable").remove()
+        document.getElementById("addOption").remove()
+      } catch (e) {
+
+      }
+    }
+
+  }
+
+  function addRadio() {
+    row = ""
+    row += '<tr>'
+    row += '		<td align="center"><input type="text" name="choiceText[]" placeholder="Enter Text"></td>'
+    row += '		<td align="center"><input type="text" name="choiceValue[]" value="'
+        + ++singleChoiceCounter + '"></td>'
+    row += '</tr>'
+    $("#courseListTable").append(row)
+  }
+
+  function addCheckBox() {
+    row = ""
+    row += '<tr>'
+    row += '		<td align="center"><input type="text" name="choiceText[]" placeholder="Enter Text"></td>'
+    row += '		<td align="center"><input type="text" name="choiceValue[]" value="'
+        + ++multiChoiceCounter
+        + '"></td>'
+    row += '</tr>'
+    $("#courseListTable").append(row)
+  }
+</script>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/app.css">
+  <title>Question Editor</title>
+
+</head>
+<body>
+<div align="center">
+  <h1 align="center">Question Editor</h1>
+</div>
+
+<div align="center">
+  <table id="QuestionTable" border="2">
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+      <td style="padding:10px"><b>Question title</b></td>
+      <td><input type="text" name="question_title" placeholder="Question title"></td>
+    </tr>
+    <tr>
+      <td style="padding:10px"><b>Question text</b></td>
+      <td><input type="text" name="question_text" placeholder="Question text"></td>
+    </tr>
+    <tr>
+      <td style="padding:10px" for="responseType"><b>Response type</b></td>
+      <td>
+        <!--				<select name="responseType" id="responseType" onchange="responseType_changed(this)">-->
+        <!--				  <option value="numeric">Numeric</option>-->
+        <!--				  <option value="singleChoice">Multiple choice – choose one</option>-->
+        <!--				  <option value="multiChoice">Multiple choice – choose multiple</option>-->
+        <!--				  <option value="text">Free text</option>-->
+        <!--				</select>-->
+
+        <select name="question_type" onchange="responseType_changed(this)">
+          <option th:each="i : ${questionTypeList}" th:value="${i.questionTypeID}"
+                  th:text="${i.questionTypeText}">
+          </option>
+        </select>
+
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<br></br>
+<div align="center" id="ChoiceDiv">
+  <table id="courseListTable" border="1">
+  </table>
+</div>
+<br></br>
+<div align="center">
+  <a href="/question_manager">Return to Question Manager</a>
+  <button onclick="sendQuestion();">Create Question</button>
+</div>
+<script>
+  $('#sortableBody').sortable();
+  function sendQuestion() {
+    var questionType = document.querySelector("select[name='question_type']").value;
+    var questionTitle = document.querySelector("input[name='question_title']").value;
+    var questionText = document.querySelector("input[name='question_text']").value;
+    var formData = new FormData();
+    console.log({questionText, questionTitle, questionType})
+    formData.append("questionTitle", questionTitle)
+    formData.append("questionType", questionType)
+    formData.append("questionText", questionText)
+    if (questionType == 2 || questionType == 3) {
+      var questionChoiceText = [];
+      var questionChoiceValue = [];
+      $("input[name='choiceText[]']").each(function () {
+        questionChoiceText.push($(this).val())
+      });
+      $("input[name='choiceValue[]']").each(function () {
+        questionChoiceValue.push($(this).val())
+      });
+      console.log({questionChoiceText, questionChoiceValue})
+      formData.append("questionChoiceText", questionChoiceText)
+      formData.append("questionChoiceValue", questionChoiceValue)
+
+    }
+    fetch("/add_question", {
+      method: "POST",
+      body: formData,
+    }).then(r => r.json()).then(r => {
+      if(r['success']){
+        alert("Question Added");
+        location.reload();
+      }else{
+        alert("Failed to insert question")
+        location.reload();
+      }
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" lang="en">
+<head>
+    <title>AssessMe Error</title>
+    <style>
+        table td {
+            vertical-align: top;
+            border: solid 1px #888;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Opps! You have encountered an error</h1>
+<table>
+    <tr>
+        <td>Date</td>
+        <td th:text="${timestamp}"/>
+    </tr>
+    <tr>
+        <td>Path</td>
+        <td th:text="${path}"/>
+    </tr>
+    <tr>
+        <td>Error</td>
+        <td th:text="${error}"/>
+    </tr>
+</table>
+</body>
+</html>

@@ -23,4 +23,5 @@ public interface UserService extends UserDetailsService {
 
     Optional<UserToken> addUserToken(String email) throws Exception;
     Optional<UserToken> getUserToken(String email ) throws Exception;
+    Optional<List<User>> getUsersNotAssignedForCourse(String courseCode) throws Exception;
 }

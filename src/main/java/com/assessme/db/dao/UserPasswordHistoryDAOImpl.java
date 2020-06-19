@@ -1,0 +1,108 @@
+package com.assessme.db.dao;
+
+import com.assessme.db.connection.ConnectionManager;
+import com.assessme.model.UserPasswordHistory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * @author: monil
+ * Created on: 2020-06-16
+ */
+@Repository
+public class UserPasswordHistoryDAOImpl implements UserPasswordHistoryDAO {
+
+    private final Logger logger = LoggerFactory.getLogger(UserPasswordHistoryDAOImpl.class);
+
+    private final ConnectionManager connectionManager;
+
+    public UserPasswordHistoryDAOImpl() {
+        connectionManager = new ConnectionManager();
+    }
+
+
+    @Override
+    public Optional<UserPasswordHistory> addPasswordModificationRecord(UserPasswordHistory userPasswordHistory) throws Exception {
+        Optional<UserPasswordHistory> newPasswordModificationRecord = Optional.empty();
+        String insertPasswordModificationQuery =
+                "INSERT INTO user_password_history values (?,?,?)";
+        try (
+                Connection connection = connectionManager.getDBConnection().get();
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(insertPasswordModificationQuery, Statement.RETURN_GENERATED_KEYS)
+        ) {
+            //Setting the query params
+            preparedStatement.setLong(1, userPasswordHistory.getUserId());
+            preparedStatement.setString(2, userPasswordHistory.getPassword());
+            preparedStatement.setTimestamp(3, userPasswordHistory.getModifiedOn());
+
+            // Executing the query to store the user record
+            int row = preparedStatement.executeUpdate();
+
+            // check if the record was inserted successfully
+            if (row > 0) {
+                String successString = String
+                        .format("User password change record record for the user: %s has been successfully inserted in the DB",
+                                userPasswordHistory.getUserId());
+                logger.info(successString);
+
+            } else {
+                String failureString = String
+                        .format("Failed to insert password change record record for the user: %s in the DB", userPasswordHistory.getUserId());
+                logger.error(failureString);
+                throw new Exception(failureString);
+            }
+            newPasswordModificationRecord = Optional.of(userPasswordHistory);
+
+            return newPasswordModificationRecord;
+
+        } catch (Exception e) {
+            // Getting the DB connection
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+
+    @Override
+    public List<UserPasswordHistory> getUserPasswordHistory(Long userId, Integer lastPasswords) throws Exception {
+        List<UserPasswordHistory> userPasswordHistoryList = new ArrayList<>();
+        // SQL query for fetching the all user
+        String selectUserQuery = "SELECT * FROM user_password_history WHERE user_id = " + userId + " ORDER BY modified_on DESC LIMIT " + lastPasswords;
+
+        try (
+                Connection connection = connectionManager.getDBConnection().get();
+                PreparedStatement preparedStatement = connection.prepareStatement(selectUserQuery)
+        ) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                // Instantiating new UserPasswordHistory
+                UserPasswordHistory userPasswordHistory = new UserPasswordHistory();
+
+                //Setting the attributes for UserPasswordHistory
+                userPasswordHistory.setUserId(resultSet.getLong("user_id"));
+                userPasswordHistory.setPassword(resultSet.getString("password"));
+                userPasswordHistory.setModifiedOn(resultSet.getTimestamp("modified_on"));
+
+                // Adding user to the list
+                userPasswordHistoryList.add(userPasswordHistory);
+            }
+            logger.info(String.format("User password list retrieved from the database: %s", userPasswordHistoryList));
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+        return userPasswordHistoryList;
+    }
+}
