@@ -8,7 +8,7 @@
 
 <h1>AssessMe registration</h1>
 
-<form th:action="@{/registration}" th:object="${user}" method="POST">
+<form name = "registerForm" th:action="@{/registration}" th:object="${user}" onsubmit="return validateForm()" method="POST">
 
     <div class="message" th:if="${message}">
         <h2 th:text="${message}"/>
@@ -47,5 +47,38 @@
 </form>
 
 <a th:href="@{/login}">login</a>
+<script>
+    function validateForm() {
+        var mail = document.forms["registerForm"]["email"].value;
+        var password = document.forms["registerForm"]["password"].value;
+        var confirmPassword = document.forms["registerForm"]["confirmPassword"].value;
+
+        var alertString = "";
+
+        var emailValidated = true;
+        var passwordValidated = true;
+
+        var mailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+        if (!mailPattern.test(mail)){
+            // alert("value matched")
+            alertString = alertString.concat("Email not entered in correct format");
+            emailValidated = false;
+        }
+
+        if(password != confirmPassword){
+            if(alertString != ""){
+                alertString = alertString.concat("\n");
+            }
+            alertString = alertString.concat("Passwords do not match")
+            passwordValidated = false;
+        }
+        console.log("alertstring", alertString)
+        // if(alertString != ""){
+            alert(alertString + "\n" + emailValidated + "\n" + passwordValidated);
+        // }
+        return emailValidated && passwordValidated;
+    }
+</script>
 </body>
 </html>

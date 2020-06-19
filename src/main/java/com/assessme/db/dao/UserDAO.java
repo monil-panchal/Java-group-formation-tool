@@ -27,5 +27,5 @@ public interface UserDAO {
 
     Optional<User> updateUserPassword(User user) throws Exception;
 
-
+    List<User> getUserNotAssignedForCourse(long courseId) throws Exception;
 }

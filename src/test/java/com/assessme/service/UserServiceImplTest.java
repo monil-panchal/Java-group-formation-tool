@@ -1,7 +1,10 @@
 package com.assessme.service;
 
+import com.assessme.auth.password.restriction.PasswordChangePolicyImpl;
+import com.assessme.auth.password.restriction.RegisterPasswordPolicyImpl;
 import com.assessme.db.dao.RoleDAOImpl;
 import com.assessme.db.dao.UserDAOImpl;
+import com.assessme.db.dao.UserPasswordHistoryDAOImpl;
 import com.assessme.db.dao.UserRoleDAOImpl;
 import com.assessme.model.*;
 import com.assessme.util.AppConstant;
@@ -15,9 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
@@ -51,6 +53,8 @@ public class UserServiceImplTest {
     @Mock
     private UserTokenServiceImpl userTokenServiceImpl;
 
+    @Mock
+    private UserPasswordHistoryServiceImpl userPasswordHistoryServiceImpl;
 
     @Mock
     private RoleDAOImpl roleDAOImpl;
@@ -58,7 +62,15 @@ public class UserServiceImplTest {
     @Mock
     private UserRoleDAOImpl userRoleDAOImpl;
 
-    // Unit test
+    @Mock
+    private UserPasswordHistoryDAOImpl userPasswordHistoryDAOImpl;
+
+    @Mock
+    private PasswordChangePolicyImpl passwordChangePolicy;
+
+    @Mock
+    private RegisterPasswordPolicyImpl registerPasswordPolicy;
+
     @Test
     public void getUserFromEmailTest() throws Exception {
 
@@ -84,7 +96,6 @@ public class UserServiceImplTest {
         Assertions.assertEquals(userFromDB.get().getEmail(), email);
     }
 
-    // Unit test
     @Test
     public void getUserWithRolesFromEmail() throws Exception {
 
@@ -115,7 +126,6 @@ public class UserServiceImplTest {
 
     }
 
-    //Unit test
     @Test
     public void getUserListTest() throws Exception {
 
@@ -136,7 +146,6 @@ public class UserServiceImplTest {
 
     }
 
-    //Unit test
     @Test
     public void addUserTest() throws Exception {
 
@@ -159,6 +168,8 @@ public class UserServiceImplTest {
         role.setRoleId(2);
 
         Optional<Role> optionalRole = Optional.of(role);
+
+        Mockito.when(registerPasswordPolicy.isSatisfied(user.getPassword())).thenReturn(true);
 
         Mockito.when(userDAO.addUser(user)).thenReturn(Optional.of(user));
         Mockito.when(roleServiceImpl.getRoleFromRoleName(AppConstant.DEFAULT_USER_ROLE_CREATE)).thenReturn(optionalRole);
@@ -186,7 +197,6 @@ public class UserServiceImplTest {
         verify(userDAO, times(1)).addUser(user);
     }
 
-    //Unit test
     @Test
     public void updateUserRoleTest() throws Exception {
 
@@ -229,7 +239,6 @@ public class UserServiceImplTest {
 
     }
 
-    //Unit test
     @Test
     public void addUserTokenTest() throws Exception {
 
@@ -253,7 +262,6 @@ public class UserServiceImplTest {
 
     }
 
-    //Unit test
     @Test
     public void getUserTokenTest() throws Exception {
 
@@ -287,18 +295,30 @@ public class UserServiceImplTest {
         user.setFirstName("Monil");
         user.setLastName("Panchal");
         user.setUserId(1l);
+        user.setPassword("PassWord");
         user.setEmail("testUser@email.com");
 
         Optional<User> optionalUserObject = Optional.of(user);
 
+        passwordChangePolicy.addPasswordRestrictions(user.getUserId());
+        Mockito.when(passwordChangePolicy.isSatisfied(user.getPassword())).thenReturn(true);
+
         Mockito.when(userServiceMock.getUserFromEmail(user.getEmail())).thenReturn(optionalUserObject);
         Mockito.when(userDAO.updateUserPassword(user)).thenReturn(optionalUserObject);
+
+        UserPasswordHistory userPasswordHistory = new UserPasswordHistory(user.getUserId(), user.getPassword());
+        Optional<UserPasswordHistory> optionalUserPasswordHistory = Optional.of(userPasswordHistory);
+
+        Mockito.when(userPasswordHistoryServiceImpl.addUserPasswordRecord(userPasswordHistory)).thenReturn(optionalUserPasswordHistory);
+
+        Assert.isTrue(optionalUserPasswordHistory.isPresent(), "UserPasswordHistory object should not be empty");
 
         Assert.isTrue(optionalUserObject.isPresent(), "Updated User object should not be empty");
         userFromDB = userServiceMock.updateUserPassword(user, "new password");
 
         Assert.isTrue(userFromDB.isPresent(), "Updated User object should not be empty");
         Assert.notNull(userFromDB.get().getEmail(), "User email should not be null");
+        Assertions.assertEquals(userFromDB.get().getPassword(), user.getPassword());
 
     }
 

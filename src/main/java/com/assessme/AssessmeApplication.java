@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /*
+
  * Spring boot starter class, serving as an entry point to this application.
  * Run the main method which will spawn an embedded server listening on http://localhost:8080/
  * Configurations are defined in application.properties file in resource directory.

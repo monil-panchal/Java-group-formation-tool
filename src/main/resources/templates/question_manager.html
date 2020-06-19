@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/app.css">
+  <title>Question Manager</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js">
+  </script>
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.widgets.min.js">
+  </script>
+  <script>
+
+    $('#courseListTable').tablesorter({widgets: ['zebra']});
+    setTimeout(function () {
+      $('.compatibility').tablesorter();
+      $('table.options, table.api').tablesorter({widgets: ['stickyHeaders']});
+    }, 1000);
+
+    function removeCourse(questionId) {
+      var CONFIRM_MSG= "removing this question will remove all" +
+          " the responses related to this question.\n"+
+          "Do you want to remove this course?";
+      if(confirm(CONFIRM_MSG)) {
+        var formData = new FormData()
+        formData.append("questionId", questionId)
+        fetch("/remove_question", {
+          method: "post",
+          body: formData
+        }).then(r => r.json()).then(r => {
+          if (r["success"]) {
+            alert("successfully deleted question")
+          } else {
+            alert("failed to delete question")
+          }
+          location.reload();
+        })
+      }
+    }
+  </script>
+</head>
+<body>
+<div align="center">
+  <h1 align="center">Question Manager</h1>
+</div>
+
+<div align="center">
+  <table id="courseListTable" border="1" class="tablesorter compatibility">
+    <thead>
+    <tr>
+      <th style="padding:10px">Question Title</th>
+      <th style="padding:10px" width="500px">Question</th>
+      <th style="padding:10px">Date Created</th>
+      <th style="padding:10px">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="i : ${questions}">
+      <td th:text="${i.questionTitle}"></td>
+      <td th:text="${i.questionText}"></td>
+      <td th:text="${i.questionDate}"></td>
+      <td>
+        <button th:onclick="|removeCourse('${i.questionId}')|">
+          Remove Question
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <br></br>
+  <button onclick="location.href='instructor_dashboard';">Return to Course Home</button>
+  <a href="/question_editor">Create Question</a>
+</div>
+</body>
+</html>
