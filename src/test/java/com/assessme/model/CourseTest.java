@@ -30,8 +30,8 @@ public class CourseTest {
         Assert.isTrue(course.getCourseCode().equals(courseCode));
 
         Course course1 = new Course();
-        Assert.isTrue(course1.getCourseName().isEmpty());
-        Assert.isTrue(course1.getCourseCode().isEmpty());
+        Assert.isNull(course1.getCourseName());
+        Assert.isNull(course1.getCourseCode());
     }
 
     @Test

@@ -18,7 +18,7 @@ public class PasswordDTOTest {
         logger.info("Running unit test for PasswordDTO constructor");
 
         PasswordDTO passwordDTO = new PasswordDTO();
-        Assert.isTrue(passwordDTO.getPassword().isEmpty());
+        Assert.isNull(passwordDTO.getPassword());
 
         String password = "password";
         PasswordDTO passwordDTO1 = new PasswordDTO(password);
@@ -37,7 +37,7 @@ public class PasswordDTOTest {
         logger.info("Running unit test for setting password from PasswordDTO constructor");
 
         PasswordDTO passwordDTO = new PasswordDTO();
-        Assert.isTrue(passwordDTO.getPassword().isEmpty());
+        Assert.isNull(passwordDTO.getPassword());
 
         String password = "password";
         passwordDTO.setPassword(password);
