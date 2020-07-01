@@ -14,7 +14,7 @@ import org.springframework.util.Assert;
 @SuppressWarnings("deprecation")
 public class CourseTest {
 
-    private Logger logger = LoggerFactory.getLogger(CourseTest.class);
+    private final Logger logger = LoggerFactory.getLogger(CourseTest.class);
 
     @Test
     public void ConstructorTests()

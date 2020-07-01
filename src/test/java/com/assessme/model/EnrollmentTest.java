@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @SuppressWarnings("deprecation")
 public class EnrollmentTest {
-    private Logger logger = LoggerFactory.getLogger(EnrollmentTest.class);
+    private final Logger logger = LoggerFactory.getLogger(EnrollmentTest.class);
 
     @Test
     public void ConstructorTests()

@@ -1,5 +1,6 @@
 package com.assessme.model;
 
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,8 +13,9 @@ import org.springframework.util.Assert;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @SuppressWarnings("deprecation")
 public class PasswordDTOTest {
-    private Logger logger = LoggerFactory.getLogger(PasswordDTO.class);
+    private final Logger logger = LoggerFactory.getLogger(PasswordDTO.class);
 
+    @Test
     public void ConstructorTests() {
         logger.info("Running unit test for PasswordDTO constructor");
 
@@ -25,6 +27,7 @@ public class PasswordDTOTest {
         Assert.isTrue(passwordDTO1.getPassword().equals(password));
     }
 
+    @Test
     public void getPasswordTest() {
         logger.info("Running unit test for fetching password from PasswordDTO");
 
@@ -33,6 +36,7 @@ public class PasswordDTOTest {
         Assert.isTrue(passwordDTO.getPassword().equals(password));
     }
 
+    @Test
     public void setPasswordTest() {
         logger.info("Running unit test for setting password from PasswordDTO constructor");
 
