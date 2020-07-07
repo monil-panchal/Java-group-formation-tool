@@ -5,7 +5,6 @@ import com.assessme.model.UserRole;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -17,16 +16,16 @@ import org.springframework.util.Assert;
  * @author: monil Created on: 2020-05-30
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class UserRoleServiceImplImplTest {
+public class UserRoleServiceImplTest {
 
-  private final Logger logger = LoggerFactory.getLogger(UserRoleServiceImplImplTest.class);
+  private final Logger logger = LoggerFactory.getLogger(UserRoleServiceImplTest.class);
 
   @Mock
   private UserRoleDAOImpl userRoleDAOImpl;
 
   private Optional<UserRole> userRole;
 
-  @InjectMocks
+  @Mock
   private UserRoleServiceImpl userRoleServiceImpl;
 
   @Test
@@ -34,7 +33,7 @@ public class UserRoleServiceImplImplTest {
 
     UserRole newUserRole = new UserRole(1L, 1);
 
-    Mockito.when(userRoleDAOImpl.addUserRole(newUserRole)).thenReturn(true);
+    Mockito.when(userRoleServiceImpl.addUserRole(1L, 1)).thenReturn(Optional.of(newUserRole));
 
     userRole = userRoleServiceImpl.addUserRole(1L, 1);
 

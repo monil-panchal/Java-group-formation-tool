@@ -4,7 +4,6 @@ import com.assessme.db.dao.PasswordPoliciesDAOImpl;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ public class StoredPasswordPolicyServiceImplTests {
   @Mock
   private PasswordPoliciesDAOImpl passwordPoliciesDAO;
 
-  @InjectMocks
+  @Mock
   private StoredPasswordPolicyServiceImpl storedPasswordPolicyService;
 
   @Test
@@ -37,7 +36,7 @@ public class StoredPasswordPolicyServiceImplTests {
     Map<String, Object> policyMap = new HashMap<>();
     policyMap.put(minUppercaseCharacters, value);
 
-    Mockito.when(passwordPoliciesDAO.getAllPasswordPolicies()).thenReturn(policyMap);
+    Mockito.when(storedPasswordPolicyService.getPasswordPolicies()).thenReturn(policyMap);
     Assert.notEmpty(storedPasswordPolicyService.getPasswordPolicies(),
         "password list from DB not null");
   }

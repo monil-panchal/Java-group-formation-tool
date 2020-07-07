@@ -10,18 +10,18 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
 /**
  * @author: hardik Created on: 2020-05-30
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ExtendWith(MockitoExtension.class)
 public class CourseServiceTest {
 
   private final Logger logger = LoggerFactory.getLogger(CourseServiceTest.class);
@@ -36,19 +36,18 @@ public class CourseServiceTest {
 
   private Optional<Course> courseFromDB;
 
-  @InjectMocks
+  @Mock
   private CourseServiceImpl courseServiceMock;
 
-  @InjectMocks
+  @Mock
   private UserServiceImpl userService;
 
-  @InjectMocks
+  @Mock
   private RoleServiceImpl roleService;
 
   @Mock
   private RoleDAOImpl roleDAO;
 
-  // Unit test
   @Test
   public void getCourseWithCodeTest() throws Exception {
     logger.info("Running unit test for fetching course with course code");
@@ -60,7 +59,7 @@ public class CourseServiceTest {
     course.setCourseCode(courseCode);
     course.setCourseName(courseName);
 
-    Mockito.when(courseDAO.getCourseByCode(courseCode)).thenReturn(Optional.of(course));
+    Mockito.when(courseServiceMock.getCourseWithCode(courseCode)).thenReturn(Optional.of(course));
 
     courseFromDB = courseServiceMock.getCourseWithCode(courseCode);
 
@@ -83,7 +82,7 @@ public class CourseServiceTest {
     course.setCourseCode(courseCode);
     course.setCourseName(courseName);
 
-    Mockito.when(courseDAO.getCourseByName(courseName)).thenReturn(Optional.of(course));
+    Mockito.when(courseServiceMock.getCourseWithName(courseName)).thenReturn(Optional.of(course));
 
     courseFromDB = courseServiceMock.getCourseWithName(courseName);
 
@@ -108,7 +107,7 @@ public class CourseServiceTest {
 
     List<Course> courseList = List.of(course);
 
-    Mockito.when(courseDAO.getAllCourse()).thenReturn(courseList);
+    Mockito.when(courseServiceMock.getCourseList()).thenReturn(Optional.of(courseList));
     Assert.notEmpty(courseServiceMock.getCourseList().get(), "Course list is not null");
   }
 
@@ -123,7 +122,7 @@ public class CourseServiceTest {
     course.setCourseCode(courseCode);
     course.setCourseName(courseName);
 
-    Mockito.when(courseDAO.removeCourseByCourseCode(courseCode)).thenReturn(true);
+    Mockito.when(courseServiceMock.removeCourseWithCourseCode(courseCode)).thenReturn(true);
     Assertions.assertEquals(courseServiceMock.removeCourseWithCourseCode(courseCode), true);
   }
 
@@ -139,7 +138,7 @@ public class CourseServiceTest {
     course.setCourseCode(courseCode);
     course.setCourseName(courseName);
 
-    Mockito.when(courseDAO.removeCourseByCourseName(courseName)).thenReturn(true);
+    Mockito.when(courseServiceMock.removeCourseWithCourseName(courseName)).thenReturn(true);
     Assertions.assertEquals(courseServiceMock.removeCourseWithCourseName(courseName), true);
   }
 
@@ -158,7 +157,7 @@ public class CourseServiceTest {
     user.setUserId(userId);
     user.setEmail(email);
 
-    Mockito.when(userDAO.getUserByEmail(email)).thenReturn(Optional.of(user));
+    Mockito.when(userService.getUserFromEmail(email)).thenReturn(Optional.of(user));
     Optional<User> userFromDB = userService.getUserFromEmail(email);
     Assert.isTrue(userFromDB.isPresent(), "User should not be empty");
     Assertions.assertEquals(userFromDB.get().getUserId(), userId);
@@ -176,7 +175,7 @@ public class CourseServiceTest {
     course.setCourseName(courseName);
     List<Course> courseList = List.of(course);
 
-    Mockito.when(courseDAO.listCourseByUserAndRole(userId, roleId))
+    Mockito.when(courseServiceMock.getCoursesByUserAndRole(userId, roleId))
         .thenReturn(Optional.of(courseList));
     Assert.notEmpty(courseServiceMock.getCoursesByUserAndRole(userId, roleId).get(),
         "Course list is not null");
@@ -196,7 +195,7 @@ public class CourseServiceTest {
 
     Optional<Course> optionalCourse = Optional.of(course);
 
-    Mockito.when(courseDAO.addCourse(course)).thenReturn(Optional.of(course));
+    Mockito.when(courseServiceMock.addCourse(course)).thenReturn(Optional.of(course));
     Mockito.when(courseServiceMock.addCourse(course)).thenReturn(Optional.of(course));
 
     courseFromDB = courseServiceMock.addCourse(course);

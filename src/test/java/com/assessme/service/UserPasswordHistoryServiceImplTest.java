@@ -1,6 +1,5 @@
 package com.assessme.service;
 
-import com.assessme.db.dao.UserPasswordHistoryDAOImpl;
 import com.assessme.model.UserPasswordHistory;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -25,10 +23,8 @@ public class UserPasswordHistoryServiceImplTest {
 
   private final Logger logger = LoggerFactory.getLogger(UserPasswordHistoryServiceImplTest.class);
 
-  @Mock
-  private UserPasswordHistoryDAOImpl userPasswordHistoryDAO;
 
-  @InjectMocks
+  @Mock
   private UserPasswordHistoryServiceImpl userPasswordHistoryService;
 
   private Optional<UserPasswordHistory> passwordHistory;
@@ -46,7 +42,7 @@ public class UserPasswordHistoryServiceImplTest {
         passwordModifiedOn);
     Optional<UserPasswordHistory> optionalUserPasswordHistory = Optional.of(userPasswordHistory);
 
-    Mockito.when(userPasswordHistoryDAO.addPasswordModificationRecord(userPasswordHistory))
+    Mockito.when(userPasswordHistoryService.addUserPasswordRecord(userPasswordHistory))
         .thenReturn(optionalUserPasswordHistory);
 
     passwordHistory = userPasswordHistoryService.addUserPasswordRecord(userPasswordHistory);
@@ -73,7 +69,7 @@ public class UserPasswordHistoryServiceImplTest {
     List<UserPasswordHistory> userPasswordHistoryList = new ArrayList<>();
     userPasswordHistoryList.add(userPasswordHistory);
 
-    Mockito.when(userPasswordHistoryDAO.getUserPasswordHistory(userId, 1))
+    Mockito.when(userPasswordHistoryService.getUserPasswordHistory(userId, 1))
         .thenReturn(userPasswordHistoryList);
     Assert.notEmpty(userPasswordHistoryService.getUserPasswordHistory(userId, 1),
         "user password list is not null");

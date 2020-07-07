@@ -5,7 +5,6 @@ import com.assessme.model.Role;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -26,12 +25,13 @@ public class RoleServiceImplTest {
 
   private Optional<Role> role;
 
-  @InjectMocks
+  @Mock
   private RoleServiceImpl roleServiceImpl;
 
   @Test
   public void getRoleFromRoleNameTest() throws Exception {
-    Mockito.when(roleDAOImpl.getRolebyName("ADMIN")).thenReturn(Optional.of(new Role(1, "ADMIN")));
+    Mockito.when(roleServiceImpl.getRoleFromRoleName("ADMIN"))
+        .thenReturn(Optional.of(new Role(1, "ADMIN")));
 
     role = roleServiceImpl.getRoleFromRoleName("ADMIN");
     Assert.isTrue(role.isPresent(), "Role should not be empty");

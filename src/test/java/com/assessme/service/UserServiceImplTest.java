@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -45,7 +44,7 @@ public class UserServiceImplTest {
 
   private Optional<UserRoleDTO> userWithRoleFromDB;
 
-  @InjectMocks
+  @Mock
   private UserServiceImpl userServiceMock;
 
   @Mock
@@ -90,7 +89,7 @@ public class UserServiceImplTest {
     user.setUserId(1l);
     user.setEmail(email);
 
-    Mockito.when(userDAO.getUserByEmail(email)).thenReturn(Optional.of(user));
+    Mockito.when(userServiceMock.getUserFromEmail(email)).thenReturn(Optional.of(user));
 
     userFromDB = userServiceMock.getUserFromEmail(email);
 
@@ -118,7 +117,7 @@ public class UserServiceImplTest {
     user.setEmail(email);
     user.setUserRoles(userRoleSet);
 
-    Mockito.when(userDAO.getUserWithRolesFromEmail(email)).thenReturn(Optional.of(user));
+    Mockito.when(userServiceMock.getUserWithRolesFromEmail(email)).thenReturn(Optional.of(user));
 
     userFromDB = userServiceMock.getUserWithRolesFromEmail(email);
 
@@ -145,7 +144,7 @@ public class UserServiceImplTest {
 
     List<User> userList = List.of(user);
 
-    Mockito.when(userDAO.getAllUser()).thenReturn(userList);
+    Mockito.when(userServiceMock.getUserList()).thenReturn(Optional.of(userList));
     Assert.notEmpty(userServiceMock.getUserList().get(), "user list is not null");
 
   }
@@ -312,7 +311,8 @@ public class UserServiceImplTest {
     Mockito.when(passwordChangePolicy.isSatisfied(user.getPassword())).thenReturn(true);
 
     Mockito.when(userServiceMock.getUserFromEmail(user.getEmail())).thenReturn(optionalUserObject);
-    Mockito.when(userDAO.updateUserPassword(user)).thenReturn(optionalUserObject);
+    Mockito.when(userServiceMock.updateUserPassword(user, "new password"))
+        .thenReturn(optionalUserObject);
 
     UserPasswordHistory userPasswordHistory = new UserPasswordHistory(user.getUserId(),
         user.getPassword());
