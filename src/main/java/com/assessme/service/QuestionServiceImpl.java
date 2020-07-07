@@ -20,22 +20,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class QuestionServiceImpl implements QuestionService {
 
+  private static QuestionServiceImpl instance;
+  private final Logger logger = LoggerFactory.getLogger(QuestionServiceImpl.class);
   QuestionDAO questionDAO;
   QuestionTypeDAO questionTypeDAO;
-  private final Logger logger = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
   public QuestionServiceImpl() {
     this.questionDAO = QuestionDAOImpl.getInstance();
     this.questionTypeDAO = QuestionTypeDAOImpl.getInstance();
   }
-  private static QuestionServiceImpl instance;
 
-  public static QuestionServiceImpl getInstance(){
-      if(instance == null){
-          instance = new QuestionServiceImpl();
-      }
-      return instance;
+  public static QuestionServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new QuestionServiceImpl();
+    }
+    return instance;
   }
+
   @Override
   public Optional<List<QuestionType>> getAllQuestionType() throws Exception {
     return questionTypeDAO.getAllQuestionTypes();

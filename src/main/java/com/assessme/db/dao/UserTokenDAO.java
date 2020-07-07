@@ -8,7 +8,8 @@ import com.assessme.model.UserToken;
 import java.util.Optional;
 
 /**
- * The implementation of this class provides CRUD operations for the user_token table of the database.
+ * The implementation of this class provides CRUD operations for the user_token table of the
+ * database.
  */
 
 public interface UserTokenDAO {

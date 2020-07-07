@@ -38,13 +38,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 @Controller
 public class InstructorCourseController {
+
+  private final Logger logger = LoggerFactory.getLogger(InstructorCourseController.class);
   UserService userService;
   CourseService courseService;
   EnrollmentService enrollmentService;
   RoleService roleService;
   CurrentUserService currentUserService;
   StudentCSVImport studentCSVImport;
-  private final Logger logger = LoggerFactory.getLogger(InstructorCourseController.class);
 
   public InstructorCourseController() {
     this.userService = UserServiceImpl.getInstance();

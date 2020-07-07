@@ -13,21 +13,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class StoredPasswordPolicyServiceImpl implements StoredPasswordPolicyService {
 
+  private static StoredPasswordPolicyServiceImpl instance;
   private final Logger logger = LoggerFactory.getLogger(StoredPasswordPolicyServiceImpl.class);
-
   private final PasswordPolicyDAO passwordPolicyDAO;
 
   public StoredPasswordPolicyServiceImpl() {
     this.passwordPolicyDAO = PasswordPoliciesDAOImpl.getInstance();
   }
-  private static StoredPasswordPolicyServiceImpl instance;
 
-  public static StoredPasswordPolicyServiceImpl getInstance(){
-      if(instance == null){
-          instance = new StoredPasswordPolicyServiceImpl();
-      }
-      return instance;
+  public static StoredPasswordPolicyServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new StoredPasswordPolicyServiceImpl();
+    }
+    return instance;
   }
+
   @Override
   public Map<String, Object> getPasswordPolicies() throws Exception {
     Map<String, Object> policyMap = null;

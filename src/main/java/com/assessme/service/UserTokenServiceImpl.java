@@ -14,21 +14,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserTokenServiceImpl implements UserTokenService {
 
+  private static UserTokenServiceImpl instance;
   private final Logger logger = LoggerFactory.getLogger(UserTokenServiceImpl.class);
-
   private final UserTokenDAOImpl userTokenDAOImpl;
 
   public UserTokenServiceImpl() {
     this.userTokenDAOImpl = UserTokenDAOImpl.getInstance();
   }
 
-  private static UserTokenServiceImpl instance;
-
-  public static UserTokenServiceImpl getInstance(){
-      if(instance == null){
-          instance = new UserTokenServiceImpl();
-      }
-      return instance;
+  public static UserTokenServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new UserTokenServiceImpl();
+    }
+    return instance;
   }
 
   @Override

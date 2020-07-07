@@ -15,21 +15,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+  private static CourseServiceImpl instance;
   private final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
-
   private final CourseDAOImpl courseDAOImpl;
 
   public CourseServiceImpl() {
     this.courseDAOImpl = CourseDAOImpl.getInstance();
   }
-  private static CourseServiceImpl instance;
 
-  public static CourseServiceImpl getInstance(){
-      if(instance == null){
-          instance = new CourseServiceImpl();
-      }
-      return instance;
+  public static CourseServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new CourseServiceImpl();
+    }
+    return instance;
   }
+
   public Optional<List<Course>> getCourseList() throws Exception {
 
     Optional<List<Course>> courseList = Optional.empty();

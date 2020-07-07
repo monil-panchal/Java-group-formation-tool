@@ -17,20 +17,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {
 
-  EnrollmentDAO enrollmentDAO;
+  private static EnrollmentServiceImpl instance;
   private final Logger logger = LoggerFactory.getLogger(EnrollmentServiceImpl.class);
+  EnrollmentDAO enrollmentDAO;
 
   public EnrollmentServiceImpl() {
     this.enrollmentDAO = EnrollmentDAOImpl.getInstance();
   }
-  private static EnrollmentServiceImpl instance;
 
-  public static EnrollmentServiceImpl getInstance(){
-      if(instance == null){
-          instance = new EnrollmentServiceImpl();
-      }
-      return instance;
+  public static EnrollmentServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new EnrollmentServiceImpl();
+    }
+    return instance;
   }
+
   @Override
   public void insertEnrollment(Enrollment enrollment) throws Exception {
     try {

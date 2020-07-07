@@ -19,20 +19,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class CurrentUserService {
 
+  private static CurrentUserService instance;
   private final Logger logger = LoggerFactory.getLogger(CurrentUserService.class);
   private final UserService userService;
 
   public CurrentUserService() {
     this.userService = UserServiceImpl.getInstance();
   }
-  private static CurrentUserService instance;
 
-  public static CurrentUserService getInstance(){
-      if(instance == null){
-          instance = new CurrentUserService();
-      }
-      return instance;
+  public static CurrentUserService getInstance() {
+    if (instance == null) {
+      instance = new CurrentUserService();
+    }
+    return instance;
   }
+
   public Optional<User> getAuthenticatedUser() throws Exception {
     Optional<User> user = Optional.empty();
     try {

@@ -33,12 +33,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class AssignInstructorController {
 
+  private final Logger logger = LoggerFactory.getLogger(AssignInstructorController.class);
   UserService userService;
   CourseService courseService;
   EnrollmentService enrollmentService;
   MailSenderService mailSenderService;
   RoleService roleService;
-  private final Logger logger = LoggerFactory.getLogger(AssignInstructorController.class);
 
   public AssignInstructorController() {
     this.userService = UserServiceImpl.getInstance();

@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailSenderServiceImpl implements MailSenderService {
 
+  private static MailSenderServiceImpl instance;
   private final Logger logger = LoggerFactory.getLogger(MailSenderServiceImpl.class);
-
   private final EmailConfig emailConfig;
   private final JavaMailSenderImpl mailSender;
 
@@ -25,14 +25,14 @@ public class MailSenderServiceImpl implements MailSenderService {
     emailConfig = SystemConfig.getInstance().getEmailConfig();
     mailSender = getConfigured();
   }
-private static MailSenderServiceImpl instance;
 
-public static MailSenderServiceImpl getInstance(){
-    if(instance == null){
-        instance = new MailSenderServiceImpl();
+  public static MailSenderServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new MailSenderServiceImpl();
     }
     return instance;
-}
+  }
+
   @Override
   public JavaMailSenderImpl getConfigured() {
     JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();

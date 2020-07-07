@@ -8,7 +8,8 @@ import org.slf4j.LoggerFactory;
  */
 public class DisallowSpecialCharacterValidatorImpl implements PasswordValidator {
 
-  private final Logger logger = LoggerFactory.getLogger(DisallowSpecialCharacterValidatorImpl.class);
+  private final Logger logger = LoggerFactory
+      .getLogger(DisallowSpecialCharacterValidatorImpl.class);
 
   private final String disallowCharacters;
 

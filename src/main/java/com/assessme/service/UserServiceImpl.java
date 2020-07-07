@@ -37,8 +37,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
+  private static UserServiceImpl instance;
   private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
   private final UserDAO userDAOImpl;
   private final UserTokenServiceImpl userTokenServiceImpl;
   private final RoleServiceImpl roleServiceImpl;
@@ -61,14 +61,13 @@ public class UserServiceImpl implements UserService {
     this.registerPasswordPolicy = RegisterPasswordPolicyImpl.getInstance();
   }
 
-private static UserServiceImpl instance;
-
-public static UserServiceImpl getInstance(){
-    if(instance == null){
-        instance = new UserServiceImpl();
+  public static UserServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new UserServiceImpl();
     }
     return instance;
-}
+  }
+
   public Optional<List<User>> getUserList() throws Exception {
 
     Optional<List<User>> userList = Optional.empty();

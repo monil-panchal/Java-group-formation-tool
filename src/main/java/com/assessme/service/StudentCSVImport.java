@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class StudentCSVImport {
 
+  private static StudentCSVImport instance;
   final String ROLENAME = "STUDENT";
   private final Logger logger = LoggerFactory.getLogger(StudentCSVImport.class);
   UserService userService;
@@ -33,14 +34,14 @@ public class StudentCSVImport {
     this.courseService = CourseServiceImpl.getInstance();
     this.mailSenderService = MailSenderServiceImpl.getInstance();
   }
-  private static StudentCSVImport instance;
 
-  public static StudentCSVImport getInstance(){
-      if(instance == null){
-          instance = new StudentCSVImport();
-      }
-      return instance;
+  public static StudentCSVImport getInstance() {
+    if (instance == null) {
+      instance = new StudentCSVImport();
+    }
+    return instance;
   }
+
   public void importStudents(StudentCSVParser parser, String courseCode) {
     try {
       List<User> studentList;

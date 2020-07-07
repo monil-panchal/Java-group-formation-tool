@@ -7,7 +7,8 @@ package com.assessme.db.dao;
 import com.assessme.model.UserRole;
 
 /**
- * The implementation of this class provides CRUD operations for the user_role table of the database.
+ * The implementation of this class provides CRUD operations for the user_role table of the
+ * database.
  */
 
 public interface UserRoleDAO {

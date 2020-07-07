@@ -24,9 +24,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class QuestionManagerController {
 
+  private final Logger logger = LoggerFactory.getLogger(QuestionManagerController.class);
   CurrentUserService currentUserService;
   QuestionService questionService;
-  private final Logger logger = LoggerFactory.getLogger(QuestionManagerController.class);
 
   public QuestionManagerController() {
     this.currentUserService = CurrentUserService.getInstance();

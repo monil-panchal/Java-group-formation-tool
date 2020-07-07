@@ -17,20 +17,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserRoleServiceImpl implements UserRoleService {
 
+  private static UserRoleServiceImpl instance;
   private final Logger logger = LoggerFactory.getLogger(UserRoleServiceImpl.class);
-
   private final UserRoleDAOImpl userRoleDAOImpl;
 
   public UserRoleServiceImpl() {
     this.userRoleDAOImpl = UserRoleDAOImpl.getInstance();
   }
-  private static UserRoleServiceImpl instance;
 
-  public static UserRoleServiceImpl getInstance(){
-      if(instance == null){
-          instance = new UserRoleServiceImpl();
-      }
-      return instance;
+  public static UserRoleServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new UserRoleServiceImpl();
+    }
+    return instance;
   }
 
   public Optional<UserRole> addUserRole(Long userId, Integer roleId) throws Exception {

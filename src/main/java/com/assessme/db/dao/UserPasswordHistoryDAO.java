@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The implementation of this class provides CRUD operations for the user_password_history table of the database.
+ * The implementation of this class provides CRUD operations for the user_password_history table of
+ * the database.
  */
 public interface UserPasswordHistoryDAO {
 

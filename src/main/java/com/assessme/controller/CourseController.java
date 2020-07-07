@@ -10,7 +10,6 @@ import com.assessme.service.UserService;
 import com.assessme.service.UserServiceImpl;
 import java.util.List;
 import java.util.Optional;
-import org.apache.tomcat.jni.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

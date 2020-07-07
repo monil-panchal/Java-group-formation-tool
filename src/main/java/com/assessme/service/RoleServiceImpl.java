@@ -16,22 +16,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class RoleServiceImpl implements RoleService {
 
+  private static RoleServiceImpl instance;
   private final Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
-
   private final RoleDAOImpl roleDAOImpl;
 
   public RoleServiceImpl() {
     this.roleDAOImpl = RoleDAOImpl.getInstance();
   }
 
-  private static RoleServiceImpl instance;
-
-  public static RoleServiceImpl getInstance(){
-      if(instance == null){
-          instance = new RoleServiceImpl();
-      }
-      return instance;
+  public static RoleServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new RoleServiceImpl();
+    }
+    return instance;
   }
+
   public Optional<Role> getRoleFromRoleName(String roleName) throws Exception {
 
     Optional<Role> role;

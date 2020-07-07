@@ -17,21 +17,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserPasswordHistoryServiceImpl implements UserPasswordHistoryService {
 
+  private static UserPasswordHistoryServiceImpl instance;
   private final Logger logger = LoggerFactory.getLogger(UserPasswordHistoryServiceImpl.class);
-
   private final UserPasswordHistoryDAO userPasswordHistoryDAO;
 
   public UserPasswordHistoryServiceImpl() {
     this.userPasswordHistoryDAO = UserPasswordHistoryDAOImpl.getInstance();
   }
-  private static UserPasswordHistoryServiceImpl instance;
 
-  public static UserPasswordHistoryServiceImpl getInstance(){
-      if(instance == null){
-          instance = new UserPasswordHistoryServiceImpl();
-      }
-      return instance;
+  public static UserPasswordHistoryServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new UserPasswordHistoryServiceImpl();
+    }
+    return instance;
   }
+
   @Override
   public List<UserPasswordHistory> getUserPasswordHistory(Long userId, Integer lastPasswords) {
     List<UserPasswordHistory> userPasswordHistoryList = null;

@@ -26,8 +26,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PasswordChangePolicyImpl implements PasswordPolicy {
 
+  private static PasswordChangePolicyImpl instance;
   private final Logger logger = LoggerFactory.getLogger(PasswordChangePolicyImpl.class);
-
   private final StoredPasswordPolicyService storedPasswordPolicyService;
   private final UserPasswordHistoryServiceImpl userPasswordHistoryService;
   private Map<String, Object> policyMap;
@@ -39,14 +39,14 @@ public class PasswordChangePolicyImpl implements PasswordPolicy {
     this.userPasswordHistoryService = UserPasswordHistoryServiceImpl.getInstance();
     this.init();
   }
-  private static PasswordChangePolicyImpl instance;
 
-  public static PasswordChangePolicyImpl getInstance(){
-      if(instance == null){
-          instance = new PasswordChangePolicyImpl();
-      }
-      return instance;
+  public static PasswordChangePolicyImpl getInstance() {
+    if (instance == null) {
+      instance = new PasswordChangePolicyImpl();
+    }
+    return instance;
   }
+
   public Map<String, Object> getPolicyMap() {
     return policyMap;
   }
