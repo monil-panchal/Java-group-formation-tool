@@ -7,22 +7,26 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author Darshan Kathiriya
  * @created 30-May-2020 11:42 PM
  */
-@Repository
 public class EnrollmentDAOImpl implements EnrollmentDAO {
 
+  private static EnrollmentDAOImpl instance;
   private final Logger logger = LoggerFactory.getLogger(EnrollmentDAOImpl.class);
-
-
   private final ConnectionManager connectionManager;
 
   public EnrollmentDAOImpl() {
     connectionManager = new ConnectionManager();
+  }
+
+  public static EnrollmentDAOImpl getInstance() {
+    if (instance == null) {
+      instance = new EnrollmentDAOImpl();
+    }
+    return instance;
   }
 
   @Override
@@ -41,15 +45,12 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
       if (enrollment.getUserId() != null && enrollment.getCourseId() != null
           && enrollment.getRoleId() != null) {
 
-        //Setting the query params
         preparedStatement.setLong(1, enrollment.getUserId());
         preparedStatement.setLong(2, enrollment.getCourseId());
         preparedStatement.setInt(3, enrollment.getRoleId());
 
-        // Executing the query to store the user role record
         int row = preparedStatement.executeUpdate();
 
-        // check if the record was inserted successfully
         if (row > 0) {
           String successString = "Enrollment has been successfully inserted in the DB";
           logger.info(successString);

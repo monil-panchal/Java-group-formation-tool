@@ -5,6 +5,7 @@ import com.assessme.model.Question;
 import com.assessme.model.ResponseDTO;
 import com.assessme.model.User;
 import com.assessme.service.QuestionService;
+import com.assessme.service.QuestionServiceImpl;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +26,11 @@ public class QuestionManagerController {
 
   CurrentUserService currentUserService;
   QuestionService questionService;
-  private Logger logger = LoggerFactory.getLogger(QuestionManagerController.class);
+  private final Logger logger = LoggerFactory.getLogger(QuestionManagerController.class);
 
-  public QuestionManagerController(CurrentUserService currentUserService,
-      QuestionService questionService) {
-    this.currentUserService = currentUserService;
-    this.questionService = questionService;
+  public QuestionManagerController() {
+    this.currentUserService = CurrentUserService.getInstance();
+    this.questionService = QuestionServiceImpl.getInstance();
   }
 
   @GetMapping("/question_manager")
@@ -52,7 +52,7 @@ public class QuestionManagerController {
   public ResponseEntity<ResponseDTO> removeQuestion(@RequestParam long questionId) {
     HttpStatus httpStatus = null;
     ResponseDTO<Long> responseDTO = null;
-    logger.info("removing question: "+ questionId);
+    logger.info("removing question: " + questionId);
     try {
       questionService.removeQuestion(questionId);
       responseDTO = new ResponseDTO(true, null, null, null);

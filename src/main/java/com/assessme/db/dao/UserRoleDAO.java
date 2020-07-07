@@ -1,13 +1,10 @@
 package com.assessme.db.dao;
 
 /**
- * @author: monil
- * Created on: 2020-05-30
+ * @author: monil Created on: 2020-05-30
  */
 
 import com.assessme.model.UserRole;
-
-import java.util.Optional;
 
 /**
  * The implementation of this class provides CRUD operations for the user_role table of the database.
@@ -15,5 +12,5 @@ import java.util.Optional;
 
 public interface UserRoleDAO {
 
-    Boolean addUserRole(UserRole userRole) throws Exception;
+  Boolean addUserRole(UserRole userRole) throws Exception;
 }

@@ -9,11 +9,15 @@ import com.assessme.model.Enrollment;
 import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.CourseService;
+import com.assessme.service.CourseServiceImpl;
 import com.assessme.service.EnrollmentService;
 import com.assessme.service.EnrollmentServiceImpl;
 import com.assessme.service.MailSenderService;
+import com.assessme.service.MailSenderServiceImpl;
 import com.assessme.service.RoleService;
+import com.assessme.service.RoleServiceImpl;
 import com.assessme.service.UserService;
+import com.assessme.service.UserServiceImpl;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -34,16 +38,14 @@ public class AssignInstructorController {
   EnrollmentService enrollmentService;
   MailSenderService mailSenderService;
   RoleService roleService;
-  private Logger logger = LoggerFactory.getLogger(AssignInstructorController.class);
+  private final Logger logger = LoggerFactory.getLogger(AssignInstructorController.class);
 
-  public AssignInstructorController(UserService userService, CourseService courseService,
-      EnrollmentService enrollmentService, MailSenderService mailSenderService,
-      RoleService roleService) {
-    this.userService = userService;
-    this.courseService = courseService;
-    this.enrollmentService = enrollmentService;
-    this.mailSenderService = mailSenderService;
-    this.roleService = roleService;
+  public AssignInstructorController() {
+    this.userService = UserServiceImpl.getInstance();
+    this.courseService = CourseServiceImpl.getInstance();
+    this.enrollmentService = EnrollmentServiceImpl.getInstance();
+    this.mailSenderService = MailSenderServiceImpl.getInstance();
+    this.roleService = RoleServiceImpl.getInstance();
   }
 
 

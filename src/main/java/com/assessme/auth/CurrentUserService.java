@@ -3,7 +3,6 @@ package com.assessme.auth;
 import com.assessme.model.User;
 import com.assessme.service.UserService;
 import com.assessme.service.UserServiceImpl;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
@@ -19,13 +18,21 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CurrentUserService {
-  private Logger logger = LoggerFactory.getLogger(CurrentUserService.class);
-  private UserService userService;
 
-  public CurrentUserService(UserService userService) {
-    this.userService = userService;
+  private final Logger logger = LoggerFactory.getLogger(CurrentUserService.class);
+  private final UserService userService;
+
+  public CurrentUserService() {
+    this.userService = UserServiceImpl.getInstance();
   }
+  private static CurrentUserService instance;
 
+  public static CurrentUserService getInstance(){
+      if(instance == null){
+          instance = new CurrentUserService();
+      }
+      return instance;
+  }
   public Optional<User> getAuthenticatedUser() throws Exception {
     Optional<User> user = Optional.empty();
     try {
@@ -36,7 +43,7 @@ public class CurrentUserService {
 
         user = Optional.of(userService.getUserFromEmail(userEmail).get());
       }
-    }catch(Exception e){
+    } catch (Exception e) {
       throw e;
     }
     return user;

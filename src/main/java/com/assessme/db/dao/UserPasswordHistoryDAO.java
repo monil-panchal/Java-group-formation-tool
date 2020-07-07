@@ -1,12 +1,10 @@
 package com.assessme.db.dao;
 
 /**
- * @author: monil
- * Created on: 2020-06-16
+ * @author: monil Created on: 2020-06-16
  */
 
 import com.assessme.model.UserPasswordHistory;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +13,10 @@ import java.util.Optional;
  */
 public interface UserPasswordHistoryDAO {
 
-    Optional<UserPasswordHistory> addPasswordModificationRecord(UserPasswordHistory userPasswordHistory) throws Exception;
+  Optional<UserPasswordHistory> addPasswordModificationRecord(
+      UserPasswordHistory userPasswordHistory) throws Exception;
 
-    List<UserPasswordHistory> getUserPasswordHistory(Long userId, Integer lastPasswords) throws Exception;
+  List<UserPasswordHistory> getUserPasswordHistory(Long userId, Integer lastPasswords)
+      throws Exception;
 
 }
