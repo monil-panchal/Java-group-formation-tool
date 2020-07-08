@@ -38,7 +38,7 @@ public class CourseTest {
     public void getCourseIdTest() throws Exception{
         logger.info("Running unit test for fetching course Id");
 
-        Long courseId = 7L;
+        long courseId = 7L;
         Course course = new Course();
         course.setCourseId(courseId);
         Assert.isTrue(course.getCourseId()==courseId);
@@ -48,7 +48,7 @@ public class CourseTest {
     public void setCourseIdTest() throws Exception{
         logger.info("Running unit test for getting course Id");
 
-        Long courseId = 7L;
+        long courseId = 7L;
         Course course = new Course();
         course.setCourseId(courseId);
         Assert.isTrue(course.getCourseId()==courseId);
