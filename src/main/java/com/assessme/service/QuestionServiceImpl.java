@@ -1,7 +1,9 @@
 package com.assessme.service;
 
 import com.assessme.db.dao.QuestionDAO;
+import com.assessme.db.dao.QuestionDAOImpl;
 import com.assessme.db.dao.QuestionTypeDAO;
+import com.assessme.db.dao.QuestionTypeDAOImpl;
 import com.assessme.model.Question;
 import com.assessme.model.QuestionType;
 import com.assessme.model.User;
@@ -17,13 +19,22 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class QuestionServiceImpl implements QuestionService {
-  private Logger logger = LoggerFactory.getLogger(QuestionServiceImpl.class);
-    QuestionDAO questionDAO;
-    QuestionTypeDAO questionTypeDAO;
 
-  public QuestionServiceImpl(QuestionDAO questionDAO, QuestionTypeDAO questionTypeDAO) {
-    this.questionDAO = questionDAO;
-    this.questionTypeDAO = questionTypeDAO;
+  private static QuestionServiceImpl instance;
+  private final Logger logger = LoggerFactory.getLogger(QuestionServiceImpl.class);
+  QuestionDAO questionDAO;
+  QuestionTypeDAO questionTypeDAO;
+
+  public QuestionServiceImpl() {
+    this.questionDAO = QuestionDAOImpl.getInstance();
+    this.questionTypeDAO = QuestionTypeDAOImpl.getInstance();
+  }
+
+  public static QuestionServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new QuestionServiceImpl();
+    }
+    return instance;
   }
 
   @Override
@@ -43,7 +54,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public void removeQuestion(long questionId) throws Exception{
+  public void removeQuestion(long questionId) throws Exception {
     questionDAO.removeQuestion(questionId);
   }
 

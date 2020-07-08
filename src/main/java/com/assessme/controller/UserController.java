@@ -29,15 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-  private Logger logger = LoggerFactory.getLogger(UserController.class);
+  private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-  private UserServiceImpl userServiceImpl;
+  private final UserServiceImpl userServiceImpl;
 
   public UserController(UserServiceImpl userServiceImpl) {
-    this.userServiceImpl = userServiceImpl;
+    this.userServiceImpl = UserServiceImpl.getInstance();
   }
 
-  // API endpoint method for fetching all users
   @GetMapping("/all")
   public ResponseEntity<ResponseDTO> getUsers() throws Exception {
 
@@ -62,7 +61,6 @@ public class UserController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  // API endpoint method for fetching user using emailId
   @GetMapping()
   public ResponseEntity<ResponseDTO> getUserFromEmail(@RequestParam("email") String email)
       throws Exception {
@@ -88,8 +86,6 @@ public class UserController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-
-  // API endpoint method for fetching user using emailId
   @GetMapping("/roles")
   public ResponseEntity<ResponseDTO> getUserWithRolesFromEmail(@RequestParam("email") String email)
       throws Exception {
@@ -115,7 +111,6 @@ public class UserController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  // API endpoint method for fetching user using emailId
   @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<ResponseDTO> createUser(@RequestBody User user) throws Exception {
 
@@ -145,7 +140,6 @@ public class UserController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  // API endpoint method for updating the user role
   @PutMapping(path = "/roles", consumes = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<ResponseDTO> updateUserRole(@RequestBody UserRoleDTO user)
       throws Exception {

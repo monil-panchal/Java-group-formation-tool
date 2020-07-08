@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
 public class ConnectionManager {
 
   private static ConnectionManager uniqueInstance = null;
-  private Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
-  private String dbURL;
-  private String dbUserName;
-  private String dbPassword;
-  private String dbName;
-  private int dbPort;
+  private final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
+  private final String dbURL;
+  private final String dbUserName;
+  private final String dbPassword;
+  private final String dbName;
+  private final int dbPort;
 
   public ConnectionManager() {
     IDatabaseConfiguration config = SystemConfig.getInstance().getDatabaseConfiguration();

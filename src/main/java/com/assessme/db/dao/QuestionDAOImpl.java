@@ -11,28 +11,36 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author Darshan Kathiriya
  * @created 16-June-2020 11:47 AM
  */
-@Repository
 public class QuestionDAOImpl implements QuestionDAO {
 
-  private Logger logger = LoggerFactory.getLogger(QuestionDAOImpl.class);
+  private static QuestionDAOImpl instance;
+  final String addQuestion_query = "INSERT INTO questions(user_id, question_type, "
+      + "question_title, question_text) values(?,?,?,?)";
+  final String addchoiceQuestion_query = "INSERT INTO question_options(question_id, option_text, "
+      + "option_value) values (?,?,?);";
+  private final Logger logger = LoggerFactory.getLogger(QuestionDAOImpl.class);
+
+  public static QuestionDAOImpl getInstance() {
+    if (instance == null) {
+      instance = new QuestionDAOImpl();
+    }
+    return instance;
+  }
 
   @Override
   public void addQuestion(Question question) throws Exception {
-    String query = "INSERT INTO questions(user_id, question_type, "
-        + "question_title, question_text) values(?,?,?,?)";
-    String choiceQuestion = "INSERT INTO question_options(question_id, option_text, "
-        + "option_value) values (?,?,?);";
+
     try (
         Connection connection = ConnectionManager.getInstance().getDBConnection().get();
         PreparedStatement stmt = connection
-            .prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-        PreparedStatement stmt_choiceQuestions = connection.prepareStatement(choiceQuestion)
+            .prepareStatement(addQuestion_query, PreparedStatement.RETURN_GENERATED_KEYS);
+        PreparedStatement stmt_choiceQuestions = connection
+            .prepareStatement(addchoiceQuestion_query)
     ) {
       stmt.setLong(1, question.getUserId());
       stmt.setInt(2, question.getQuestionTypeId());
@@ -79,7 +87,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     ) {
       statement.setLong(1, user.getUserId());
       ResultSet resultSet = statement.executeQuery();
-      while(resultSet.next()){
+      while (resultSet.next()) {
         Question question = new Question();
         question.setQuestionId(resultSet.getLong(1));
         question.setQuestionTypeId(resultSet.getInt(3));
@@ -105,7 +113,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     String query = "DELETE FROM questions where question_id=?";
     try (
         Connection connection = ConnectionManager.getInstance().getDBConnection().get();
-        PreparedStatement stmt = connection.prepareStatement(query);
+        PreparedStatement stmt = connection.prepareStatement(query)
     ) {
       stmt.setLong(1, questionId);
       if (stmt.executeUpdate() > 0) {

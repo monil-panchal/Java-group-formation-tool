@@ -8,7 +8,8 @@ import java.util.Objects;
  * @created 16-June-2020 11:51 AM
  */
 
-public class QuestionType implements Serializable{
+public class QuestionType implements Serializable {
+
   private int questionTypeID;
   private String questionTypeText;
 

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 
-public class StudentCSVParserImpl implements StudentCSVParser{
+public class StudentCSVParserImpl implements StudentCSVParser {
 
   private final Logger logger = LoggerFactory.getLogger(StudentCSVParserImpl.class);
   MultipartFile file;

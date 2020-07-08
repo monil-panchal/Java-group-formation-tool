@@ -3,11 +3,13 @@ package com.assessme.controller;
 import com.assessme.model.Course;
 import com.assessme.model.ResponseDTO;
 import com.assessme.service.CourseService;
+import com.assessme.service.CourseServiceImpl;
+import com.assessme.service.RoleService;
+import com.assessme.service.RoleServiceImpl;
+import com.assessme.service.UserService;
+import com.assessme.service.UserServiceImpl;
 import java.util.List;
 import java.util.Optional;
-
-import com.assessme.service.RoleService;
-import com.assessme.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,19 +31,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/course")
 public class CourseController {
 
-  private Logger logger = LoggerFactory.getLogger(CourseController.class);
+  private final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
-  private CourseService courseService;
-  private UserService userService;
-  private RoleService roleService;
+  private final CourseService courseService;
+  private final UserService userService;
+  private final RoleService roleService;
 
-  public CourseController(CourseService courseService, UserService userService, RoleService roleService) {
-    this.courseService = courseService;
-    this.userService = userService;
-    this.roleService = roleService;
+  public CourseController() {
+    this.courseService = CourseServiceImpl.getInstance();
+    this.userService = UserServiceImpl.getInstance();
+    this.roleService = RoleServiceImpl.getInstance();
   }
 
-  // API endpoint method for fetching all courses
   @GetMapping("/all")
   public ResponseEntity<ResponseDTO> getCourses() throws Exception {
 
@@ -63,7 +64,6 @@ public class CourseController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  // API endpoint method for fetching course using courseCode
   @GetMapping("/getCourseByCourseCode")
   public ResponseEntity<ResponseDTO> getCourseFromCourseCode(
       @RequestParam("courseCode") String courseCode) throws Exception {
@@ -86,7 +86,6 @@ public class CourseController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  // API endpoint method for fetching course using courseCode
   @GetMapping("/getCourseByCourseName")
   public ResponseEntity<ResponseDTO> getCourseFromCourseName(
       @RequestParam("courseName") String courseName) throws Exception {
@@ -109,7 +108,6 @@ public class CourseController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  // API endpoint method for removing course using courseName
   @DeleteMapping("/removeCourseByCourseName")
   public ResponseEntity<ResponseDTO> removeCourseByCourseName(
       @RequestParam("courseName") String courseName) throws Exception {
@@ -132,7 +130,6 @@ public class CourseController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  // API endpoint method for removing course using courseCode
   @DeleteMapping("/removeCourseByCourseCode")
   public ResponseEntity<ResponseDTO> removeCourseByCourseCode(
       @RequestParam("courseCode") String courseCode) throws Exception {
@@ -155,7 +152,6 @@ public class CourseController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  // API endpoint method for adding course
   @PostMapping(path = "/addCourse", consumes = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<ResponseDTO> addCourse(@RequestBody Course course) throws Exception {
 
@@ -177,18 +173,19 @@ public class CourseController {
     return new ResponseEntity(responseDTO, httpStatus);
   }
 
-  // API endpoint method for fetching courses enrolled by a student
   @GetMapping("/getEnrolledCourses")
-  public ResponseEntity<ResponseDTO> getEnrolledCourses(@RequestParam("email") String email) throws Exception {
+  public ResponseEntity<ResponseDTO> getEnrolledCourses(@RequestParam("email") String email)
+      throws Exception {
     logger.info("Calling API for enrolled courses.");
     HttpStatus httpStatus = null;
     ResponseDTO<List<Course>> responseDTO = null;
 
-    int roleIdStudent = roleService.getRoleFromRoleName("STUDENT").get().getRoleId();;
+    int roleIdStudent = roleService.getRoleFromRoleName("STUDENT").get().getRoleId();
     Long userId = userService.getUserFromEmail(email).get().getUserId();
 
     try {
-      Optional<List<Course>> courseList = courseService.getCoursesByUserAndRole(userId,roleIdStudent);
+      Optional<List<Course>> courseList = courseService
+          .getCoursesByUserAndRole(userId, roleIdStudent);
       String resMessage = String.format("course list has been retrieved from the database");
       responseDTO = new ResponseDTO(true, resMessage, null, courseList);
       httpStatus = HttpStatus.OK;

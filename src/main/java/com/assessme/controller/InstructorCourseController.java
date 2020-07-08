@@ -7,12 +7,16 @@ import com.assessme.model.ResponseDTO;
 import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.CourseService;
+import com.assessme.service.CourseServiceImpl;
 import com.assessme.service.EnrollmentService;
+import com.assessme.service.EnrollmentServiceImpl;
 import com.assessme.service.RoleService;
+import com.assessme.service.RoleServiceImpl;
 import com.assessme.service.StudentCSVImport;
 import com.assessme.service.StudentCSVParser;
 import com.assessme.service.StudentCSVParserImpl;
 import com.assessme.service.UserService;
+import com.assessme.service.UserServiceImpl;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -35,24 +39,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class InstructorCourseController {
 
-
+  private final Logger logger = LoggerFactory.getLogger(InstructorCourseController.class);
   UserService userService;
   CourseService courseService;
   EnrollmentService enrollmentService;
   RoleService roleService;
   CurrentUserService currentUserService;
   StudentCSVImport studentCSVImport;
-  private Logger logger = LoggerFactory.getLogger(InstructorCourseController.class);
 
-  public InstructorCourseController(UserService userService, CourseService courseService,
-      EnrollmentService enrollmentService, RoleService roleService,
-      CurrentUserService currentUserService, StudentCSVImport studentCSVImport) {
-    this.userService = userService;
-    this.courseService = courseService;
-    this.enrollmentService = enrollmentService;
-    this.roleService = roleService;
-    this.currentUserService = currentUserService;
-    this.studentCSVImport = studentCSVImport;
+  public InstructorCourseController() {
+    this.userService = UserServiceImpl.getInstance();
+    this.courseService = CourseServiceImpl.getInstance();
+    this.enrollmentService = EnrollmentServiceImpl.getInstance();
+    this.roleService = RoleServiceImpl.getInstance();
+    this.currentUserService = CurrentUserService.getInstance();
+    this.studentCSVImport = StudentCSVImport.getInstance();
   }
 
   @GetMapping("/instructor_dashboard")
