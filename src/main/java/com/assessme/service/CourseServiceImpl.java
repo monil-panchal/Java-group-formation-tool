@@ -12,23 +12,24 @@ import org.springframework.stereotype.Service;
  * @author: hardik Created on: 2020-05-30
  */
 
-/**
- * Course service layer class for this application
- */
 @Service
-public class CourseServiceImpl implements CourseService{
+public class CourseServiceImpl implements CourseService {
 
-  private Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
+  private static CourseServiceImpl instance;
+  private final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
+  private final CourseDAOImpl courseDAOImpl;
 
-  private CourseDAOImpl courseDAOImpl;
-
-  public CourseServiceImpl(CourseDAOImpl courseDAOImpl) {
-    this.courseDAOImpl = courseDAOImpl;
+  public CourseServiceImpl() {
+    this.courseDAOImpl = CourseDAOImpl.getInstance();
   }
 
-  /**
-   * Service method for retrieving all Courses
-   */
+  public static CourseServiceImpl getInstance() {
+    if (instance == null) {
+      instance = new CourseServiceImpl();
+    }
+    return instance;
+  }
+
   public Optional<List<Course>> getCourseList() throws Exception {
 
     Optional<List<Course>> courseList = Optional.empty();
@@ -47,9 +48,6 @@ public class CourseServiceImpl implements CourseService{
     return courseList;
   }
 
-  /**
-   * Service method for retrieving course using courseCode
-   */
   public Optional<Course> getCourseWithCode(String courseCode) throws Exception {
 
     Optional<Course> course;
@@ -67,9 +65,6 @@ public class CourseServiceImpl implements CourseService{
     return course;
   }
 
-  /**
-   * Service method for retrieving course using courseName
-   */
   public Optional<Course> getCourseWithName(String courseName) throws Exception {
 
     Optional<Course> course;
@@ -88,9 +83,6 @@ public class CourseServiceImpl implements CourseService{
   }
 
 
-  /**
-   * Service method for removing course using courseCode
-   */
   public Boolean removeCourseWithCourseCode(String courseCode) throws Exception {
 
     Boolean removed;
@@ -108,9 +100,6 @@ public class CourseServiceImpl implements CourseService{
     return removed;
   }
 
-  /**
-   * Service method for removing course using courseName
-   */
   public Boolean removeCourseWithCourseName(String courseName) throws Exception {
 
     Boolean removed;
@@ -128,9 +117,6 @@ public class CourseServiceImpl implements CourseService{
     return removed;
   }
 
-  /**
-   * Service method for inserting course record
-   */
   public Optional<Course> addCourse(Course course) throws Exception {
 
     Optional<Course> newCourse;
@@ -152,7 +138,7 @@ public class CourseServiceImpl implements CourseService{
   public Optional<List<Course>> getCoursesByUserAndRole(long userId, int roleId) throws Exception {
     Optional<List<Course>> courseList = Optional.empty();
     try {
-      courseList = (courseDAOImpl.listCourseByUserAndRole(userId,roleId));
+      courseList = (courseDAOImpl.listCourseByUserAndRole(userId, roleId));
       String resMessage = String.format("Course list has been retrieved from the database");
       logger.info(resMessage);
     } catch (Exception e) {

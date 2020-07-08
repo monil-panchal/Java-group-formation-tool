@@ -4,8 +4,11 @@ import com.assessme.model.Course;
 import com.assessme.model.User;
 import com.assessme.model.UserToken;
 import com.assessme.service.CourseService;
+import com.assessme.service.CourseServiceImpl;
 import com.assessme.service.MailSenderService;
+import com.assessme.service.MailSenderServiceImpl;
 import com.assessme.service.UserService;
+import com.assessme.service.UserServiceImpl;
 import com.assessme.util.AppConstant;
 import java.net.URL;
 import java.util.Date;
@@ -21,7 +24,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -34,18 +42,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/")
 public class MainController {
 
-  private Logger logger = LoggerFactory.getLogger(MainController.class);
+  private final Logger logger = LoggerFactory.getLogger(MainController.class);
 
 
-  private UserService userService;
-  private CourseService courseService;
-  private MailSenderService mailSenderService;
+  private final UserService userService;
+  private final CourseService courseService;
+  private final MailSenderService mailSenderService;
 
-  public MainController(UserService userService, MailSenderService mailSenderService,
-      CourseService courseService) {
-    this.mailSenderService = mailSenderService;
-    this.userService = userService;
-    this.courseService = courseService;
+  public MainController() {
+    this.mailSenderService = MailSenderServiceImpl.getInstance();
+    this.userService = UserServiceImpl.getInstance();
+    this.courseService = CourseServiceImpl.getInstance();
   }
 
   @GetMapping("/login")
@@ -126,7 +133,9 @@ public class MainController {
   }
 
   @GetMapping("/enrolled_courses")
-  public String enrolledCourses(Model model) { return "enrolledCourses"; }
+  public String enrolledCourses(Model model) {
+    return "enrolledCourses";
+  }
 
   @GetMapping("/forget_password")
   public String forgetPassword(@ModelAttribute("user") User user) {
@@ -154,11 +163,11 @@ public class MainController {
 
       mailSenderService.sendSimpleMessage(recipient, subject, body);
 
-     // modelAndView.addObject("message", "An email is sent to your mailbox for password recovery.");
+      // modelAndView.addObject("message", "An email is sent to your mailbox for password recovery.");
       // modelAndView.setViewName("successForgotPassword");
 
     } catch (Exception e) {
-   //   modelAndView.addObject("message", e.getLocalizedMessage());
+      //   modelAndView.addObject("message", e.getLocalizedMessage());
       modelAndView.setViewName("error");
     }
     return modelAndView;

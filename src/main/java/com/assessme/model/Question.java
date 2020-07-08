@@ -74,11 +74,11 @@ public class Question implements Serializable {
     this.optionValue = optionValue;
   }
 
-  public void setQuestionDate(Timestamp timestamp) {
-    this.questionDate = timestamp;
-  }
-
   public Timestamp getQuestionDate() {
     return questionDate;
+  }
+
+  public void setQuestionDate(Timestamp timestamp) {
+    this.questionDate = timestamp;
   }
 }

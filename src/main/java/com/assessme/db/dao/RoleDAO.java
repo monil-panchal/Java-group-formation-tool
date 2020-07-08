@@ -1,12 +1,10 @@
 package com.assessme.db.dao;
 
 /**
- * @author: monil
- * Created on: 2020-05-29
+ * @author: monil Created on: 2020-05-29
  */
 
 import com.assessme.model.Role;
-
 import java.util.Optional;
 
 /**
@@ -14,5 +12,6 @@ import java.util.Optional;
  */
 
 public interface RoleDAO {
-    Optional<Role> getRolebyName(String roleName) throws Exception;
+
+  Optional<Role> getRolebyName(String roleName) throws Exception;
 }

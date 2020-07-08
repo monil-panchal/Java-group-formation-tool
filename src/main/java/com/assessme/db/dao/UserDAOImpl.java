@@ -15,47 +15,61 @@ import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author: monil Created on: 2020-05-29
  */
 
-/**
- * The {@link UserDAO} implementation class for performing CRUD operations for the user table of the
- * database.
- */
-@Repository
 public class UserDAOImpl implements UserDAO {
 
+  private static UserDAOImpl instance;
+  final String selectQuery =
+      "SELECT u.user_id, u.banner_id, u.first_name, u.last_name, u.email, u.isActive " +
+          "FROM user AS u WHERE email = ?";
+  final String selectUserQuery = "SELECT u.banner_id, u.first_name, u.last_name, u.email,"
+      + " u.isActive FROM user AS u";
+  final String selectQueryFromEmail =
+      "SELECT u.banner_id, u.first_name, u.last_name, u.email, u.isActive, u.password, " +
+          "r.role_name FROM user AS u" +
+          " INNER JOIN user_role AS ur " +
+          " ON u.user_id = ur.user_id " +
+          " INNER JOIN role AS r " +
+          " ON ur.role_id = r.role_id " +
+          " WHERE u.email = ?";
+  final String insertUserSQLQuery =
+      "INSERT INTO user(banner_id, first_name, last_name, email, password, isActive)" +
+          "  values (?,?,?,?,?,?)";
+  final String updateUserSQLQuery = "UPDATE user set password = ? where email = ?";
+  final String getUserNotAssignedForCourse =
+      "SELECT * FROM (SELECT u.*, ifnull(e.course_id,-1) AS course_id "
+          + "FROM user u LEFT JOIN user_course_role e ON u.user_id=e.user_id GROUP BY user_id)"
+          + " as user WHERE  course_id!=?";
   private final Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
-
   private final ConnectionManager connectionManager;
 
   public UserDAOImpl() {
     connectionManager = new ConnectionManager();
   }
 
+  public static UserDAOImpl getInstance() {
+    if (instance == null) {
+      instance = new UserDAOImpl();
+    }
+    return instance;
+  }
 
-  // UserDAO method for retrieving user using email
   @Override
   public Optional<User> getUserByEmail(String email) throws Exception {
-    email = '\'' + email + '\'';
 
     Optional<User> user = Optional.empty();
 
-    // SQL query for fetching the user record based on the email
-    String selectQuery =
-        "SELECT u.user_id, u.banner_id, u.first_name, u.last_name, u.email, u.isActive " +
-            "FROM user AS u WHERE email =" + email;
     try (
-        Connection connection = connectionManager.getDBConnection().get()
+        Connection connection = connectionManager.getDBConnection().get();
+        PreparedStatement statement = connection.prepareStatement(selectQuery)
     ) {
       if ((!email.isEmpty() && email != null)) {
-        // Preparing the statement
-        Statement statement = connection.createStatement();
-
-        ResultSet resultSet = statement.executeQuery(selectQuery);
+        statement.setString(1, email);
+        ResultSet resultSet = statement.executeQuery();
 
         if (!resultSet.isBeforeFirst()) {
           logger.error(String.format("No user found in the database"));
@@ -64,7 +78,6 @@ public class UserDAOImpl implements UserDAO {
 
         logger.info(String.format("User data retrieved successfully"));
 
-        // Iterating through the rows and constructing user object
         while (resultSet.next()) {
           user = Optional.of(new User());
           user.get().setUserId(resultSet.getLong("user_id"));
@@ -76,14 +89,10 @@ public class UserDAOImpl implements UserDAO {
         }
         String successString = String.format("User list retrieved successfully.");
         logger.info(successString);
-
-
       } else {
         throw new Exception(String.format("User email id cannot be null"));
       }
-
     } catch (Exception e) {
-      //Closing the connection
       logger.error(e.getLocalizedMessage());
       e.printStackTrace();
       throw e;
@@ -95,9 +104,6 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public List<User> getAllUser() throws Exception {
 
-    // SQL query for fetching the all user
-    String selectUserQuery = "SELECT u.banner_id, u.first_name, u.last_name, u.email, u.isActive FROM user AS u";
-
     List<User> userList = new ArrayList<>();
 
     try (
@@ -106,15 +112,12 @@ public class UserDAOImpl implements UserDAO {
     ) {
       ResultSet resultSet = preparedStatement.executeQuery();
       while (resultSet.next()) {
-        // Instantiating new user
         User user = new User();
-        //Setting the attributes
         user.setBannerId(resultSet.getString("banner_id"));
         user.setFirstName(resultSet.getString("first_name"));
         user.setLastName(resultSet.getString("last_name"));
         user.setEmail(resultSet.getString("email"));
         user.setActive(resultSet.getBoolean("isActive"));
-        // Adding user to the list
         userList.add(user);
       }
       logger.info(String.format("User list retrieved from the database: %s", userList));
@@ -129,24 +132,15 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public Optional<UserRoleDTO> getUserWithRolesFromEmail(String email) throws Exception {
     Optional<UserRoleDTO> user = Optional.empty();
-    email = '\'' + email + '\'';
-
-    // SQL query for fetching the user record with role_name based on the email.
-    String selectQuery =
-        "SELECT u.banner_id, u.first_name, u.last_name, u.email, u.isActive, u.password, " +
-            "r.role_name FROM user AS u" +
-            " INNER JOIN user_role AS ur " +
-            " ON u.user_id = ur.user_id " +
-            " INNER JOIN role AS r " +
-            " ON ur.role_id = r.role_id " +
-            " WHERE u.email =" + email;
 
     try (
         Connection connection = connectionManager.getDBConnection().get();
-        Statement statement = connection.createStatement()
+        PreparedStatement statement = connection.prepareStatement(selectQueryFromEmail)
     ) {
       if ((!email.isEmpty() && email != null)) {
-        ResultSet resultSet = statement.executeQuery(selectQuery);
+        statement.setString(1, email);
+        logger.info(statement.toString());
+        ResultSet resultSet = statement.executeQuery();
         if (!resultSet.isBeforeFirst()) {
           logger.error(String.format("User: %s is not found in the database", email));
           throw new Exception(String.format("User: %s is not found in the database", email));
@@ -154,7 +148,7 @@ public class UserDAOImpl implements UserDAO {
         logger.info(String.format("User data retrieved successfully"));
         user = Optional.of(new UserRoleDTO());
         Set<String> userRoles = new HashSet();
-        // Getting the first column and building the UserRoleDTO object
+
         resultSet.next();
         user.get().setBannerId(resultSet.getString("banner_id"));
         user.get().setFirstName(resultSet.getString("first_name"));
@@ -163,7 +157,7 @@ public class UserDAOImpl implements UserDAO {
         user.get().setActive(resultSet.getBoolean("isActive"));
         user.get().setPassword(resultSet.getString("password"));
         userRoles.add(resultSet.getString("role_name"));
-        //Getting all the roles for the user and adding to Set
+
         while (resultSet.next()) {
           userRoles.add(resultSet.getString("role_name"));
         }
@@ -174,7 +168,7 @@ public class UserDAOImpl implements UserDAO {
         throw new Exception(String.format("User email id cannot be null"));
       }
     } catch (Exception e) {
-      // Getting the DB connection
+
       logger.error(e.getMessage());
       e.printStackTrace();
       throw e;
@@ -186,15 +180,13 @@ public class UserDAOImpl implements UserDAO {
   public Optional<User> addUser(User user) throws Exception {
 
     Optional<User> newUser = Optional.empty();
-    String insertUserSQLQuery =
-        "INSERT INTO user(banner_id, first_name, last_name, email, password, isActive)" +
-            "  values (?,?,?,?,?,?)";
+
     try (
         Connection connection = connectionManager.getDBConnection().get();
         PreparedStatement preparedStatement = connection
             .prepareStatement(insertUserSQLQuery, Statement.RETURN_GENERATED_KEYS)
     ) {
-      //Setting the query params
+
       preparedStatement.setString(1, user.getBannerId());
       preparedStatement.setString(2, user.getFirstName());
       preparedStatement.setString(3, user.getLastName());
@@ -202,10 +194,8 @@ public class UserDAOImpl implements UserDAO {
       preparedStatement.setString(5, user.getPassword());
       preparedStatement.setBoolean(6, user.getActive());
 
-      // Executing the query to store the user record
       int row = preparedStatement.executeUpdate();
 
-      // check if the record was inserted successfully
       if (row > 0) {
         String successString = String
             .format("User record with email: %s has been successfully inserted in the DB",
@@ -230,7 +220,7 @@ public class UserDAOImpl implements UserDAO {
       return newUser;
 
     } catch (Exception e) {
-      // Getting the DB connection
+
       logger.error(e.getMessage());
       e.printStackTrace();
       throw e;
@@ -239,23 +229,15 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public Optional<User> updateUserPassword(User user) throws Exception {
-
     Optional<User> updatedUserObj = Optional.empty();
-    String updateUserSQLQuery = "UPDATE user set password = ? where email = ?";
     try (
         Connection connection = connectionManager.getDBConnection().get();
         PreparedStatement preparedStatement = connection
             .prepareStatement(updateUserSQLQuery, Statement.RETURN_GENERATED_KEYS)
     ) {
-
-      //Setting the query params
       preparedStatement.setString(1, user.getPassword());
       preparedStatement.setString(2, user.getEmail());
-
-      // Executing the query to store the user record
       int row = preparedStatement.executeUpdate();
-
-      // check if the record was inserted successfully
       if (row > 0) {
         String successString = String
             .format("User record with email: %s has been successfully updated in the DB",
@@ -268,9 +250,7 @@ public class UserDAOImpl implements UserDAO {
         logger.error(failureString);
         throw new Exception(failureString);
       }
-
       return updatedUserObj;
-
     } catch (Exception e) {
 
       logger.error(e.getMessage());
@@ -282,25 +262,20 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public List<User> getUserNotAssignedForCourse(long courseId) throws Exception {
     List<User> userList = new ArrayList<>();
-    String query = "SELECT * FROM (SELECT u.*, ifnull(e.course_id,-1) AS course_id "
-        + "FROM user u LEFT JOIN user_course_role e ON u.user_id=e.user_id GROUP BY user_id)"
-        + " as user WHERE  course_id!=?";
     try (
         Connection connection = connectionManager.getDBConnection().get();
-        PreparedStatement preparedStatement = connection.prepareStatement(query)
+        PreparedStatement preparedStatement = connection
+            .prepareStatement(getUserNotAssignedForCourse)
     ) {
       preparedStatement.setLong(1, courseId);
       ResultSet resultSet = preparedStatement.executeQuery();
       while (resultSet.next()) {
-        // Instantiating new user
         User user = new User();
-        //Setting the attributes
         user.setBannerId(resultSet.getString("banner_id"));
         user.setFirstName(resultSet.getString("first_name"));
         user.setLastName(resultSet.getString("last_name"));
         user.setEmail(resultSet.getString("email"));
         user.setActive(resultSet.getBoolean("isActive"));
-        // Adding user to the list
         userList.add(user);
       }
       logger.info(String.format("User list retrieved from the database: %s", userList));

@@ -16,8 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class StudentCSVImport {
 
+  private static StudentCSVImport instance;
   final String ROLENAME = "STUDENT";
-
+  private final Logger logger = LoggerFactory.getLogger(StudentCSVImport.class);
   UserService userService;
   RoleService roleService;
   EnrollmentService enrollmentService;
@@ -26,18 +27,20 @@ public class StudentCSVImport {
   List<String> successResults = new ArrayList<>();
   List<String> failureResults = new ArrayList<>();
 
-  private Logger logger = LoggerFactory.getLogger(StudentCSVImport.class);
-
-  public StudentCSVImport(UserService userService,
-      RoleService roleService, EnrollmentService enrollmentService,
-      CourseService courseService, MailSenderService mailSenderService) {
-    this.userService = userService;
-    this.roleService = roleService;
-    this.enrollmentService = enrollmentService;
-    this.courseService = courseService;
-    this.mailSenderService = mailSenderService;
+  public StudentCSVImport() {
+    this.userService = UserServiceImpl.getInstance();
+    this.roleService = RoleServiceImpl.getInstance();
+    this.enrollmentService = EnrollmentServiceImpl.getInstance();
+    this.courseService = CourseServiceImpl.getInstance();
+    this.mailSenderService = MailSenderServiceImpl.getInstance();
   }
 
+  public static StudentCSVImport getInstance() {
+    if (instance == null) {
+      instance = new StudentCSVImport();
+    }
+    return instance;
+  }
 
   public void importStudents(StudentCSVParser parser, String courseCode) {
     try {
@@ -66,7 +69,7 @@ public class StudentCSVImport {
           enrollmentService.insertEnrollment(
               userToBeEnrolled.getUserId(),
               studentRole.get().getRoleId(),
-              (long) courseService.getCourseWithCode(courseCode).get().getCourseId()
+              courseService.getCourseWithCode(courseCode).get().getCourseId()
           );
           successResults.add("Enrolled: " + userToBeEnrolled);
         } catch (Exception e) {

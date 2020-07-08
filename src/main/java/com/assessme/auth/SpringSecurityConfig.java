@@ -18,9 +18,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private UserServiceImpl userServiceImpl;
+  private final UserServiceImpl userServiceImpl;
 
-  private AuthenticationSuccessHandler authenticationSuccessHandler;
+  private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
   public SpringSecurityConfig(UserServiceImpl userServiceImpl,
       AuthenticationSuccessHandler authenticationSuccessHandler) {
@@ -31,32 +31,32 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers(
-                        "/user/**",
-                        "/user",
-                        "/user/roles/**",
-                        "/js/**",
-                        "/css/**",
-                        "/img/**",
-                        "/registration",
-                        "/course/**",
-                        "/new_password",
-                        "/forget_password"
-                ).permitAll()
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .successHandler(authenticationSuccessHandler)
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
-                .permitAll();
-    }
+    http.csrf().disable()
+        .authorizeRequests()
+        .antMatchers(
+            "/user/**",
+            "/user",
+            "/user/roles/**",
+            "/js/**",
+            "/css/**",
+            "/img/**",
+            "/registration",
+            "/course/**",
+            "/new_password",
+            "/forget_password"
+        ).permitAll()
+        .antMatchers("/admin/**").hasAuthority("ADMIN")
+        .anyRequest().authenticated()
+        .and()
+        .formLogin()
+        .loginPage("/login")
+        .successHandler(authenticationSuccessHandler)
+        .and()
+        .logout()
+        .logoutUrl("/logout")
+        .logoutSuccessUrl("/login")
+        .permitAll();
+  }
 
   @Bean
   public BCryptPasswordEncoder passwordEncoder() {
