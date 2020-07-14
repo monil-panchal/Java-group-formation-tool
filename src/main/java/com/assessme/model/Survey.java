@@ -1,6 +1,5 @@
 package com.assessme.model;
 
-import java.util.List;
 
 public class Survey {
   private long surveyId;
