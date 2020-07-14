@@ -11,12 +11,13 @@ public class Survey {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private long userId;
+    private long courseId;
 
 
     public Survey() {
     }
 
-    public Survey(long surveyId, String surveyName, String description, String state, Timestamp createdAt, Timestamp updatedAt, long userId) {
+    public Survey(long surveyId, String surveyName, String description, String state, Timestamp createdAt, Timestamp updatedAt, long userId, long courseId) {
         this.surveyId = surveyId;
         this.surveyName = surveyName;
         this.description = description;
@@ -24,62 +25,85 @@ public class Survey {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.userId = userId;
+        this.courseId = courseId;
     }
 
     public long getSurveyId() {
+
         return surveyId;
     }
 
     public void setSurveyId(long surveyId) {
+
         this.surveyId = surveyId;
     }
 
     public String getSurveyName() {
+
         return surveyName;
     }
 
     public void setSurveyName(String surveyName) {
+
         this.surveyName = surveyName;
     }
 
     public String getDescription() {
+
         return description;
     }
 
     public void setDescription(String description) {
+
         this.description = description;
     }
 
     public String getState() {
+
         return state;
     }
 
     public void setState(String state) {
+
         this.state = state;
     }
 
     public Timestamp getCreatedAt() {
+
         return createdAt;
     }
 
     public void setCreatedAt(Timestamp createdAt) {
+
         this.createdAt = createdAt;
     }
 
     public Timestamp getUpdatedAt() {
+
         return updatedAt;
     }
 
     public void setUpdatedAt(Timestamp updatedAt) {
+
         this.updatedAt = updatedAt;
     }
 
     public long getUserId() {
+
         return userId;
     }
 
     public void setUserId(long userId) {
+
         this.userId = userId;
+    }
+
+    public long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(long courseId) {
+        this.courseId = courseId;
     }
 
     @Override
@@ -92,6 +116,7 @@ public class Survey {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", userId=" + userId +
+                ", courseId=" + courseId +
                 '}';
     }
 }
