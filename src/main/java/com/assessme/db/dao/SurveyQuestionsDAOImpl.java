@@ -30,7 +30,7 @@ public class SurveyQuestionsDAOImpl implements SurveyQuestionsDAO {
         return instance;
     }
 
-    private static final String insertSurveyQuestionsQuery = "INSERT INTO survey_questions(survey_id, question_id) " +
+    private static final String insertSurveyQuestionsQuery = "REPLACE INTO survey_questions(survey_id, question_id) " +
             "VALUES(?, ?)";
 
     final String getSurveysQuestionsQuery =
