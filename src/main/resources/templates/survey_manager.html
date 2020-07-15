@@ -15,7 +15,29 @@
     </div>
 </div>
 <div>
-<!--<button th:href="@{/survey/course_surveys(courseCode=${i.courseCode})}">Create Survey</button>
+    <form th:action="@{/survey/create_survey}" th:object="${survey}" method="post" onsubmit="return formSubmit()">
+        <table>
+            <tr>
+                <td>Survey Name</td>
+                <td><input type="text" th:field="${survey.surveyName}"></td>
+            </tr>
+            <tr>
+                <td>Survey Description</td>
+                <td><input type="text" th:field="${survey.description}"></td>
+            </tr>
+            <tr hidden>
+                <td>User ID</td>
+                <td><input type="text" th:field="${survey.userId}"></td>
+            </tr>
+            <tr HIDDEN>
+                <td>Course ID</td>
+                <td><input type="text" th:field="${survey.courseId}"></td>
+            </tr>
+        </table>
+        <br>
+        <button type = "submit" >Add Course</button>
+    </form>
+<!--<button th:href="@{/survey/course_surveys(courseId=${courseId})}">Create Survey</button>
 --><br>
 <br>
     <div id = "noSurvey"></div>
@@ -40,5 +62,19 @@
         </tr>
     </table>
     </div>
+
+<script>
+    function formSubmit() {
+        $.getJSON("/survey/create_survey", function (response) {
+            console.log("response", response)
+            if(response.onsuccess){
+                alert(response.body)
+            }
+            else{
+                alert("survey not created")
+            }
+        })
+    }
+</script>
 </body>
 </html>
