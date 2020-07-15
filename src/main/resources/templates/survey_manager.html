@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/app.css">
+    <title>Course Admin Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1 align="center">Survey Manager</h1>
+<div>
+    <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+    <div th:align="right">
+        <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+    </div>
+</div>
+<div>
+<!--<button th:href="@{/survey/course_surveys(courseCode=${i.courseCode})}">Create Survey</button>
+--><br>
+<br>
+    <div id = "noSurvey"></div>
+    <table id = "survey_table" border="1" align="centre" width=100%>
+        <tr>
+            <th width=10%>Survey ID</th>
+            <th width=15%>Survey Name</th>
+            <th width=40%>Description</th>
+            <th width=5%>State</th>
+            <th width=10%>Created At</th>
+            <th width=10%>Updated At</th>
+            <th width=10%>Modify</th>
+        </tr>
+        <tr th:each="i : ${surveyList}">
+            <td th:text="${i.surveyId}"></td>
+            <td th:text="${i.surveyName}"></td>
+            <td th:text="${i.description}"></td>
+            <td th:text="${i.status }"></td>
+            <td th:text="${i.createdAt}"></td>
+            <td th:text="${i.updatedAt}"></td>
+            <td> Modify </td>
+        </tr>
+    </table>
+    </div>
+</body>
+</html>

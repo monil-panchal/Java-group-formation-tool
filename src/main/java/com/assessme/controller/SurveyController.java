@@ -1,9 +1,8 @@
 package com.assessme.controller;
 
-import com.assessme.model.ResponseDTO;
-import com.assessme.model.Survey;
-import com.assessme.model.User;
-import com.assessme.model.UserRoleDTO;
+import com.assessme.model.*;
+import com.assessme.service.CourseService;
+import com.assessme.service.CourseServiceImpl;
 import com.assessme.service.SurveyService;
 import com.assessme.service.SurveyServiceImpl;
 import org.slf4j.Logger;
@@ -11,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,11 +28,18 @@ public class SurveyController {
     private final Logger logger = LoggerFactory.getLogger(SurveyController.class);
 
     private SurveyService surveyService;
+    private final CourseService courseService;
 
     public SurveyController(SurveyService surveyService) {
+
         this.surveyService = SurveyServiceImpl.getInstance();
+        this.courseService = CourseServiceImpl.getInstance();
     }
 
+    @GetMapping(value = "/create_survey")
+    public String createSurvey(Model model) {
+        return "create_survey";
+    }
 
     @PostMapping(value = "/create_survey", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> addSurvey(@RequestBody Survey survey) {
@@ -63,27 +71,28 @@ public class SurveyController {
     }
 
     @GetMapping(value = "/course_surveys")
-    public ResponseEntity<ResponseDTO> getCourseSurveys(@RequestParam("courseId") Long courseId){
+    public ModelAndView getCourseSurveys(@RequestParam("courseCode") String courseCode){
 
-        logger.info("Calling API for survey retrieval for the course: " + courseId);
+        logger.info("Calling API for survey retrieval for the course: " + courseCode);
         HttpStatus httpStatus = null;
         ResponseDTO<List<Survey>> responseDTO = null;
-
+        ModelAndView mav = new ModelAndView("survey_manager");
         try {
+            Optional<Course> course = courseService.getCourseWithCode(courseCode);
+            Long courseId = course.get().getCourseId();
             List<Survey> surveyList = surveyService.getSurveysForCourse(courseId);
             String resMessage = String.format("Survey list has been retrieved from the database");
-            responseDTO = new ResponseDTO(true, resMessage, null, surveyList);
-            httpStatus = HttpStatus.OK;
+            mav.addObject("surveyList", surveyList);
+            mav.addObject("courseId", courseId);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
 
             String errMessage = String.format("Error in retrieving the survey from the database");
-            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-            httpStatus = HttpStatus.CONFLICT;
+            logger.error("Error fetching survey_manager page");
+            mav.addObject("message", errMessage);
         }
-
-        return new ResponseEntity(responseDTO, httpStatus);
+        return mav;
     }
 
     @PutMapping(value = "/change_status" , consumes = {MediaType.APPLICATION_JSON_VALUE})
