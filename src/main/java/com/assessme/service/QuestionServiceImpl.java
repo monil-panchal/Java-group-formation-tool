@@ -58,4 +58,9 @@ public class QuestionServiceImpl implements QuestionService {
     questionDAO.removeQuestion(questionId);
   }
 
+  @Override
+  public Optional<Question> getQuestionById(Long question_id) throws Exception {
+    return questionDAO.getQuestionById(question_id);
+  }
+
 }
