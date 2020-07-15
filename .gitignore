@@ -5,6 +5,7 @@ build/
 !**/src/main/**
 !**/src/test/**
 logs/
+
 ### tmp ###
 tmp/
 bin/
