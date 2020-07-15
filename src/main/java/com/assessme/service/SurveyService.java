@@ -9,7 +9,7 @@ public interface SurveyService {
 
     Optional<Survey> addSurvey(Survey survey) throws Exception;
     List<Survey> getSurveysForCourse(Long courseId) throws Exception;
-    Optional<Survey> getSurvey(Long courseId) throws Exception;
+    Optional<Survey> getSurvey(Long surveyId) throws Exception;
     Optional<Survey> updateSurveyStatus(Survey survey) throws Exception;
 
 }

@@ -1,8 +1,10 @@
 package com.assessme.db.dao;
 
 import com.assessme.model.SurveyQuestions;
+import com.assessme.model.SurveyQuestionsDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author: monil
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public interface SurveyQuestionsDAO {
 
-    List<SurveyQuestions> addSurveyQuestions(List<SurveyQuestions> surveyQuestions) throws Exception;
+    Optional<SurveyQuestionsDTO> addSurveyQuestions(SurveyQuestionsDTO surveyQuestions) throws Exception;
 
     List<SurveyQuestions> getSurveyQuestions(long surveyId) throws Exception;
 

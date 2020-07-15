@@ -1,8 +1,8 @@
 package com.assessme.model;
 
 public class SurveyQuestions {
-    private long surveyId;
-    private long questionId;
+    private Long surveyId;
+    private Long questionId;
 
     public SurveyQuestions() {
     }
@@ -12,19 +12,19 @@ public class SurveyQuestions {
         this.questionId = questionId;
     }
 
-    public long getSurveyId() {
+    public Long getSurveyId() {
         return surveyId;
     }
 
-    public void setSurveyId(long surveyId) {
+    public void setSurveyId(Long surveyId) {
         this.surveyId = surveyId;
     }
 
-    public long getQuestionId() {
+    public Long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(long questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 }
