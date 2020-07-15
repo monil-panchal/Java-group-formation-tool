@@ -4,36 +4,36 @@ import java.sql.Timestamp;
 
 public class Survey {
 
-    private long surveyId;
+    private Long surveyId;
     private String surveyName;
     private String description;
-    private String state;
+    private String status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private long userId;
-    private long courseId;
+    private Long userId;
+    private Long courseId;
 
 
     public Survey() {
     }
 
-    public Survey(long surveyId, String surveyName, String description, String state, Timestamp createdAt, Timestamp updatedAt, long userId, long courseId) {
+    public Survey(long surveyId, String surveyName, String description, String status, Timestamp createdAt, Timestamp updatedAt, long userId, long courseId) {
         this.surveyId = surveyId;
         this.surveyName = surveyName;
         this.description = description;
-        this.state = state;
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.userId = userId;
         this.courseId = courseId;
     }
 
-    public long getSurveyId() {
+    public Long getSurveyId() {
 
         return surveyId;
     }
 
-    public void setSurveyId(long surveyId) {
+    public void setSurveyId(Long surveyId) {
 
         this.surveyId = surveyId;
     }
@@ -58,14 +58,14 @@ public class Survey {
         this.description = description;
     }
 
-    public String getState() {
+    public String getStatus() {
 
-        return state;
+        return status;
     }
 
-    public void setState(String state) {
+    public void setStatus(String status) {
 
-        this.state = state;
+        this.status = status;
     }
 
     public Timestamp getCreatedAt() {
@@ -88,21 +88,21 @@ public class Survey {
         this.updatedAt = updatedAt;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
 
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
 
         this.userId = userId;
     }
 
-    public long getCourseId() {
+    public Long getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(long courseId) {
+    public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }
 
@@ -112,7 +112,7 @@ public class Survey {
                 "surveyId=" + surveyId +
                 ", surveyName='" + surveyName + '\'' +
                 ", description='" + description + '\'' +
-                ", state='" + state + '\'' +
+                ", status='" + status + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", userId=" + userId +
