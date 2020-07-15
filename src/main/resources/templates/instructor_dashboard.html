@@ -22,6 +22,7 @@
     <th>Course Name</th>
     <th>Assign TA</th>
     <th>Import CSV</th>
+    <th>Create Survey</th>
   </tr>
   <tr th:each="i : ${courses}">
     <td th:text="${i.courseCode}"></td>
@@ -33,6 +34,11 @@
     <td>
       <a th:href="@{/csvupload/{courseCode}(courseCode=${i.courseCode})}">
         Import CSV
+      </a>
+    </td>
+    <td>
+      <a th:href="@{/survey/course_surveys(courseCode=${i.courseCode})}">
+        Manage Survey
       </a>
     </td>
   </tr>
