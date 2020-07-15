@@ -18,4 +18,6 @@ public interface QuestionDAO {
   void removeQuestion(Question question) throws Exception;
 
   void removeQuestion(long questionId) throws Exception;
+
+  Optional<Question> getQuestionById(long question_id) throws Exception;
 }
