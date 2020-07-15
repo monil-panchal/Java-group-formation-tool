@@ -1,5 +1,6 @@
 package com.assessme.controller;
 
+import com.assessme.auth.CurrentUserService;
 import com.assessme.model.*;
 import com.assessme.service.CourseService;
 import com.assessme.service.CourseServiceImpl;
@@ -27,22 +28,27 @@ public class SurveyController {
 
     private final Logger logger = LoggerFactory.getLogger(SurveyController.class);
 
-    private SurveyService surveyService;
+    private final SurveyService surveyService;
     private final CourseService courseService;
+    private final CurrentUserService currentUserService;
 
     public SurveyController(SurveyService surveyService) {
 
         this.surveyService = SurveyServiceImpl.getInstance();
         this.courseService = CourseServiceImpl.getInstance();
+        this.currentUserService = CurrentUserService.getInstance();
     }
 
-    @GetMapping(value = "/create_survey")
-    public String createSurvey(Model model) {
-        return "create_survey";
-    }
+//    @GetMapping(value = "/create_survey")
+//    public String createSurvey(Model model) {
+//        return "create_survey";
+//    }
+//    public ModelAndView createSurvey(@RequestParam("courseCode") String courseCode){
+//
+//    }
 
-    @PostMapping(value = "/create_survey", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResponseDTO> addSurvey(@RequestBody Survey survey) {
+    @PostMapping(value = "/create_survey")
+    public ResponseEntity addSurvey(@ModelAttribute("survey") Survey survey) {
 
         logger.info("request:" + survey);
 
@@ -66,9 +72,8 @@ public class SurveyController {
             responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
             httpStatus = HttpStatus.CONFLICT;
         }
-
         return new ResponseEntity(responseDTO, httpStatus);
-    }
+   }
 
     @GetMapping(value = "/course_surveys")
     public ModelAndView getCourseSurveys(@RequestParam("courseCode") String courseCode){
@@ -82,8 +87,16 @@ public class SurveyController {
             Long courseId = course.get().getCourseId();
             List<Survey> surveyList = surveyService.getSurveysForCourse(courseId);
             String resMessage = String.format("Survey list has been retrieved from the database");
+
             mav.addObject("surveyList", surveyList);
             mav.addObject("courseId", courseId);
+
+            Survey survey = new Survey();
+            survey.setCourseId(courseId);
+            survey.setUserId(currentUserService.getAuthenticatedUser().get().getUserId());
+            survey.setStatus("unpublished");
+            mav.addObject("survey",survey);
+
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
