@@ -1,6 +1,7 @@
 package com.assessme.service;
 
 import com.assessme.db.dao.SurveyDAOImpl;
+import com.assessme.db.dao.SurveyQuestionsDAOImpl;
 import com.assessme.model.Survey;
 import com.assessme.util.SurveyStatusConstant;
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +31,9 @@ public class SurveyServiceTest {
 
     @Mock
     private SurveyServiceImpl surveyService;
+
+    @Mock
+    private SurveyQuestionsServiceImpl surveyQuestionsService;
 
     private Optional<Survey> surveyFromDB;
 

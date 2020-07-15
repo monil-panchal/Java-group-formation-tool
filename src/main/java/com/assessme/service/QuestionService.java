@@ -19,4 +19,6 @@ public interface QuestionService {
   Optional<List<Question>> getQuestionsByUser(User user) throws Exception;
 
   void removeQuestion(long questionId) throws Exception;
+
+  Optional<Question> getQuestionById(Long question_id) throws Exception;
 }

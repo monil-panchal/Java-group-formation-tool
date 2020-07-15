@@ -6,7 +6,9 @@ import com.assessme.model.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -23,6 +25,9 @@ public class QuestionDAOImpl implements QuestionDAO {
       + "question_title, question_text) values(?,?,?,?)";
   final String addchoiceQuestion_query = "INSERT INTO question_options(question_id, option_text, "
       + "option_value) values (?,?,?);";
+//  final String getQuestion_query = "SELECT * FROM questions where question_id = ?";
+//  final String getQuestionOptions_query = "SELECT * FROM question_options where question_id = ?";
+  final String getQuestion_query = "SELECT * FROM questions q left join question_options qo on q.question_id = qo.question_id where q.question_id = ?";
   private final Logger logger = LoggerFactory.getLogger(QuestionDAOImpl.class);
 
   public static QuestionDAOImpl getInstance() {
@@ -126,5 +131,54 @@ public class QuestionDAOImpl implements QuestionDAO {
       e.printStackTrace();
       throw e;
     }
+  }
+
+  @Override
+  public Optional<Question> getQuestionById(long question_id) throws Exception {
+    Question question = new Question();
+    String[] optionText;
+    ArrayList<String> optionTextList = new ArrayList<String>();
+    int[] optionValue;
+    ArrayList<Integer> optionValueList = new ArrayList<Integer>();
+    int rows = 0;
+    try(Connection connection = ConnectionManager.getInstance().getDBConnection().get();
+        PreparedStatement stmt = connection
+                .prepareStatement(getQuestion_query);){
+      stmt.setLong(1, question_id);
+      ResultSet resultSet = stmt.executeQuery();
+      resultSet.next();
+      long questionId = resultSet.getLong("question_id");
+      long userId = resultSet.getLong("user_id");
+      int questionTypeId = resultSet.getInt("question_type");
+      String questionTitle = resultSet.getString("question_title");
+      String questionText = resultSet.getString("question_text");
+      Timestamp questionDate = resultSet.getTimestamp("question_date");
+
+      question.setQuestionId(questionId);
+      question.setUserId(userId);
+      question.setQuestionTypeId(questionTypeId);
+      question.setQuestionTitle(questionTitle);
+      question.setQuestionText(questionText);
+      question.setQuestionDate(questionDate);
+
+      do{
+        optionTextList.add(resultSet.getString("option_text"));
+        optionValueList.add(resultSet.getInt("option_value"));
+        if(resultSet.isLast()) {
+          rows = resultSet.getRow();
+        }
+      }while (resultSet.next());
+      logger.info(String.format("%d rows obtained for question choice for question id: %d", rows, question_id));
+      optionText = Arrays.copyOf(optionTextList.toArray(), optionTextList.toArray().length, String[].class);
+      optionValue = optionValueList.stream().mapToInt(i -> i).toArray();
+
+      question.setOptionText(optionText);
+      question.setOptionValue(optionValue);
+    }catch (Exception e) {
+      logger.error(e.getMessage());
+      e.printStackTrace();
+      throw e;
+    }
+    return Optional.of(question);
   }
 }
