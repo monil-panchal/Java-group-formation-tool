@@ -59,7 +59,7 @@ public class SurveyQuestionsController {
     }
 
     @GetMapping(value = "/get_questions")
-    public ResponseEntity<ResponseDTO> getCourseSurveys(@RequestParam("surveyId") Long surveyId) {
+    public ResponseEntity<ResponseDTO> getQuestionsForSurvey(@RequestParam("surveyId") Long surveyId) {
 
         logger.info("Calling API for questions retrieval for the survey: " + surveyId);
         HttpStatus httpStatus = null;
@@ -67,6 +67,30 @@ public class SurveyQuestionsController {
 
         try {
             Optional<SurveyQuestionsDTO> surveyList = surveyQuestionsService.getSurveyQuestions(surveyId);
+            String resMessage = String.format("Survey question list has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, surveyList.get());
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+            String errMessage = String.format("Error in retrieving the survey questions from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity(responseDTO, httpStatus);
+    }
+
+    @GetMapping(value = "/get_questions_details")
+    public ResponseEntity<ResponseDTO> getQuestionsDetailsForSurvey(@RequestParam("surveyId") Long surveyId) {
+
+        logger.info("Calling API for questions details retrieval for the survey: " + surveyId);
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Survey>> responseDTO = null;
+
+        try {
+            Optional<SurveyQuestionsDetails> surveyList = surveyQuestionsService.getSurveyQuestionsDetails(surveyId);
             String resMessage = String.format("Survey question list has been retrieved from the database");
             responseDTO = new ResponseDTO(true, resMessage, null, surveyList.get());
             httpStatus = HttpStatus.OK;

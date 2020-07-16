@@ -1,8 +1,7 @@
 package com.assessme.service;
 
 import com.assessme.db.dao.SurveyQuestionsDAOImpl;
-import com.assessme.model.Survey;
-import com.assessme.model.SurveyQuestionsDTO;
+import com.assessme.model.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -13,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author: monil
@@ -31,6 +32,9 @@ public class SurveyQuestionsServiceTest {
     private SurveyQuestionsServiceImpl surveyQuestionsService;
 
     @Mock
+    private QuestionService questionService;
+
+    @Mock
     private SurveyServiceImpl surveyService;
 
     private Optional<Survey> surveyFromDB;
@@ -38,7 +42,7 @@ public class SurveyQuestionsServiceTest {
     private Optional<SurveyQuestionsDTO> optionalSurveyQuestionsDTO;
 
     @Test
-    public void addQuestionsToSurvey() throws Exception {
+    public void addQuestionsToSurveyTest() throws Exception {
 
         logger.info("Running unit test for adding questions to the survey");
 
@@ -69,9 +73,8 @@ public class SurveyQuestionsServiceTest {
 
     }
 
-
     @Test
-    void getSurveysForCourse() throws Exception {
+    public void getSurveyQuestionsTest() throws Exception {
 
         logger.info("Running unit test for getting questions of the survey");
 
@@ -92,6 +95,31 @@ public class SurveyQuestionsServiceTest {
         optionalSurveyQuestionsDTO = surveyQuestionsService.getSurveyQuestions(1L);
 
         Assert.notEmpty(optionalSurveyQuestionsDTO.get().getQuestionList(), "question list is not null");
+    }
+
+    @Test
+    public void getSurveyQuestionsDetailsTest() throws Exception {
+
+        logger.info("Running unit test for getting questions with details for the survey");
+
+        SurveyQuestionsDetails surveyQuestionsDetails = new SurveyQuestionsDetails();
+
+        QuestionDetailsDTO questionDetailsDTO = new QuestionDetailsDTO();
+        questionDetailsDTO.setQuestionId(1L);
+        questionDetailsDTO.setQuestionText("Sample question text");
+        questionDetailsDTO.setQuestionTypeId(1);
+        questionDetailsDTO.setQuestionTypeText("Numeric");
+
+        surveyQuestionsDetails.setSurveyId(1L);
+        surveyQuestionsDetails.setQuestions(List.of(questionDetailsDTO));
+
+        Optional<SurveyQuestionsDetails> optionalSurveyQuestionsDetails = Optional.of(surveyQuestionsDetails);
+
+        Mockito.when(surveyQuestionsService.getSurveyQuestionsDetails(1L)).thenReturn(Optional.of(surveyQuestionsDetails));
+        optionalSurveyQuestionsDetails = surveyQuestionsService.getSurveyQuestionsDetails(1L);
+
+        Assert.notNull(optionalSurveyQuestionsDetails, "Survey question details retrieved from DB should not be null");
+        Assert.notEmpty(optionalSurveyQuestionsDetails.get().getQuestions(), "Survey question list should not be empty");
 
     }
 }
