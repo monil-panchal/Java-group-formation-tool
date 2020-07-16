@@ -19,6 +19,7 @@ public class AppConstant {
   public static final String BLOCK_SPECIAL_CHARACTERS = "blockSpecialCharacters";
   public static final String MIN_SPECIAL_CHARACTERS = "minSpecialCharacters";
   public static final String PASSWORD_HISTORY_CONSTRAINT = "passwordHistoryConstraint";
+  public static final int STRING_VEC_LENGTH = 32;
 
   public static final String QUESTIONS_TYPE_NUMERIC = "Numeric";
   public static final String QUESTIONS_TYPE_FREE_TEXT = "Free text";
