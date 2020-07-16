@@ -1,38 +1,57 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="/css/app.css">
-  <title>Question Manager</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js">
-  </script>
-  <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.widgets.min.js">
-  </script>
-  <script>
-</script>
+  <meta charset="ISO-8859-1">
+  <link th:href="@{/styles/cssandjs/normalize.css}" rel="stylesheet" />
+  <link th:href="@{/styles/cssandjs/main.css}" rel="stylesheet" />
+  <title>Student Survey</title>
 </head>
-<body>
-<div align="center">
-  <h1 align="center">Survey</h1>
-</div>
 
-<div align="center">
-  <table id="questionListTable" border="1">
-    <tbody>
-    <tr th:each="i : ${questions}">
-      <td th:text="${i.questionTitle}"></td>
-      <td th:text="${i.questionText}"></td>
-      <td th:text="${i.questionDate}"></td>
-    </tbody>
-  </table>
-  <br></br>
-  <button onclick="location.href='instructor_dashboard';">Return to Course Home</button>
-  <a href="/question_editor">Create Question</a>
+<body>
+<h1 align="center">Survey List</h1>
+<div>
+  <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+  <div th:align="right">
+    <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+  </div>
 </div>
+<form action="">
+    <div th:each="question, iterstat: ${surveyQuestions}">
+
+      <strong th:text="${question.questionTitle}"></strong>
+      <p th:text="${question.questionText}"></p>
+
+      <div th:if="${question.questionTypeText == 'Free text'}">
+        <textarea th:name="${iterstat.index+1}" cols="50" rows="10"></textarea>
+      </div>
+
+      <div th:if="${question.questionTypeText == 'Numeric'}">
+        <input type="number" th:id="${iterstat.index+1}" th:name="${iterstat.index+1}" min="1" max="10">
+      </div>
+
+      <div th:if="${question.questionTypeText == 'Multiplle choice - choose multiple'}">
+        <div th:each="optionText : ${question.optionText}">
+          <input type="checkbox" th:text="${optionText}" th:name="${iterstat.index+1}+|X@Y${optionText}">
+        </div>
+      </div>
+
+      <div th:if="${question.questionTypeText == 'Multiple choice - choose one'}">
+        <select th:name="${iterstat.index+1}">
+          <div th:each="optionText : ${question.optionText}">
+            <option th:text="${optionText}" th:value="${optionText}" th:id="${iterstat.index+1}+|X@Y${optionText}"></option>
+          </div>
+        </select>
+      </div>
+    </div>
+  <br>
+  <br>
+  <input type="submit" value="Submit Survey">
+</form>
 </body>
 </html>
