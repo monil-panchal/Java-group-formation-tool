@@ -15,11 +15,6 @@ public class SurveyDAOImpl implements SurveyDAO {
 
     private static SurveyDAOImpl instance;
     private final Logger logger = LoggerFactory.getLogger(SurveyDAOImpl.class);
-    private final ConnectionManager connectionManager;
-
-    public SurveyDAOImpl() {
-        connectionManager = new ConnectionManager();
-    }
 
     public static SurveyDAOImpl getInstance() {
         if (instance == null) {
@@ -43,7 +38,7 @@ public class SurveyDAOImpl implements SurveyDAO {
     public Optional<Survey> addSurvey(Survey survey) throws Exception {
 
         try (
-                Connection connection = connectionManager.getDBConnection().get();
+                Connection connection = ConnectionManager.getInstance().getDBConnection().get();
                 PreparedStatement preparedStatement = connection.prepareStatement(insertSurveyQuery);
         ) {
 
@@ -85,7 +80,7 @@ public class SurveyDAOImpl implements SurveyDAO {
 
         List<Survey> surveyList = new ArrayList<>();
         try (
-                Connection connection = connectionManager.getDBConnection().get();
+                Connection connection = ConnectionManager.getInstance().getDBConnection().get();
                 PreparedStatement preparedStatement = connection
                         .prepareStatement(getSurveysForCourseQuery)
         ) {
@@ -119,7 +114,7 @@ public class SurveyDAOImpl implements SurveyDAO {
     @Override
     public Optional<Survey> updateSurveyStatus(Survey survey) throws Exception {
         try (
-                Connection connection = connectionManager.getDBConnection().get();
+                Connection connection = ConnectionManager.getInstance().getDBConnection().get();
                 PreparedStatement preparedStatement = connection
                         .prepareStatement(updateSurveyStatusQuery, Statement.RETURN_GENERATED_KEYS)
         ) {
@@ -154,7 +149,7 @@ public class SurveyDAOImpl implements SurveyDAO {
         Optional<Survey> survey = Optional.empty();
 
         try (
-                Connection connection = connectionManager.getDBConnection().get();
+                Connection connection = ConnectionManager.getInstance().getDBConnection().get();
                 PreparedStatement statement = connection.prepareStatement(getSurveyQuery)
         ) {
 
