@@ -39,11 +39,11 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
 
 
     @Override
-    public Optional<SurveyQuestionResponseDTO> saveSurveyQuestionDetails(SurveyQuestionResponseDTO surveyQuestionResponseDTO) throws Exception {
+    public Optional<SurveyQuestionResponseDTO> saveSurveyResponse(SurveyQuestionResponseDTO surveyQuestionResponseDTO) throws Exception {
         Optional<SurveyQuestionResponseDTO> optionalSurveyQuestionResponseDTO;
         try {
-
             optionalSurveyQuestionResponseDTO = surveyQuestionsDAO.saveSurveyResponse(surveyQuestionResponseDTO);
+
             String resMessage = String.format("Response of the user: %s for the Survey %s has been added to the database",
                     optionalSurveyQuestionResponseDTO.get().getSurveyId(),
                     optionalSurveyQuestionResponseDTO.get().getUserId());

@@ -40,14 +40,12 @@ public class SurveyResponseDAOImpl implements SurveyResponseDAO {
     public Optional<SurveyQuestionResponseDTO> saveSurveyResponse(SurveyQuestionResponseDTO questionResponseDTO) throws Exception {
         try (
                 Connection connection = ConnectionManager.getInstance().getDBConnection().get();
-                PreparedStatement insertResponsePreparedStatement = connection.prepareStatement(insertSurveyResponse, Statement.RETURN_GENERATED_KEYS);
-                PreparedStatement insertDataPreparedStatement = connection.prepareStatement(insertSurveyResponseData, Statement.RETURN_GENERATED_KEYS);
-                PreparedStatement insertDataValuesPreparedStatement = connection.prepareStatement(insertSurveyResonseDataValues, Statement.RETURN_GENERATED_KEYS);
-
+                PreparedStatement insertResponsePreparedStatement =
+                        connection.prepareStatement(insertSurveyResponse, Statement.RETURN_GENERATED_KEYS);
         ) {
 
             List<SurveyQuestionResponseData> surveyQuestionResponseData = questionResponseDTO.getResponse();
-            Long surveyResponseKey = 0L;
+            Long surveyResponseKey;
 
             if (questionResponseDTO.getSurveyId() == null
                     || questionResponseDTO.getUserId() == null
@@ -58,90 +56,9 @@ public class SurveyResponseDAOImpl implements SurveyResponseDAO {
             insertResponsePreparedStatement.setLong(1, questionResponseDTO.getSurveyId());
             insertResponsePreparedStatement.setLong(2, questionResponseDTO.getUserId());
 
-            int row = insertResponsePreparedStatement.executeUpdate();
+            surveyResponseKey = executePreparedStatement(insertResponsePreparedStatement);
+            insertSurveyData(surveyResponseKey, questionResponseDTO);
 
-            if (row > 0) {
-                String successString = String.format("Survey: %s for user: %s successfully inserted in the DB",
-                        questionResponseDTO.getSurveyId(), questionResponseDTO.getUserId());
-                logger.info(successString);
-
-            } else {
-                String failureString = String
-                        .format("Failed to insert Survey: %s for user: %s",
-                                questionResponseDTO.getSurveyId(), questionResponseDTO.getUserId());
-                logger.error(failureString);
-                throw new Exception(failureString);
-            }
-
-            try (ResultSet generatedKeys = insertResponsePreparedStatement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    surveyResponseKey = generatedKeys.getLong(1);
-                    logger.info("generated surveyResponseKey: "+ surveyResponseKey);
-                } else {
-                    throw new SQLException("Creation of survey response failed. Cannot obtain id.");
-                }
-            }
-
-            for (SurveyQuestionResponseData questionResponseData : surveyQuestionResponseData) {
-                Long surveyDataValueKey = 0L;
-                if ("Numeric".equalsIgnoreCase(questionResponseData.getQuestionTypeText())
-                        || "Free text".equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
-
-                    insertDataValuesPreparedStatement.setString(1, questionResponseData.getData());
-
-                    int dataValueRow = insertDataValuesPreparedStatement.executeUpdate();
-
-                    if (dataValueRow > 0) {
-                        String successString = String.format("Survey data value: %s for the question: %s successfully inserted in the DB",
-                                questionResponseData.getData(), questionResponseData.getQuestionText());
-                        logger.info(successString);
-
-                    } else {
-                        String failureString = String
-                                .format("Failed to insert Survey data value: %s for the question: %s",
-                                        questionResponseData.getData(), questionResponseData.getQuestionText());
-                        logger.error(failureString);
-                        throw new Exception(failureString);
-                    }
-
-                    try (ResultSet generatedKeys = insertDataValuesPreparedStatement.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            surveyDataValueKey = generatedKeys.getLong(1);
-                            logger.info("generated surveyDataValueKey: "+ surveyDataValueKey);
-                        } else {
-                            throw new SQLException("Creation of survey data value failed. Cannot obtain id.");
-                        }
-                    }
-
-                    insertDataPreparedStatement.setLong(1, surveyResponseKey);
-                    insertDataPreparedStatement.setLong(2, questionResponseData.getQuestionId());
-                    insertDataPreparedStatement.setLong(3, surveyDataValueKey);
-
-                    int dataRow = insertDataPreparedStatement.executeUpdate();
-
-                    if (dataRow > 0) {
-                        String successString = String.format("Survey data: %s for the question: %s successfully inserted in the DB",
-                                questionResponseData.getData(), questionResponseData.getQuestionText());
-                        logger.info(successString);
-
-                    } else {
-                        String failureString = String
-                                .format("Failed to insert Survey data: %s for the question: %s",
-                                        questionResponseData.getData(), questionResponseData.getQuestionText());
-                        logger.error(failureString);
-                        throw new Exception(failureString);
-                    }
-
-
-                } else if ("Multiplle choice - choose multiple".equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
-
-                } else if ("Multiple choice - choose one".equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
-
-                } else {
-                    throw new Exception("Cannot parse question type");
-                }
-
-            }
 
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
@@ -150,4 +67,121 @@ public class SurveyResponseDAOImpl implements SurveyResponseDAO {
         }
         return Optional.of(questionResponseDTO);
     }
+
+    private SurveyQuestionResponseDTO insertSurveyData(Long surveyResponseKey,
+                                                       SurveyQuestionResponseDTO questionResponseDTO) throws Exception {
+
+        try (
+                Connection connection = ConnectionManager.getInstance().getDBConnection().get();
+                PreparedStatement insertDataPreparedStatement =
+                        connection.prepareStatement(insertSurveyResponseData, Statement.RETURN_GENERATED_KEYS);
+        ) {
+
+            List<SurveyQuestionResponseData> surveyQuestionResponseData = questionResponseDTO.getResponse();
+
+            for (SurveyQuestionResponseData questionResponseData : surveyQuestionResponseData) {
+                if ("Numeric".equalsIgnoreCase(questionResponseData.getQuestionTypeText())
+                        || "Free text".equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
+
+                    Long surveyDataValueKey = insertSurveyDataValues(questionResponseData.getData());
+                    insertSurveyData(surveyResponseKey, insertDataPreparedStatement, questionResponseData, surveyDataValueKey);
+
+                } else if ("Multiplle choice - choose multiple".equalsIgnoreCase(questionResponseData.getQuestionTypeText())
+                        || "Multiple choice - choose one".equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
+                    for (String option : questionResponseData.getOptionText()) {
+
+                        Long surveyDataValueKey = insertSurveyDataValues(option);
+                        insertSurveyData(surveyResponseKey, insertDataPreparedStatement, questionResponseData, surveyDataValueKey);
+                    }
+
+                } else {
+                    throw new Exception("Cannot parse question type");
+                }
+            }
+
+        } catch (
+                Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+
+        return questionResponseDTO;
+    }
+
+    private Long insertSurveyDataValues(String data) throws Exception {
+        Long surveyDataValueKey;
+
+        try (
+                Connection connection = ConnectionManager.getInstance().getDBConnection().get();
+                PreparedStatement insertDataValuesPreparedStatement =
+                        connection.prepareStatement(insertSurveyResonseDataValues, Statement.RETURN_GENERATED_KEYS);
+        ) {
+
+            insertDataValuesPreparedStatement.setString(1, data);
+            surveyDataValueKey = executePreparedStatement(insertDataValuesPreparedStatement);
+
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+        return surveyDataValueKey;
+    }
+
+
+    private Long executePreparedStatement(PreparedStatement preparedStatement) throws Exception {
+        Long rowId;
+        try {
+            int dataValueRow = preparedStatement.executeUpdate();
+
+            if (dataValueRow > 0) {
+                String successString = String.format("Inserted data successfully");
+                logger.info(successString);
+
+            } else {
+                String failureString = String.format("Failed to insert data");
+                logger.error(failureString);
+                throw new Exception(failureString);
+            }
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    rowId = generatedKeys.getLong(1);
+                    logger.info("generated rowId: " + rowId);
+                } else {
+                    throw new SQLException("Creation of survey data value failed. Cannot obtain id.");
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+        return rowId;
+    }
+
+    private void insertSurveyData(Long surveyResponseKey, PreparedStatement insertDataPreparedStatement,
+                                  SurveyQuestionResponseData questionResponseData,
+                                  Long surveyDataValueKey) throws Exception {
+        insertDataPreparedStatement.setLong(1, surveyResponseKey);
+        insertDataPreparedStatement.setLong(2, questionResponseData.getQuestionId());
+        insertDataPreparedStatement.setLong(3, surveyDataValueKey);
+
+        int dataRow = insertDataPreparedStatement.executeUpdate();
+
+        if (dataRow > 0) {
+            String successString = String.format("Survey data: %s for the question: %s successfully inserted in the DB",
+                    questionResponseData.getData(), questionResponseData.getQuestionText());
+            logger.info(successString);
+
+        } else {
+            String failureString = String
+                    .format("Failed to insert Survey data: %s for the question: %s",
+                            questionResponseData.getData(), questionResponseData.getQuestionText());
+            logger.error(failureString);
+            throw new Exception(failureString);
+        }
+    }
+
 }

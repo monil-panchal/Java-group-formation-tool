@@ -11,7 +11,7 @@ import java.util.Optional;
  */
 public interface SurveyResponseService {
 
-    Optional<SurveyQuestionResponseDTO> saveSurveyQuestionDetails(SurveyQuestionResponseDTO surveyQuestionResponseDTO) throws Exception;
+    Optional<SurveyQuestionResponseDTO> saveSurveyResponse(SurveyQuestionResponseDTO surveyQuestionResponseDTO) throws Exception;
 //
 //    public void getSurveyQuestionsForStudent(Long surveyId) throws Exception;
 

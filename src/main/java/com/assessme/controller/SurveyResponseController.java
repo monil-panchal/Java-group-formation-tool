@@ -1,8 +1,6 @@
 package com.assessme.controller;
 
 import com.assessme.model.*;
-import com.assessme.service.SurveyQuestionsService;
-import com.assessme.service.SurveyQuestionsServiceImpl;
 import com.assessme.service.SurveyResponseService;
 import com.assessme.service.SurveyResponseServiceImpl;
 import org.slf4j.Logger;
@@ -12,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,7 +38,7 @@ public class SurveyResponseController {
         ResponseDTO<User> responseDTO = null;
 
         try {
-            Optional<SurveyQuestionResponseDTO> surveryResponse = surveyResponseService.saveSurveyQuestionDetails(questionResponseDTO);
+            Optional<SurveyQuestionResponseDTO> surveryResponse = surveyResponseService.saveSurveyResponse(questionResponseDTO);
             String resMessage = String
                     .format("Responses are added to the survey :%s",
                             surveryResponse.get().getSurveyId());
