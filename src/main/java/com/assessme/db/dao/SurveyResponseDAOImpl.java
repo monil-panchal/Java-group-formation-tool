@@ -3,7 +3,7 @@ package com.assessme.db.dao;
 import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.SurveyQuestionResponseDTO;
 import com.assessme.model.SurveyQuestionResponseData;
-import com.assessme.model.SurveyResponseDTO;
+import com.assessme.util.AppConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,14 +156,14 @@ public class SurveyResponseDAOImpl implements SurveyResponseDAO {
             List<SurveyQuestionResponseData> surveyQuestionResponseData = questionResponseDTO.getResponse();
 
             for (SurveyQuestionResponseData questionResponseData : surveyQuestionResponseData) {
-                if ("Numeric".equalsIgnoreCase(questionResponseData.getQuestionTypeText())
-                        || "Free text".equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
+                if (AppConstant.QUESTIONS_TYPE_NUMERIC.equalsIgnoreCase(questionResponseData.getQuestionTypeText())
+                        || AppConstant.QUESTIONS_TYPE_FREE_TEXT.equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
 
                     Long surveyDataValueKey = insertSurveyDataValues(questionResponseData.getData());
                     insertSurveyData(surveyResponseKey, insertDataPreparedStatement, questionResponseData, surveyDataValueKey);
 
-                } else if ("Multiplle choice - choose multiple".equalsIgnoreCase(questionResponseData.getQuestionTypeText())
-                        || "Multiple choice - choose one".equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
+                } else if (AppConstant.QUESTIONS_TYPE_MCQM.equalsIgnoreCase(questionResponseData.getQuestionTypeText())
+                        || AppConstant.QUESTIONS_TYPE_MCQO.equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
                     for (String option : questionResponseData.getOptionText()) {
 
                         Long surveyDataValueKey = insertSurveyDataValues(option);

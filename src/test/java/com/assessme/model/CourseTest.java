@@ -17,14 +17,13 @@ public class CourseTest {
     private final Logger logger = LoggerFactory.getLogger(CourseTest.class);
 
     @Test
-    public void ConstructorTests()
-    {
+    public void ConstructorTests() {
         logger.info("Running unit test for course constructor");
 
         String courseCode = "CSCI5308";
         String courseName = "Advance Software Development Concepts";
 
-        Course course = new Course(courseCode,courseName);
+        Course course = new Course(courseCode, courseName);
 
         Assert.isTrue(course.getCourseName().equals(courseName));
         Assert.isTrue(course.getCourseCode().equals(courseCode));
@@ -35,27 +34,27 @@ public class CourseTest {
     }
 
     @Test
-    public void getCourseIdTest() throws Exception{
+    public void getCourseIdTest() throws Exception {
         logger.info("Running unit test for fetching course Id");
 
         long courseId = 7L;
         Course course = new Course();
         course.setCourseId(courseId);
-        Assert.isTrue(course.getCourseId()==courseId);
+        Assert.isTrue(course.getCourseId() == courseId);
     }
 
     @Test
-    public void setCourseIdTest() throws Exception{
+    public void setCourseIdTest() throws Exception {
         logger.info("Running unit test for getting course Id");
 
         long courseId = 7L;
         Course course = new Course();
         course.setCourseId(courseId);
-        Assert.isTrue(course.getCourseId()==courseId);
+        Assert.isTrue(course.getCourseId() == courseId);
     }
 
     @Test
-    public void getCourseNameTest() throws Exception{
+    public void getCourseNameTest() throws Exception {
         logger.info("Running unit test for fetching course name");
 
         String courseName = "Advance Software Development Concepts";
@@ -66,7 +65,7 @@ public class CourseTest {
     }
 
     @Test
-    public void setCourseNameTest() throws Exception{
+    public void setCourseNameTest() throws Exception {
         logger.info("Running unit test for setting course name");
 
         String courseName = "Advance Software Development Concepts";
@@ -77,7 +76,7 @@ public class CourseTest {
     }
 
     @Test
-    public void getCourseCodeTest() throws Exception{
+    public void getCourseCodeTest() throws Exception {
         logger.info("Running unit test for fetching course code");
 
         String courseCode = "CSCI5308";
@@ -88,7 +87,7 @@ public class CourseTest {
     }
 
     @Test
-    public void setCourseCodeTest() throws Exception{
+    public void setCourseCodeTest() throws Exception {
         logger.info("Running unit test for setting course code");
 
         String courseCode = "CSCI5308";

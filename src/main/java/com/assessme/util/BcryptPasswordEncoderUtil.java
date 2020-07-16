@@ -1,7 +1,8 @@
 package com.assessme.util;
 
-import java.security.SecureRandom;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.security.SecureRandom;
 
 /**
  * @author: monil Created on: 2020-05-31

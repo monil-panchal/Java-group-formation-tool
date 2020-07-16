@@ -26,7 +26,7 @@ public class QuestionTypeTest {
         questionType.setQuestionTypeID(questionTypeID);
         questionType.setQuestionTypeText(questionTypeText);
 
-        Assert.isTrue(questionType.getQuestionTypeID()==questionTypeID);
+        Assert.isTrue(questionType.getQuestionTypeID() == questionTypeID);
         Assert.isTrue(questionType.getQuestionTypeText().equals(questionTypeText));
     }
 
@@ -39,7 +39,7 @@ public class QuestionTypeTest {
 
         questionType.setQuestionTypeID(questionTypeID);
 
-        Assert.isTrue(questionType.getQuestionTypeID()==questionTypeID);
+        Assert.isTrue(questionType.getQuestionTypeID() == questionTypeID);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class QuestionTypeTest {
 
         questionType.setQuestionTypeID(questionTypeID);
 
-        Assert.isTrue(questionType.getQuestionTypeID()==questionTypeID);
+        Assert.isTrue(questionType.getQuestionTypeID() == questionTypeID);
     }
 
     @Test

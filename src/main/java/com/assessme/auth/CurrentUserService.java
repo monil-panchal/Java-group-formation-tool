@@ -3,14 +3,15 @@ package com.assessme.auth;
 import com.assessme.model.User;
 import com.assessme.service.UserService;
 import com.assessme.service.UserServiceImpl;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Darshan Kathiriya

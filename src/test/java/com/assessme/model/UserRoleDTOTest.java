@@ -3,7 +3,6 @@ package com.assessme.model;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +10,7 @@ import java.util.Set;
 public class UserRoleDTOTest {
 
     @Test
-    public void setUserRolesTest(){
+    public void setUserRolesTest() {
         Set<String> roles = new HashSet<>(
                 List.of("ADMIN",
                         "INSTRUCTOR",
@@ -27,7 +26,7 @@ public class UserRoleDTOTest {
     }
 
     @Test
-    public void getUserRolesTest(){
+    public void getUserRolesTest() {
         Set<String> roles = new HashSet<>(
                 List.of("ADMIN",
                         "INSTRUCTOR",

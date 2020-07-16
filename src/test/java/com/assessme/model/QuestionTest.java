@@ -28,8 +28,8 @@ public class QuestionTest {
         int questionTypeId = 1;
         String questionTitle = "questionTitle";
         String questionText = "questionText";
-        String[] optionText = {"option 1","option 2","option 3"};
-        Timestamp questionDate = new Timestamp(2017/10/23);
+        String[] optionText = {"option 1", "option 2", "option 3"};
+        Timestamp questionDate = new Timestamp(2017 / 10 / 23);
         int[] optionValue = {1, 2, 3};
 
         question.setQuestionId(questionId);
@@ -41,13 +41,13 @@ public class QuestionTest {
         question.setQuestionDate(questionDate);
         question.setOptionValue(optionValue);
 
-        Assert.isTrue(question.getQuestionId()==questionId);
-        Assert.isTrue(question.getUserId()==userId);
-        Assert.isTrue(question.getQuestionTypeId()==questionTypeId);
+        Assert.isTrue(question.getQuestionId() == questionId);
+        Assert.isTrue(question.getUserId() == userId);
+        Assert.isTrue(question.getQuestionTypeId() == questionTypeId);
         Assert.isTrue(question.getQuestionTitle().equals(questionTitle));
         Assert.isTrue(question.getQuestionText().equals(questionText));
         Assert.isTrue(Arrays.equals(question.getOptionText(), optionText));
-        Assert.isTrue(question.getQuestionDate()==questionDate);
+        Assert.isTrue(question.getQuestionDate() == questionDate);
         Assert.isTrue(Arrays.equals(question.getOptionValue(), optionValue));
     }
 
@@ -59,7 +59,7 @@ public class QuestionTest {
         long questionId = 1L;
         question.setQuestionId(questionId);
 
-        Assert.isTrue(question.getQuestionId()==questionId);
+        Assert.isTrue(question.getQuestionId() == questionId);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class QuestionTest {
         long questionId = 1L;
         question.setQuestionId(questionId);
 
-        Assert.isTrue(question.getQuestionId()==questionId);
+        Assert.isTrue(question.getQuestionId() == questionId);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class QuestionTest {
         long userId = 1L;
         question.setUserId(userId);
 
-        Assert.isTrue(question.getUserId()==userId);
+        Assert.isTrue(question.getUserId() == userId);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class QuestionTest {
         long userId = 1L;
         question.setUserId(userId);
 
-        Assert.isTrue(question.getUserId()==userId);
+        Assert.isTrue(question.getUserId() == userId);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class QuestionTest {
         int questionTypeId = 1;
         question.setQuestionTypeId(questionTypeId);
 
-        Assert.isTrue(question.getQuestionTypeId()==questionTypeId);
+        Assert.isTrue(question.getQuestionTypeId() == questionTypeId);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class QuestionTest {
         int questionTypeId = 1;
         question.setQuestionTypeId(questionTypeId);
 
-        Assert.isTrue(question.getQuestionTypeId()==questionTypeId);
+        Assert.isTrue(question.getQuestionTypeId() == questionTypeId);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class QuestionTest {
         logger.info("Running unit test to get getOptionText for QuestionTest constructor");
 
         Question question = new Question();
-        String[] optionText = {"option 1","option 2","option 3"};
+        String[] optionText = {"option 1", "option 2", "option 3"};
 
         question.setOptionText(optionText);
 
@@ -182,7 +182,7 @@ public class QuestionTest {
         logger.info("Running unit test to set getOptionText for QuestionTest constructor");
 
         Question question = new Question();
-        String[] optionText = {"option 1","option 2","option 3"};
+        String[] optionText = {"option 1", "option 2", "option 3"};
 
         question.setOptionText(optionText);
 
@@ -218,11 +218,11 @@ public class QuestionTest {
         logger.info("Running unit test to get getQuestionDate for QuestionTest constructor");
 
         Question question = new Question();
-        Timestamp questionDate = new Timestamp(2017/10/23);
+        Timestamp questionDate = new Timestamp(2017 / 10 / 23);
 
         question.setQuestionDate(questionDate);
 
-        Assert.isTrue(question.getQuestionDate()==questionDate);
+        Assert.isTrue(question.getQuestionDate() == questionDate);
     }
 
     @Test
@@ -230,10 +230,10 @@ public class QuestionTest {
         logger.info("Running unit test to set getQuestionDate for QuestionTest constructor");
 
         Question question = new Question();
-        Timestamp questionDate = new Timestamp(2017/10/23);
+        Timestamp questionDate = new Timestamp(2017 / 10 / 23);
 
         question.setQuestionDate(questionDate);
 
-        Assert.isTrue(question.getQuestionDate()==questionDate);
+        Assert.isTrue(question.getQuestionDate() == questionDate);
     }
 }

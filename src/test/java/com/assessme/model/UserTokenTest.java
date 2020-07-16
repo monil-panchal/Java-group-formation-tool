@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 public class UserTokenTest {
     @Test
-    public void DefaultConstructorTest(){
+    public void DefaultConstructorTest() {
         UserToken userToken = new UserToken();
 
         Assertions.assertNull(userToken.getToken());
@@ -14,7 +14,7 @@ public class UserTokenTest {
     }
 
     @Test
-    public void ParameterisedConstructorTest(){
+    public void ParameterisedConstructorTest() {
         Long userId = 1L;
         String token = "userToken";
 
@@ -28,7 +28,7 @@ public class UserTokenTest {
     }
 
     @Test
-    public void setUserIdTest(){
+    public void setUserIdTest() {
         Long userId = 1L;
 
         UserToken userToken = new UserToken();
@@ -40,7 +40,7 @@ public class UserTokenTest {
     }
 
     @Test
-    public void getUserIdTest(){
+    public void getUserIdTest() {
         Long userId = 1L;
 
         UserToken userToken = new UserToken();
@@ -52,7 +52,7 @@ public class UserTokenTest {
     }
 
     @Test
-    public void setTokenTest(){
+    public void setTokenTest() {
         String token = "userToken";
 
         UserToken userToken = new UserToken();
@@ -64,7 +64,7 @@ public class UserTokenTest {
     }
 
     @Test
-    public void getTokenTest(){
+    public void getTokenTest() {
         String token = "userToken";
 
         UserToken userToken = new UserToken();

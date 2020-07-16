@@ -4,21 +4,9 @@ import com.assessme.auth.password.restriction.PasswordChangePolicyImpl;
 import com.assessme.auth.password.restriction.RegisterPasswordPolicyImpl;
 import com.assessme.db.dao.UserDAO;
 import com.assessme.db.dao.UserDAOImpl;
-import com.assessme.model.Course;
-import com.assessme.model.Role;
-import com.assessme.model.User;
-import com.assessme.model.UserPasswordHistory;
-import com.assessme.model.UserRole;
-import com.assessme.model.UserRoleDTO;
-import com.assessme.model.UserToken;
+import com.assessme.model.*;
 import com.assessme.util.AppConstant;
 import com.assessme.util.BcryptPasswordEncoderUtil;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +14,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author: monil Created on: 2020-05-28
