@@ -1,10 +1,10 @@
 package com.assessme.service;
 
 import com.assessme.db.dao.SurveyDAOImpl;
-import com.assessme.db.dao.SurveyQuestionsDAOImpl;
 import com.assessme.model.Survey;
 import com.assessme.util.SurveyStatusConstant;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -37,17 +37,23 @@ public class SurveyServiceTest {
 
     private Optional<Survey> surveyFromDB;
 
+    private Survey survey;
+
+    @BeforeEach
+    public void init() {
+        survey = new Survey.Builder(1L)
+                .addName("Test survey")
+                .addDescription("Sample test survey")
+                .forCourse(1L)
+                .createdByUser(1L)
+                .build();
+    }
+
     @Test
     public void addSurveyTest() throws Exception {
 
         logger.info("Running unit test for creating the survey");
 
-        Survey survey = new Survey();
-        survey.setSurveyId(1L);
-        survey.setSurveyName("Test survey");
-        survey.setDescription("Sample test survey");
-        survey.setCourseId(1L);
-        survey.setUserId(1L);
         survey.setStatus(SurveyStatusConstant.PUBLISHED.getSurveyStatus());
 
         Optional<Survey> optionalSurvey = Optional.of(survey);
@@ -67,18 +73,9 @@ public class SurveyServiceTest {
 
     @Test
     void getSurveysForCourse() throws Exception {
-
         logger.info("Running unit test for getting survey for the course");
 
-        Survey survey = new Survey();
-        survey.setSurveyId(1L);
-        survey.setSurveyName("Test survey");
-        survey.setDescription("Sample test survey");
-        survey.setCourseId(1L);
-        survey.setUserId(1L);
-
         List<Survey> surveyList = List.of(survey);
-
         Mockito.when(surveyService.getSurveysForCourse(1L)).thenReturn(surveyList);
         Assert.notEmpty(surveyService.getSurveysForCourse(1L), "survey list is not null");
 
@@ -86,15 +83,7 @@ public class SurveyServiceTest {
 
     @Test
     void getSurveyTest() throws Exception {
-
         logger.info("Running unit test for getting a survey");
-
-        Survey survey = new Survey();
-        survey.setSurveyId(1L);
-        survey.setSurveyName("Test survey");
-        survey.setDescription("Sample test survey");
-        survey.setCourseId(1L);
-        survey.setUserId(1L);
 
         Optional<Survey> optionalSurvey = Optional.of(survey);
 
@@ -110,13 +99,7 @@ public class SurveyServiceTest {
 
     @Test
     void updateSurveyStatus() throws Exception {
-
         logger.info("Running unit test for updating a survey");
-
-        Survey survey = new Survey();
-        survey.setSurveyId(1L);
-        survey.setCourseId(1L);
-        survey.setUserId(1L);
         survey.setStatus(SurveyStatusConstant.PUBLISHED.getSurveyStatus());
 
         Optional<Survey> optionalSurvey = Optional.of(survey);
@@ -129,7 +112,5 @@ public class SurveyServiceTest {
         Assert.notNull(surveyFromDB.get().getCourseId(), "Survey course id should not be null");
         Assert.notNull(surveyFromDB.get().getUserId(), "Survey user id should not be null");
         Assertions.assertEquals(SurveyStatusConstant.PUBLISHED.getSurveyStatus(), surveyFromDB.get().getStatus());
-
     }
-
 }
