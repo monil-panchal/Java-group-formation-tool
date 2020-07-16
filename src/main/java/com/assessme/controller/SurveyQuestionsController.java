@@ -145,4 +145,30 @@ public class SurveyQuestionsController {
 
         return new ResponseEntity(responseDTO, httpStatus);
     }
+
+    @GetMapping(value = "/instructor/get_questions_details")
+    public ModelAndView getQuestionsDetailsForSurveyForInstructor(@RequestParam("surveyId") Long surveyId) {
+
+        logger.info("Calling API for questions details retrieval for the survey: " + surveyId);
+        ModelAndView mav = new ModelAndView("survey_questions");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Survey>> responseDTO = null;
+
+        try{
+            mav.addObject("survey_id", surveyId);
+//            logger.info("after adding survey id in model");
+            Optional<SurveyQuestionsDetails> surveyList = surveyQuestionsService.getSurveyQuestionsDetails(surveyId);
+            String resMessage = String.format("Survey question list has been retrieved from the database");
+            mav.addObject("questions", surveyList.get());
+        }catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+            String errMessage = String.format("Error in retrieving the survey questions from the database");
+            logger.error("Error fetching questions for survey_page page");
+            mav.addObject("message", errMessage);
+        }
+
+        return mav;
+    }
 }
