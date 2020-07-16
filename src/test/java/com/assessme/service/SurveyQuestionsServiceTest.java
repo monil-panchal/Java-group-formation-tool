@@ -2,6 +2,7 @@ package com.assessme.service;
 
 import com.assessme.db.dao.SurveyQuestionsDAOImpl;
 import com.assessme.model.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -41,6 +42,18 @@ public class SurveyQuestionsServiceTest {
 
     private Optional<SurveyQuestionsDTO> optionalSurveyQuestionsDTO;
 
+    private Survey survey;
+
+    @BeforeEach
+    public void init() {
+        survey = new Survey.Builder(1L)
+                .addName("Test survey")
+                .addDescription("Sample test survey")
+                .forCourse(1L)
+                .createdByUser(1L)
+                .build();
+    }
+
     @Test
     public void addQuestionsToSurveyTest() throws Exception {
 
@@ -51,14 +64,6 @@ public class SurveyQuestionsServiceTest {
         surveyQuestionsDTO.setQuestionList(List.of(1L, 2L, 3L));
 
         Optional<SurveyQuestionsDTO> optionalSurveyQuestionsDTO2 = Optional.of(surveyQuestionsDTO);
-
-        Survey survey = new Survey();
-        survey.setSurveyId(1L);
-        survey.setSurveyName("Test survey");
-        survey.setDescription("Sample test survey");
-        survey.setCourseId(1L);
-        survey.setUserId(1L);
-
         Optional<Survey> optionalSurvey = Optional.of(survey);
 
         Mockito.when(surveyService.getSurvey(1L)).thenReturn(optionalSurvey);
@@ -82,13 +87,6 @@ public class SurveyQuestionsServiceTest {
         surveyQuestionsDTO.setSurveyId(1L);
         surveyQuestionsDTO.setQuestionList(List.of(1L, 2L, 3L));
 
-        Survey survey = new Survey();
-        survey.setSurveyId(1L);
-        survey.setSurveyName("Test survey");
-        survey.setDescription("Sample test survey");
-        survey.setCourseId(1L);
-        survey.setUserId(1L);
-
         Optional<SurveyQuestionsDTO> optionalSurveyQuestionsDTO2 = Optional.of(surveyQuestionsDTO);
 
         Mockito.when(surveyQuestionsService.getSurveyQuestions(1L)).thenReturn(optionalSurveyQuestionsDTO2);
@@ -104,11 +102,11 @@ public class SurveyQuestionsServiceTest {
 
         SurveyQuestionsDetails surveyQuestionsDetails = new SurveyQuestionsDetails();
 
-        QuestionDetailsDTO questionDetailsDTO = new QuestionDetailsDTO();
-        questionDetailsDTO.setQuestionId(1L);
-        questionDetailsDTO.setQuestionText("Sample question text");
-        questionDetailsDTO.setQuestionTypeId(1);
-        questionDetailsDTO.setQuestionTypeText("Numeric");
+        QuestionDetailsDTO questionDetailsDTO = new QuestionDetailsDTO.Builder(1L)
+                .hasQuestionText("Sample question text")
+                .hasQuestionTypeId(1)
+                .hasQuestionTypeText("Numeric")
+                .build();
 
         surveyQuestionsDetails.setSurveyId(1L);
         surveyQuestionsDetails.setQuestions(List.of(questionDetailsDTO));

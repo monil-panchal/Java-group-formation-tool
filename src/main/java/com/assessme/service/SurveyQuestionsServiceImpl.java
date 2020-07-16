@@ -127,14 +127,14 @@ public class SurveyQuestionsServiceImpl implements SurveyQuestionsService {
                 for (Long questionId : questionIdList) {
                     Optional<Question> questionObj = questionService.getQuestionById(questionId);
                     if (questionObj.isPresent()) {
-                        QuestionDetailsDTO questionDetailsDTO = new QuestionDetailsDTO();
-
-                        questionDetailsDTO.setQuestionId(questionObj.get().getQuestionId());
-                        questionDetailsDTO.setQuestionText(questionObj.get().getQuestionText());
-                        questionDetailsDTO.setQuestionTitle(questionObj.get().getQuestionTitle());
-                        questionDetailsDTO.setQuestionTypeId(questionObj.get().getQuestionTypeId());
-                        questionDetailsDTO.setQuestionTypeText(questionTypeMap.get(questionObj.get().getQuestionTypeId()));
-                        questionDetailsDTO.setOptionText(Arrays.asList(questionObj.get().getOptionText()));
+                        QuestionDetailsDTO questionDetailsDTO = new QuestionDetailsDTO
+                                .Builder(questionObj.get().getQuestionId())
+                                .hasQuestionText(questionObj.get().getQuestionText())
+                                .hasQuestionTitle(questionObj.get().getQuestionTitle())
+                                .hasQuestionTypeId(questionObj.get().getQuestionTypeId())
+                                .hasQuestionTypeText(questionTypeMap.get(questionObj.get().getQuestionTypeId()))
+                                .hasOptions(Arrays.asList(questionObj.get().getOptionText()))
+                                .build();
 
                         questionDetailsDTOList.add(questionDetailsDTO);
 

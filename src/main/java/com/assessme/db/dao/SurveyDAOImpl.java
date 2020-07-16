@@ -6,8 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 public class SurveyDAOImpl implements SurveyDAO {
 
@@ -54,7 +56,6 @@ public class SurveyDAOImpl implements SurveyDAO {
             preparedStatement.setLong(7, survey.getCourseId());
 
 
-
             int row = preparedStatement.executeUpdate();
 
             if (row > 0) {
@@ -92,15 +93,16 @@ public class SurveyDAOImpl implements SurveyDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Survey survey = new Survey();
-                survey.setSurveyId(resultSet.getLong("survey_id"));
-                survey.setCourseId(resultSet.getLong("course_id"));
-                survey.setUserId(resultSet.getLong("user_id"));
-                survey.setCreatedAt(resultSet.getTimestamp("created_at"));
-                survey.setUpdatedAt(resultSet.getTimestamp("updated_at"));
-                survey.setStatus(resultSet.getString("status"));
-                survey.setSurveyName(resultSet.getString("survey_name"));
-                survey.setDescription(resultSet.getString("description"));
+                Survey survey = new Survey.Builder(resultSet.getLong("survey_id"))
+                        .addDescription(resultSet.getString("description"))
+                        .addName(resultSet.getString("survey_name"))
+                        .createdByUser(resultSet.getLong("user_id"))
+                        .forCourse(resultSet.getLong("course_id"))
+                        .createdAt(resultSet.getTimestamp("created_at"))
+                        .updatedAt(resultSet.getTimestamp("updated_at"))
+                        .hasStatus(resultSet.getString("status"))
+
+                        .build();
 
                 surveyList.add(survey);
             }
@@ -161,15 +163,17 @@ public class SurveyDAOImpl implements SurveyDAO {
 
             logger.info(String.format("Survey retrieved successfully"));
             while (resultSet.next()) {
-                Survey surveyFromDB = new Survey();
-                surveyFromDB.setSurveyId(resultSet.getLong("survey_id"));
-                surveyFromDB.setCourseId(resultSet.getLong("course_id"));
-                surveyFromDB.setUserId(resultSet.getLong("user_id"));
-                surveyFromDB.setCreatedAt(resultSet.getTimestamp("created_at"));
-                surveyFromDB.setUpdatedAt(resultSet.getTimestamp("updated_at"));
-                surveyFromDB.setStatus(resultSet.getString("status"));
-                surveyFromDB.setSurveyName(resultSet.getString("survey_name"));
-                surveyFromDB.setDescription(resultSet.getString("description"));
+
+                Survey surveyFromDB = new Survey.Builder(resultSet.getLong("survey_id"))
+                        .addDescription(resultSet.getString("description"))
+                        .addName(resultSet.getString("survey_name"))
+                        .createdByUser(resultSet.getLong("user_id"))
+                        .forCourse(resultSet.getLong("course_id"))
+                        .createdAt(resultSet.getTimestamp("created_at"))
+                        .updatedAt(resultSet.getTimestamp("updated_at"))
+                        .hasStatus(resultSet.getString("status"))
+
+                        .build();
 
                 survey = Optional.of(surveyFromDB);
 
