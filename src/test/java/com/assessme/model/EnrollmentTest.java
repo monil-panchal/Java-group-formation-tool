@@ -16,12 +16,11 @@ public class EnrollmentTest {
     private final Logger logger = LoggerFactory.getLogger(EnrollmentTest.class);
 
     @Test
-    public void ConstructorTests()
-    {
+    public void ConstructorTests() {
         logger.info("Running unit test for enrollment constructor");
 
         Long userId = 1L;
-        Integer roleId =1;
+        Integer roleId = 1;
         Long courseId = 1L;
 
         Enrollment enrollment = new Enrollment(userId, roleId, courseId);
@@ -35,7 +34,7 @@ public class EnrollmentTest {
         logger.info("Running unit test for fetching user Id from enrollment");
 
         Long userId = 1L;
-        Integer roleId =1;
+        Integer roleId = 1;
         Long courseId = 1L;
 
         Enrollment enrollment = new Enrollment(userId, roleId, courseId);
@@ -47,7 +46,7 @@ public class EnrollmentTest {
         logger.info("Running unit test for setting user Id from enrollment");
 
         Long userId = 1L;
-        Integer roleId =1;
+        Integer roleId = 1;
         Long courseId = 1L;
 
         Enrollment enrollment = new Enrollment(userId, roleId, courseId);
@@ -60,7 +59,7 @@ public class EnrollmentTest {
         logger.info("Running unit test for getting roleId from enrollment");
 
         Long userId = 1L;
-        Integer roleId =1;
+        Integer roleId = 1;
         Long courseId = 1L;
 
         Enrollment enrollment = new Enrollment(userId, roleId, courseId);
@@ -74,7 +73,7 @@ public class EnrollmentTest {
         logger.info("Running unit test for setting roleId from enrollment");
 
         Long userId = 1L;
-        Integer roleId =1;
+        Integer roleId = 1;
         Long courseId = 1L;
 
         Enrollment enrollment = new Enrollment(userId, roleId, courseId);
@@ -87,7 +86,7 @@ public class EnrollmentTest {
         logger.info("Running unit test for getting courseId from enrollment");
 
         Long userId = 1L;
-        Integer roleId =1;
+        Integer roleId = 1;
         Long courseId = 1L;
 
         Enrollment enrollment = new Enrollment(userId, roleId, courseId);
@@ -100,7 +99,7 @@ public class EnrollmentTest {
         logger.info("Running unit test for setting courseId from enrollment");
 
         Long userId = 1L;
-        Integer roleId =1;
+        Integer roleId = 1;
         Long courseId = 1L;
 
         Enrollment enrollment = new Enrollment(userId, roleId, courseId);

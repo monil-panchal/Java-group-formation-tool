@@ -3,6 +3,9 @@ package com.assessme.db.dao;
 import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.Question;
 import com.assessme.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Darshan Kathiriya

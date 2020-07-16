@@ -2,11 +2,12 @@ package com.assessme.db.dao;
 
 import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author: monil Created on: 2020-05-30

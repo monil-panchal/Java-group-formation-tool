@@ -16,7 +16,7 @@ public class RoleTest {
     private final Logger logger = LoggerFactory.getLogger(RoleTest.class);
 
     @Test
-    public void ConstructorTests(){
+    public void ConstructorTests() {
         logger.info("Running unit test for RoleTest constructor");
 
         Integer roleId = 1;
@@ -29,7 +29,7 @@ public class RoleTest {
         Assert.isTrue(role.getRoleId().equals(roleId));
         Assert.isTrue(role.getRoleName().equals(roleName));
 
-        Role role1 = new Role(roleId,roleName);
+        Role role1 = new Role(roleId, roleName);
 
         Assert.isTrue(role1.getRoleId().equals(roleId));
         Assert.isTrue(role1.getRoleName().equals(roleName));

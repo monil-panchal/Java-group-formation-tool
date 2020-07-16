@@ -10,7 +10,7 @@ public class UserTest {
     private final Logger logger = LoggerFactory.getLogger(UserTest.class);
 
     @Test
-    public void DefaultUserConstructorTest(){
+    public void DefaultUserConstructorTest() {
         User user = new User();
 
         Assertions.assertNull(user.getBannerId());
@@ -22,7 +22,7 @@ public class UserTest {
     }
 
     @Test
-    public void ParameterisedUserConstructorTest(){
+    public void ParameterisedUserConstructorTest() {
         String bannerID = "B00881122";
         String firstName = "firstName";
         String lastName = "lastName";
@@ -41,7 +41,7 @@ public class UserTest {
     }
 
     @Test
-    public void setUserIdTest(){
+    public void setUserIdTest() {
         Long userId = 1L;
         User user = new User();
         Assertions.assertNull(user.getUserId());
@@ -52,7 +52,7 @@ public class UserTest {
     }
 
     @Test
-    public void getUserIdTest(){
+    public void getUserIdTest() {
         Long userId = 1L;
         User user = new User();
         Assertions.assertNull(user.getUserId());
@@ -63,7 +63,7 @@ public class UserTest {
     }
 
     @Test
-    public void setBannerIdTest(){
+    public void setBannerIdTest() {
         String bannerID = "B00881122";
         User user = new User();
         Assertions.assertNull(user.getBannerId());
@@ -74,7 +74,7 @@ public class UserTest {
     }
 
     @Test
-    public void getBannerIdTest(){
+    public void getBannerIdTest() {
         String bannerID = "B00881122";
         User user = new User();
         Assertions.assertNull(user.getBannerId());
@@ -85,7 +85,7 @@ public class UserTest {
     }
 
     @Test
-    public void setFirstNameTest(){
+    public void setFirstNameTest() {
         String firstName = "firstName";
         User user = new User();
         Assertions.assertNull(user.getFirstName());
@@ -96,7 +96,7 @@ public class UserTest {
     }
 
     @Test
-    public void getFirstNameTest(){
+    public void getFirstNameTest() {
         String firstName = "firstName";
         User user = new User();
         Assertions.assertNull(user.getFirstName());
@@ -107,7 +107,7 @@ public class UserTest {
     }
 
     @Test
-    public void setLastNameTest(){
+    public void setLastNameTest() {
         String lastName = "lastName";
         User user = new User();
         Assertions.assertNull(user.getLastName());
@@ -118,7 +118,7 @@ public class UserTest {
     }
 
     @Test
-    public void getLastNameTest(){
+    public void getLastNameTest() {
         String lastName = "lastName";
         User user = new User();
         Assertions.assertNull(user.getLastName());
@@ -129,7 +129,7 @@ public class UserTest {
     }
 
     @Test
-    public void setEmailTest(){
+    public void setEmailTest() {
         String email = "email@dal.ca";
         User user = new User();
         Assertions.assertNull(user.getEmail());
@@ -140,7 +140,7 @@ public class UserTest {
     }
 
     @Test
-    public void getEmailTest(){
+    public void getEmailTest() {
         String email = "email@dal.ca";
         User user = new User();
         Assertions.assertNull(user.getEmail());
@@ -151,7 +151,7 @@ public class UserTest {
     }
 
     @Test
-    public void setPasswordTest(){
+    public void setPasswordTest() {
         String password = "password";
         User user = new User();
         Assertions.assertNull(user.getPassword());
@@ -162,7 +162,7 @@ public class UserTest {
     }
 
     @Test
-    public void getPasswordTest(){
+    public void getPasswordTest() {
         String password = "password";
         User user = new User();
         Assertions.assertNull(user.getPassword());
@@ -173,7 +173,7 @@ public class UserTest {
     }
 
     @Test
-    public void setActiveTest(){
+    public void setActiveTest() {
         Boolean isActive = true;
         User user = new User();
         Assertions.assertNull(user.getActive());
@@ -184,7 +184,7 @@ public class UserTest {
     }
 
     @Test
-    public void getActiveTest(){
+    public void getActiveTest() {
         Boolean isActive = true;
         User user = new User();
         Assertions.assertNull(user.getActive());
@@ -198,7 +198,7 @@ public class UserTest {
     Course course;
 
     @Test
-    public void equalsTest(){
+    public void equalsTest() {
         User user = new User();
         User anotherUser = new User("B00881122", "firstName", "lastName", "email@dal.ca", "password", true);
         User anotherSameUser = new User("B00881122", "firstName", "lastName", "email@dal.ca", "password", true);

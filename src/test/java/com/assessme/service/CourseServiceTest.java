@@ -6,8 +6,6 @@ import com.assessme.db.dao.UserDAOImpl;
 import com.assessme.model.Course;
 import com.assessme.model.Role;
 import com.assessme.model.User;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author: hardik Created on: 2020-05-30
