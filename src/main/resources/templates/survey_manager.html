@@ -50,6 +50,7 @@
             <th width=10%>Created At</th>
             <th width=10%>Updated At</th>
             <th width=10%>Modify</th>
+            <th width=10%>Survey Groups</th>
         </tr>
         <tr th:each="i : ${surveyList}">
             <td th:text="${i.surveyId}"></td>
@@ -59,6 +60,7 @@
             <td th:text="${i.createdAt}"></td>
             <td th:text="${i.updatedAt}"></td>
             <td> <a th:href="@{/survey_questions/instructor/get_questions_details(surveyId=${i.surveyId})}"> Modify </a></td>
+            <td> <a th:href="@{/survey_response/survey_group?surveyId={surveyId}(surveyId=${i.surveyId})}"> Show Groups </a></td>
         </tr>
     </table>
     </div>
