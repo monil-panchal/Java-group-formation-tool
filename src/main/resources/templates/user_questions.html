@@ -33,7 +33,7 @@
         </tbody>
     </table>
     <br></br>
-    <button onclick="location.href='instructor_dashboard';">Return to Course Home</button>
+    <button onclick="location.href='http://localhost:8080/instructor_dashboard';">Return to Course Home</button>
     <button id="button_submit">Add to Survey</button>
 </div>
 <script>
@@ -50,6 +50,7 @@
             }
         }
         console.log("questionIdList", questionIdList);
+        questionIdList = JSON.stringify(questionIdList)
         var arrStr = encodeURIComponent(JSON.stringify(questionIdList));
         console.log("arrStr", arrStr)
         // var survey_id = ${survey_id};
@@ -58,22 +59,18 @@
         console.log("surveyId urlparams", urlParams.get("surveyId"));
         var survey_id = urlParams.get("surveyId");
 
-    //     $.ajax({
-    //         type: "POST",
-    //         url: "/survey_questions/add_questions",
-    //         data: {
-    //             "surveyId": survey_id,
-    //             "questionList": questionIdList
-    //     },
-    //         success: function() {
-    //         alert('success');
-    //     }
-    // });
+        $.ajax({
+            type: "POST",
+            url: "/survey_questions/add_questions",
+            data: {
+                "surveyId": survey_id,
+                "questionList": questionIdList
+        },
+            success: function() {
+            alert('questions added');
+        }
     });
-
-    function fixedEncodeURI (str) {
-        return encodeURI(str).replace(/%5B/g, '[').replace(/%5D/g, ']').replace(/%2C/g,',');
-    }
+    });
 
 </script>
 </body>

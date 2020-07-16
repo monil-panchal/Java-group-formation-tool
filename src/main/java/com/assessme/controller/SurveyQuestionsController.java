@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,13 +32,25 @@ public class SurveyQuestionsController {
     }
 
     @PostMapping(value = "/add_questions")
-    public ResponseEntity<ResponseDTO> addSurvey(@ModelAttribute SurveyQuestionsDTO questionsDTO) {
+    public ResponseEntity<ResponseDTO> addSurvey(@RequestParam("surveyId") Long surveyId, @RequestParam("questionList") String questionList) {
 
-        logger.info("request:" + questionsDTO);
-
+        logger.info(String.format("in add questions, surveyid: %d, questionList: %s", surveyId, questionList));
         logger.info("Calling API for adding questions to the survey.");
         HttpStatus httpStatus = null;
         ResponseDTO<User> responseDTO = null;
+
+        SurveyQuestionsDTO questionsDTO = new SurveyQuestionsDTO();
+        questionList = questionList.replace("[","");
+        questionList = questionList.replace("]","");
+        questionList = questionList.replace("\"","");
+        List<String> myList = new ArrayList<String>(Arrays.asList(questionList.split(",")));
+        List<Long> quesList = new ArrayList<>();
+        for(String element: myList){
+            quesList.add(Long.parseLong(element));
+        }
+
+        questionsDTO.setSurveyId(surveyId);
+        questionsDTO.setQuestionList(quesList);
 
         try {
             Optional<SurveyQuestionsDTO> newSurvey = surveyQuestionsService.addQuestionsToSurvey(questionsDTO);
