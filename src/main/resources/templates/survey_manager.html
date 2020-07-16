@@ -35,7 +35,7 @@
             </tr>
         </table>
         <br>
-        <button type = "submit" >Add Course</button>
+        <button type = "submit" >Add Survey</button>
     </form>
 <!--<button th:href="@{/survey/course_surveys(courseId=${courseId})}">Create Survey</button>
 --><br>
@@ -58,7 +58,7 @@
             <td th:text="${i.status }"></td>
             <td th:text="${i.createdAt}"></td>
             <td th:text="${i.updatedAt}"></td>
-            <td> <a th:href="@{/survey/survey_page/{surveyId}(surveyId=${i.surveyId})}"> Modify </a></td>
+            <td> <a th:href="@{/survey_questions/get_questions_details(surveyId=${i.surveyId})}"> Modify </a></td>
         </tr>
     </table>
     </div>
