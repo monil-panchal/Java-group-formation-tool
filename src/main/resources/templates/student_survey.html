@@ -22,10 +22,10 @@
   </div>
 </div>
 <form action="">
-    <div th:each="question, iterstat: ${surveyQuestions}">
+    <div th:each="question, iterstat: ${surveyQuestions}" style="border: thin solid #000000">
 
-      <strong th:text="${question.questionTitle}"></strong>
-      <p th:text="${question.questionText}"></p>
+      Title: <b th:text="${question.questionTitle}"></b> <hr>
+      Question: <p th:text="${question.questionText}"></p>
 
       <div th:if="${question.questionTypeText == 'Free text'}">
         <textarea th:name="${iterstat.index+1}" cols="50" rows="10"></textarea>
@@ -48,7 +48,9 @@
           </div>
         </select>
       </div>
+      <br>
     </div>
+
   <br>
   <br>
   <input type="submit" value="Submit Survey">

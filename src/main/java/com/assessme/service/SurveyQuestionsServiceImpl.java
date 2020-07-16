@@ -1,5 +1,6 @@
 package com.assessme.service;
 
+import com.assessme.db.dao.SurveyQuestionsDAO;
 import com.assessme.db.dao.SurveyQuestionsDAOImpl;
 import com.assessme.model.*;
 import com.assessme.util.SurveyStatusConstant;
@@ -21,7 +22,7 @@ public class SurveyQuestionsServiceImpl implements SurveyQuestionsService {
     private static SurveyQuestionsServiceImpl instance;
     private final Logger logger = LoggerFactory.getLogger(SurveyQuestionsServiceImpl.class);
 
-    private final SurveyQuestionsDAOImpl surveyQuestionsDAO;
+    private final SurveyQuestionsDAO surveyQuestionsDAO;
     private final SurveyService surveyService;
     private final QuestionService questionService;
 

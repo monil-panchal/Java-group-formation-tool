@@ -17,11 +17,6 @@ public class SurveyQuestionsDAOImpl implements SurveyQuestionsDAO {
 
     private static SurveyQuestionsDAOImpl instance;
     private final Logger logger = LoggerFactory.getLogger(SurveyQuestionsDAOImpl.class);
-    private final ConnectionManager connectionManager;
-
-    public SurveyQuestionsDAOImpl() {
-        connectionManager = new ConnectionManager();
-    }
 
     public static SurveyQuestionsDAOImpl getInstance() {
         if (instance == null) {
@@ -39,7 +34,7 @@ public class SurveyQuestionsDAOImpl implements SurveyQuestionsDAO {
     @Override
     public Optional<SurveyQuestionsDTO> addSurveyQuestions(SurveyQuestionsDTO surveyQuestions) throws Exception {
         try (
-                Connection connection = connectionManager.getDBConnection().get();
+                Connection connection = ConnectionManager.getInstance().getDBConnection().get();
                 PreparedStatement preparedStatement = connection.prepareStatement(insertSurveyQuestionsQuery);
         ) {
 
@@ -84,7 +79,7 @@ public class SurveyQuestionsDAOImpl implements SurveyQuestionsDAO {
 
         List<SurveyQuestions> surveyQuestions = new ArrayList<>();
         try (
-                Connection connection = connectionManager.getDBConnection().get();
+                Connection connection = ConnectionManager.getInstance().getDBConnection().get();
                 PreparedStatement preparedStatement = connection
                         .prepareStatement(getSurveysQuestionsQuery)
         ) {

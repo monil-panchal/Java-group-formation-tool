@@ -39,7 +39,7 @@ public class QuestionDetailsDTO implements Serializable {
         }
 
         public Builder hasQuestionTitle(String questionTitle) {
-            this.questionTypeId = questionTypeId;
+            this.questionTitle = questionTitle;
             return this;
         }
 
