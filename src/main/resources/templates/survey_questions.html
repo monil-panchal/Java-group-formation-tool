@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SURVEY QUESTIONS</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>WELCOME TO SURVEY QUESTIONS PAGE</h1>
+<div>
+    <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+    <div th:align="right">
+        <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+    </div>
+</div>
+<div>
+    <a th:href="@{/survey/user_questions(surveyId=${survey_id})}">Add Questions</a>
+</div>
+<div id = "noSurvey"></div>
+<table id = "survey_table" border="1" align="centre" width=100%>
+    <tr>
+        <th width=5%>Question ID</th>
+        <th width=15%>Question Name</th>
+        <th width=30%>Question Text</th>
+        <th width=10%>Question Type</th>
+        <th width=30%>Options</th>
+        <th width=10%>Remove</th>
+    </tr>
+</table>
+</body>
+</html>

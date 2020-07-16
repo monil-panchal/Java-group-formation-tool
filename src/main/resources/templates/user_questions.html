@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Questions</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<div>
+    <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+    <div th:align="right">
+        <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+    </div>
+</div>
+<div align="center">
+    <table id="questionsTable" border="1" class="tablesorter compatibility">
+        <thead>
+        <tr>
+            <th style="padding:10px">Question Title</th>
+            <th style="padding:10px" width="500px">Question</th>
+            <th style="padding:10px">Date Created</th>
+            <th style="padding:10px">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="i : ${questions}">
+            <td th:text="${i.questionTitle}"></td>
+            <td th:text="${i.questionText}"></td>
+            <td th:text="${i.questionDate}"></td>
+            <td><input type="checkbox" name="select_questions" th:value="${i.questionId}" ></td>
+        </tr>
+        </tbody>
+    </table>
+    <br></br>
+    <button onclick="location.href='instructor_dashboard';">Return to Course Home</button>
+    <button id="button_submit">Add to Survey</button>
+</div>
+<script>
+    $('#button_submit').click(function()
+    {
+        var selectedCheckbox = document.getElementsByName("select_questions");
+        // console.log("checkboxes", selectedCheckbox);
+        var questionIdList = $(this).serializeArray();//[];
+        for (var i=0, n=selectedCheckbox.length;i<n;i++)
+        {
+            if (selectedCheckbox[i].checked)
+            {
+                questionIdList.push(selectedCheckbox[i].value);
+            }
+        }
+        console.log("questionIdList", questionIdList);
+        var arrStr = encodeURIComponent(JSON.stringify(questionIdList));
+        console.log("arrStr", arrStr)
+        // var survey_id = ${survey_id};
+        console.log("survey_id", window.location.search);
+        var urlParams = new URLSearchParams(window.location.search);
+        console.log("surveyId urlparams", urlParams.get("surveyId"));
+        var survey_id = urlParams.get("surveyId");
+
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/survey_questions/add_questions",
+    //         data: {
+    //             "surveyId": survey_id,
+    //             "questionList": questionIdList
+    //     },
+    //         success: function() {
+    //         alert('success');
+    //     }
+    // });
+    });
+
+    function fixedEncodeURI (str) {
+        return encodeURI(str).replace(/%5B/g, '[').replace(/%5D/g, ']').replace(/%2C/g,',');
+    }
+
+</script>
+</body>
+</html>

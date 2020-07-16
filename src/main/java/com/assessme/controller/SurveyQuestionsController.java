@@ -29,8 +29,8 @@ public class SurveyQuestionsController {
         this.surveyQuestionsService = SurveyQuestionsServiceImpl.getInstance();
     }
 
-    @PostMapping(value = "/add_questions", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResponseDTO> addSurvey(@RequestBody SurveyQuestionsDTO questionsDTO) {
+    @PostMapping(value = "/add_questions")
+    public ResponseEntity<ResponseDTO> addSurvey(@ModelAttribute SurveyQuestionsDTO questionsDTO) {
 
         logger.info("request:" + questionsDTO);
 
