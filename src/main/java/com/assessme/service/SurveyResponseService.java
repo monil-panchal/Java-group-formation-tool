@@ -2,6 +2,7 @@ package com.assessme.service;
 
 import com.assessme.model.SurveyQuestionResponseDTO;
 import com.assessme.model.SurveyQuestionsDetails;
+import com.assessme.model.SurveyResponseDTO;
 
 import java.util.Optional;
 
@@ -12,7 +13,6 @@ import java.util.Optional;
 public interface SurveyResponseService {
 
     Optional<SurveyQuestionResponseDTO> saveSurveyResponse(SurveyQuestionResponseDTO surveyQuestionResponseDTO) throws Exception;
-//
-//    public void getSurveyQuestionsForStudent(Long surveyId) throws Exception;
+    SurveyResponseDTO getSurveyQuestionsForStudent(Long surveyId) throws Exception;
 
 }
