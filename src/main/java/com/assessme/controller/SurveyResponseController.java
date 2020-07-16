@@ -4,20 +4,27 @@ import com.assessme.model.ResponseDTO;
 import com.assessme.model.SurveyQuestionResponseDTO;
 import com.assessme.model.SurveyResponseDTO;
 import com.assessme.model.User;
+import com.assessme.service.SurveyAlgorithmService;
 import com.assessme.service.SurveyResponseService;
 import com.assessme.service.SurveyResponseServiceImpl;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
- * @author: monil
- * Created on: 2020-07-15
+ * @author: monil Created on: 2020-07-15
  */
 @RestController
 @RequestMapping("/survey_response")
@@ -26,25 +33,27 @@ public class SurveyResponseController {
     private final Logger logger = LoggerFactory.getLogger(SurveyResponseController.class);
 
     private SurveyResponseService surveyResponseService;
+    private SurveyAlgorithmService surveyAlgorithmService;
 
     public SurveyResponseController(SurveyResponseService surveyResponseService) {
         this.surveyResponseService = SurveyResponseServiceImpl.getInstance();
+        this.surveyAlgorithmService = SurveyAlgorithmService.getInstance();
     }
 
     @PostMapping(value = "/add", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResponseDTO> addSurvey(@RequestBody SurveyQuestionResponseDTO questionResponseDTO) {
-
+    public ResponseEntity<ResponseDTO> addSurvey(
+        @RequestBody SurveyQuestionResponseDTO questionResponseDTO) {
         logger.info("request:" + questionResponseDTO);
-
         logger.info("Calling API for adding response to the survey.");
         HttpStatus httpStatus = null;
         ResponseDTO<User> responseDTO = null;
 
         try {
-            Optional<SurveyQuestionResponseDTO> surveryResponse = surveyResponseService.saveSurveyResponse(questionResponseDTO);
+            Optional<SurveyQuestionResponseDTO> surveryResponse = surveyResponseService
+                .saveSurveyResponse(questionResponseDTO);
             String resMessage = String
-                    .format("Responses are added to the survey :%s",
-                            surveryResponse.get().getSurveyId());
+                .format("Responses are added to the survey :%s",
+                    surveryResponse.get().getSurveyId());
 
             responseDTO = new ResponseDTO(true, resMessage, null, surveryResponse.get());
             httpStatus = HttpStatus.OK;
@@ -60,6 +69,7 @@ public class SurveyResponseController {
         return new ResponseEntity(responseDTO, httpStatus);
     }
 
+
     @GetMapping(value = "/get")
     public ResponseEntity<ResponseDTO> getSurvey(@RequestParam("surveyId") Long surveyId) {
 
@@ -68,8 +78,10 @@ public class SurveyResponseController {
         ResponseDTO<User> responseDTO = null;
 
         try {
-            SurveyResponseDTO surverResponse = surveyResponseService.getSurveyQuestionsForStudent(surveyId);
-            String resMessage = String.format("Survey response has been retrieved from the database");
+            SurveyResponseDTO surverResponse = surveyResponseService
+                .getSurveyQuestionsForStudent(surveyId);
+            String resMessage = String
+                .format("Survey response has been retrieved from the database");
 
             responseDTO = new ResponseDTO(true, resMessage, null, surverResponse);
             httpStatus = HttpStatus.OK;
@@ -83,5 +95,19 @@ public class SurveyResponseController {
         }
 
         return new ResponseEntity(responseDTO, httpStatus);
+    }
+
+    @GetMapping("/survey_group")
+    public ModelAndView getGreoupsPage(@RequestParam long surveyId) {
+        ModelAndView mav = new ModelAndView("survey_groups.html");
+        mav.addObject("surveyId", surveyId);
+        try {
+            HashMap<Integer, List<User>> groups = surveyAlgorithmService
+                .formGroupsForSurvey(surveyId);
+            mav.addObject("groupMap", groups);
+        } catch (Exception e) {
+            mav.addObject("message", "Couldn't form groups. check back later");
+        }
+        return mav;
     }
 }
