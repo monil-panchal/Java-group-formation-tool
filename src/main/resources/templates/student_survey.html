@@ -14,7 +14,7 @@
 </head>
 
 <body>
-<h1 align="center">Survey List</h1>
+<h1 align="center">Survey</h1>
 <div>
   <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
   <div th:align="right">
@@ -22,29 +22,29 @@
   </div>
 </div>
 <form action="">
-    <div th:each="question, iterstat: ${surveyQuestions}">
+    <div th:each="question, iterstat: ${surveyQuestions}" style="border: thin solid #000000">
 
-      <strong th:text="${question.questionTitle}"></strong>
-      <p th:text="${question.questionText}"></p>
+      <strong id="questionTitle" th:text="${question.questionTitle}"></strong>
+      <p id="questionText" th:text="${question.questionText}"></p>
 
       <div th:if="${question.questionTypeText == 'Free text'}">
-        <textarea th:name="${iterstat.index+1}" cols="50" rows="10"></textarea>
+        <textarea id="textResponse" th:name="${iterstat.index+1}" cols="20" rows="10"></textarea>
       </div>
 
       <div th:if="${question.questionTypeText == 'Numeric'}">
-        <input type="number" th:id="${iterstat.index+1}" th:name="${iterstat.index+1}" min="1" max="10">
+        <input type="number" id="numericResponse" th:id="${iterstat.index+1}" th:name="${iterstat.index+1}" min="1" max="10">
       </div>
 
       <div th:if="${question.questionTypeText == 'Multiplle choice - choose multiple'}">
         <div th:each="optionText : ${question.optionText}">
-          <input type="checkbox" th:text="${optionText}" th:name="${iterstat.index+1}+|X@Y${optionText}">
+          <input type="checkbox" id="MCCMResponse" th:text="${optionText}" th:name="${iterstat.index+1}+|X@Y${optionText}">
         </div>
       </div>
 
       <div th:if="${question.questionTypeText == 'Multiple choice - choose one'}">
         <select th:name="${iterstat.index+1}">
           <div th:each="optionText : ${question.optionText}">
-            <option th:text="${optionText}" th:value="${optionText}" th:id="${iterstat.index+1}+|X@Y${optionText}"></option>
+            <option th:text="${optionText}" id="MCCOResponse" th:value="${optionText}" th:name="${iterstat.index+1}+|X@Y${optionText}"></option>
           </div>
         </select>
       </div>
@@ -54,4 +54,42 @@
   <input type="submit" value="Submit Survey">
 </form>
 </body>
+<script>
+  function sendResponse() {
+    var questionType = document.querySelector("select[name='question_type']").value;
+    var questionTitle = document.querySelector("input[name='question_title']").value;
+    var questionText = document.querySelector("input[name='question_text']").value;
+    var formData = new FormData();
+    console.log({questionText, questionTitle, questionType})
+    formData.append("questionTitle", questionTitle)
+    formData.append("questionType", questionType)
+    formData.append("questionText", questionText)
+    if (questionType == 2 || questionType == 3) {
+      var questionChoiceText = [];
+      var questionChoiceValue = [];
+      $("input[name='choiceText[]']").each(function () {
+        questionChoiceText.push($(this).val())
+      });
+      $("input[name='choiceValue[]']").each(function () {
+        questionChoiceValue.push($(this).val())
+      });
+      console.log({questionChoiceText, questionChoiceValue})
+      formData.append("questionChoiceText", questionChoiceText)
+      formData.append("questionChoiceValue", questionChoiceValue)
+
+    }
+    fetch("/add_question", {
+      method: "POST",
+      body: formData,
+    }).then(r => r.json()).then(r => {
+      if(r['success']){
+        alert("Question Added");
+        location.reload();
+      }else{
+        alert("Failed to insert question")
+        location.reload();
+      }
+    });
+  }
+</script>
 </html>
