@@ -3,9 +3,10 @@ package com.assessme.service;
 import com.assessme.model.User;
 import com.assessme.model.UserRoleDTO;
 import com.assessme.model.UserToken;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import java.util.List;
 import java.util.Optional;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * @author: monil Created on: 2020-05-31

@@ -1,7 +1,10 @@
 package com.assessme.service;
 
 import com.assessme.db.dao.SurveyQuestionsDAOImpl;
-import com.assessme.model.*;
+import com.assessme.model.QuestionDetailsDTO;
+import com.assessme.model.Survey;
+import com.assessme.model.SurveyQuestionsDTO;
+import com.assessme.model.SurveyQuestionsDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,9 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author: monil

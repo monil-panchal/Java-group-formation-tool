@@ -2,9 +2,10 @@ package com.assessme.auth.password.validator;
 
 import com.assessme.model.UserPasswordHistory;
 import com.assessme.util.BcryptPasswordEncoderUtil;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * @author: monil Created on: 2020-06-17

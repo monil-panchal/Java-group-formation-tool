@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class UserRoleTest {
 
     @Test
-    public void DefaultConstructorTest(){
+    public void DefaultConstructorTest() {
         UserRole userRole = new UserRole();
 
         Assertions.assertNull(userRole.getUserId());
@@ -14,7 +14,7 @@ public class UserRoleTest {
     }
 
     @Test
-    public void ParameterisedUserConstructorTest(){
+    public void ParameterisedUserConstructorTest() {
         Long userId = 1L;
         int roleId = 1;
 
@@ -28,7 +28,7 @@ public class UserRoleTest {
     }
 
     @Test
-    public void setUserIdTest(){
+    public void setUserIdTest() {
         Long userId = 1L;
         UserRole userRole = new UserRole();
         Assertions.assertNull(userRole.getUserId());
@@ -39,7 +39,7 @@ public class UserRoleTest {
     }
 
     @Test
-    public void setRoleIdTest(){
+    public void setRoleIdTest() {
         int roleId = 1;
         UserRole userRole = new UserRole();
         Assertions.assertNull(userRole.getRoleId());

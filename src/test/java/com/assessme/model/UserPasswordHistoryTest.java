@@ -12,7 +12,7 @@ public class UserPasswordHistoryTest {
     private final Logger logger = LoggerFactory.getLogger(UserPasswordHistoryTest.class);
 
     @Test
-    public void DefaultConstructorTest(){
+    public void DefaultConstructorTest() {
         UserPasswordHistory userPasswordHistory = new UserPasswordHistory();
 
         Assertions.assertNull(userPasswordHistory.getUserId());
@@ -21,7 +21,7 @@ public class UserPasswordHistoryTest {
     }
 
     @Test
-    public void ParameterisedConstructorTest(){
+    public void ParameterisedConstructorTest() {
         Long userId = 1L;
         String password = "password";
         Timestamp modifiedOn = new Timestamp(System.currentTimeMillis());
@@ -39,7 +39,7 @@ public class UserPasswordHistoryTest {
     }
 
     @Test
-    public void setUserIdTest(){
+    public void setUserIdTest() {
         Long userId = 1L;
         UserPasswordHistory userPasswordHistory = new UserPasswordHistory();
         Assertions.assertNull(userPasswordHistory.getUserId());
@@ -50,7 +50,7 @@ public class UserPasswordHistoryTest {
     }
 
     @Test
-    public void getUserIdTest(){
+    public void getUserIdTest() {
         Long userId = 1L;
         UserPasswordHistory userPasswordHistory = new UserPasswordHistory();
         Assertions.assertNull(userPasswordHistory.getUserId());
@@ -61,7 +61,7 @@ public class UserPasswordHistoryTest {
     }
 
     @Test
-    public void setPasswordTest(){
+    public void setPasswordTest() {
         String password = "password";
         UserPasswordHistory userPasswordHistory = new UserPasswordHistory();
         Assertions.assertNull(userPasswordHistory.getPassword());
@@ -72,7 +72,7 @@ public class UserPasswordHistoryTest {
     }
 
     @Test
-    public void getPasswordTest(){
+    public void getPasswordTest() {
         String password = "password";
         UserPasswordHistory userPasswordHistory = new UserPasswordHistory();
         Assertions.assertNull(userPasswordHistory.getPassword());
@@ -83,7 +83,7 @@ public class UserPasswordHistoryTest {
     }
 
     @Test
-    public void setTimestampTest(){
+    public void setTimestampTest() {
         Timestamp modifiedOn = new Timestamp(System.currentTimeMillis());
         UserPasswordHistory userPasswordHistory = new UserPasswordHistory();
         Assertions.assertNull(userPasswordHistory.getModifiedOn());
@@ -94,7 +94,7 @@ public class UserPasswordHistoryTest {
     }
 
     @Test
-    public void getTimestampTest(){
+    public void getTimestampTest() {
         Timestamp modifiedOn = new Timestamp(System.currentTimeMillis());
         UserPasswordHistory userPasswordHistory = new UserPasswordHistory();
         Assertions.assertNull(userPasswordHistory.getModifiedOn());

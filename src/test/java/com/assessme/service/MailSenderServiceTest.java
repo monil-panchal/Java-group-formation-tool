@@ -1,11 +1,11 @@
 package com.assessme.service;
 
-import static org.mockito.Mockito.verify;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Darshan Kathiriya
