@@ -92,6 +92,36 @@ public class SurveyController {
         return mav;
     }
 
+    @GetMapping(value = "/instructor/course_surveys")
+    public ModelAndView listInstructorSurveysByCourse(@RequestParam("courseId") Long courseId) {
+
+        logger.info("Calling API for survey retrieval for the course: " + courseId);
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Survey>> responseDTO = null;
+        ModelAndView mav = new ModelAndView("survey_manager");
+        try {
+            List<Survey> surveyList = surveyService.getSurveysForCourse(courseId);
+            String resMessage = String.format("Survey list has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, surveyList);
+            mav.addObject("surveyList",surveyList);
+            mav.addObject("courseId",courseId);
+            Survey.Builder sBuilder = new Survey.Builder(null)
+                    .forCourse(courseId)
+                    .createdByUser(currentUserService.getAuthenticatedUser().get().getUserId())
+                    .hasStatus("unpublished");
+            mav.addObject("survey",sBuilder.build());
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+            String errMessage = String.format("Error in retrieving the survey from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+        return mav;
+    }
+
     @GetMapping(value = "/api/course_surveys")
     public ResponseEntity<ResponseDTO> getCourseSurveys(@RequestParam("courseId") Long courseId){
 
