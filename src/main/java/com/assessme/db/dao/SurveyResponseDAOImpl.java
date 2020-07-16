@@ -3,12 +3,12 @@ package com.assessme.db.dao;
 import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.SurveyQuestionResponseDTO;
 import com.assessme.model.SurveyQuestionResponseData;
+import com.assessme.model.SurveyResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author: monil
@@ -16,14 +16,28 @@ import java.util.Optional;
  */
 public class SurveyResponseDAOImpl implements SurveyResponseDAO {
 
-    private static final String insertSurveyResponse = "INSERT INTO survey_response (survey_id, user_id) " +
+    private static final String insertSurveyResponseQuery = "INSERT INTO survey_response (survey_id, user_id) " +
             "VALUES(?, ?)";
 
-    private static final String insertSurveyResonseDataValues = "INSERT INTO survey_response_data_values(data) " +
+    private static final String insertSurveyResonseDataValuesQuery = "INSERT INTO survey_response_data_values(data) " +
             "VALUES(?)";
 
-    private static final String insertSurveyResponseData = "INSERT INTO survey_response_data (response_id, question_id, data_id)" +
+    private static final String insertSurveyResponseDataQuery = "INSERT INTO survey_response_data (response_id, question_id, data_id)" +
             "VALUES(?, ?, ?)";
+
+    private static final String selectSurveyQuery =
+            "SELECT s.response_id, s.survey_id, s.user_id, s.responded_at," +
+                    "sd.question_id," +
+                    "qt.question_type_id, qt.qustion_type_text," +
+                    "q.question_text, q.question_title, srd.data, " +
+                    "qo.option_value " +
+                    "FROM survey_response AS s " +
+                    "INNER JOIN survey_response_data AS sd on s.response_id = sd.response_id " +
+                    "INNER JOIN survey_response_data_values AS srd on sd.data_id = srd.data_id " +
+                    "INNER JOIN questions as q on sd.question_id = q.question_id " +
+                    "INNER JOIN question_type as qt on q.question_type = qt.question_type_id " +
+                    "LEFT JOIN question_options as qo on qo.option_text = srd.data " +
+                    "WHERE s.survey_id = ?";
 
     private static SurveyResponseDAOImpl instance;
     private final Logger logger = LoggerFactory.getLogger(SurveyResponseDAOImpl.class);
@@ -35,13 +49,75 @@ public class SurveyResponseDAOImpl implements SurveyResponseDAO {
         return instance;
     }
 
+    @Override
+    public Map<Long, List<SurveyQuestionResponseData>> getSurveyResponse(Long surveyId) throws Exception {
+
+
+        Map<Long, List<SurveyQuestionResponseData>> map = new HashMap<>();
+
+
+        try (
+                Connection connection = ConnectionManager.getInstance().getDBConnection().get();
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(selectSurveyQuery)
+        ) {
+            preparedStatement.setLong(1, surveyId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<SurveyQuestionResponseData> responseDataList = null;
+
+            while (resultSet.next()) {
+                if (map.containsKey(resultSet.getLong("user_id"))) {
+
+                    responseDataList = map.get(resultSet.getLong("user_id"));
+
+                    SurveyQuestionResponseData surveyQuestionResponseData = new SurveyQuestionResponseData
+                            .Builder(resultSet.getLong("question_id"))
+                            .hasQuestionTypeId(resultSet.getLong("question_type_id"))
+                            .hasQuestionTypeText(resultSet.getString("qustion_type_text"))
+                            .hasQuestionTitle(resultSet.getString("question_title"))
+                            .hasQuestionText(resultSet.getString("question_text"))
+                            .hasData(resultSet.getString("data"))
+                            .hasValue(resultSet.getInt("option_value"))
+                            .build();
+
+                    responseDataList.add(surveyQuestionResponseData);
+
+                } else {
+
+                    responseDataList = new ArrayList<>();
+                    SurveyQuestionResponseData surveyQuestionResponseData = new SurveyQuestionResponseData
+                            .Builder(resultSet.getLong("question_id"))
+                            .hasQuestionTypeId(resultSet.getLong("question_type_id"))
+                            .hasQuestionTypeText(resultSet.getString("qustion_type_text"))
+                            .hasQuestionTitle(resultSet.getString("question_title"))
+                            .hasQuestionText(resultSet.getString("question_text"))
+                            .hasData(resultSet.getString("data"))
+                            .hasValue(resultSet.getInt("option_value"))
+                            .build();
+
+                    responseDataList.add(surveyQuestionResponseData);
+                }
+
+                map.put(resultSet.getLong("user_id"), responseDataList);
+
+            }
+        } catch (
+                Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            throw e;
+        }
+        return map;
+    }
+
 
     @Override
     public Optional<SurveyQuestionResponseDTO> saveSurveyResponse(SurveyQuestionResponseDTO questionResponseDTO) throws Exception {
         try (
                 Connection connection = ConnectionManager.getInstance().getDBConnection().get();
                 PreparedStatement insertResponsePreparedStatement =
-                        connection.prepareStatement(insertSurveyResponse, Statement.RETURN_GENERATED_KEYS);
+                        connection.prepareStatement(insertSurveyResponseQuery, Statement.RETURN_GENERATED_KEYS);
         ) {
 
             List<SurveyQuestionResponseData> surveyQuestionResponseData = questionResponseDTO.getResponse();
@@ -74,7 +150,7 @@ public class SurveyResponseDAOImpl implements SurveyResponseDAO {
         try (
                 Connection connection = ConnectionManager.getInstance().getDBConnection().get();
                 PreparedStatement insertDataPreparedStatement =
-                        connection.prepareStatement(insertSurveyResponseData, Statement.RETURN_GENERATED_KEYS);
+                        connection.prepareStatement(insertSurveyResponseDataQuery, Statement.RETURN_GENERATED_KEYS);
         ) {
 
             List<SurveyQuestionResponseData> surveyQuestionResponseData = questionResponseDTO.getResponse();
@@ -115,7 +191,7 @@ public class SurveyResponseDAOImpl implements SurveyResponseDAO {
         try (
                 Connection connection = ConnectionManager.getInstance().getDBConnection().get();
                 PreparedStatement insertDataValuesPreparedStatement =
-                        connection.prepareStatement(insertSurveyResonseDataValues, Statement.RETURN_GENERATED_KEYS);
+                        connection.prepareStatement(insertSurveyResonseDataValuesQuery, Statement.RETURN_GENERATED_KEYS);
         ) {
 
             insertDataValuesPreparedStatement.setString(1, data);

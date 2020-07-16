@@ -19,7 +19,9 @@ public class SurveyQuestionResponseData {
         private String questionText;
         private String questionTitle;
         private String data;
+        private Integer value;
         private List<String> optionText;
+        private List<Integer> optionValue;
 
         public Builder(Long questionId) {
             this.questionId = questionId;
@@ -55,6 +57,16 @@ public class SurveyQuestionResponseData {
             return this;
         }
 
+        public Builder hasOptionValue(List<Integer> optionValue) {
+            this.optionValue = optionValue;
+            return this;
+        }
+
+        public Builder hasValue(Integer value) {
+            this.value = value;
+            return this;
+        }
+
         public SurveyQuestionResponseData build() {
             SurveyQuestionResponseData questionResponseData = new SurveyQuestionResponseData();
             questionResponseData.questionId = this.questionId;
@@ -64,6 +76,8 @@ public class SurveyQuestionResponseData {
             questionResponseData.questionTypeId = this.questionTypeId;
             questionResponseData.questionTypeText = this.questionTypeText;
             questionResponseData.optionText = this.optionText;
+            questionResponseData.optionValue = this.optionValue;
+            questionResponseData.value = this.value;
 
             return questionResponseData;
         }
@@ -75,7 +89,9 @@ public class SurveyQuestionResponseData {
     private String questionText;
     private String questionTitle;
     private String data;
+    private Integer value;
     private List<String> optionText;
+    private List<Integer> optionValue;
 
     public Long getQuestionId() {
         return questionId;
@@ -133,6 +149,22 @@ public class SurveyQuestionResponseData {
         this.optionText = optionText;
     }
 
+    public List<Integer> getOptionValue() {
+        return optionValue;
+    }
+
+    public void setOptionValue(List<Integer> optionValue) {
+        this.optionValue = optionValue;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
     @Override
     public String toString() {
         return "SurveyQuestionResponseData{" +
@@ -142,7 +174,9 @@ public class SurveyQuestionResponseData {
                 ", questionText='" + questionText + '\'' +
                 ", questionTitle='" + questionTitle + '\'' +
                 ", data='" + data + '\'' +
+                ", value=" + value +
                 ", optionText=" + optionText +
+                ", optionValue=" + optionValue +
                 '}';
     }
 }
