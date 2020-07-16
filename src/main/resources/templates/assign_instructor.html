@@ -1,38 +1,38 @@
 <!DOCTYPE HTML>
-<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Assign TA for course</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Assign TA for course</title>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
 </head>
 <body>
 <div class="message" th:if="${message}">
-    <h2 th:text="${message}"/>
+  <h2 th:text="${message}"/>
 </div>
 
 <div>
-<h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
-<div th:align="right">
-    <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
-</div>
+  <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+  <div th:align="right">
+    <a href="#" th:align="right" th:href="@{/logout}">Log out</a>
+  </div>
 </div>
 
 <div>
-    <a th:href="@{/course_admin}">Go Back</a>
-    <form method="POST" th:action="@{/assign_instructor/{course_code}(course_code=${course_code})}">
-        <table>
-            <tr>
-                <td>Select User:</td>
-                <td>
-                    <select name="user_email">
-                        <option th:each="i : ${users}" th:value="${i.email}"
-                                th:text="${i.firstName}+' '+${i.lastName}">
-                        </option>
-                    </select>
-                </td>
-                <td><input type="submit" value="Assign"/></td>
-            </tr>
-        </table>
-    </form>
+  <a th:href="@{/course_admin}">Go Back</a>
+  <form method="POST" th:action="@{/assign_instructor/{course_code}(course_code=${course_code})}">
+    <table>
+      <tr>
+        <td>Select User:</td>
+        <td>
+          <select name="user_email">
+            <option th:each="i : ${users}" th:text="${i.firstName}+' '+${i.lastName}"
+                    th:value="${i.email}">
+            </option>
+          </select>
+        </td>
+        <td><input type="submit" value="Assign"/></td>
+      </tr>
+    </table>
+  </form>
 </div>
 </body>
 </html>

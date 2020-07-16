@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 
 public class UserTokenTest {
+
     @Test
     public void DefaultConstructorTest() {
         UserToken userToken = new UserToken();

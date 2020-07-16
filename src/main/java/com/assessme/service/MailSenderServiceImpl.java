@@ -16,43 +16,43 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailSenderServiceImpl implements MailSenderService {
 
-  private static MailSenderServiceImpl instance;
-  private final Logger logger = LoggerFactory.getLogger(MailSenderServiceImpl.class);
-  private final EmailConfig emailConfig;
-  private final JavaMailSenderImpl mailSender;
+    private static MailSenderServiceImpl instance;
+    private final Logger logger = LoggerFactory.getLogger(MailSenderServiceImpl.class);
+    private final EmailConfig emailConfig;
+    private final JavaMailSenderImpl mailSender;
 
-  public MailSenderServiceImpl() {
-    emailConfig = SystemConfig.getInstance().getEmailConfig();
-    mailSender = getConfigured();
-  }
-
-  public static MailSenderServiceImpl getInstance() {
-    if (instance == null) {
-      instance = new MailSenderServiceImpl();
+    public MailSenderServiceImpl() {
+        emailConfig = SystemConfig.getInstance().getEmailConfig();
+        mailSender = getConfigured();
     }
-    return instance;
-  }
 
-  @Override
-  public JavaMailSenderImpl getConfigured() {
-    JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-    javaMailSender.setHost(emailConfig.getHost());
-    javaMailSender.setPort(emailConfig.getPort());
-    javaMailSender.setUsername(emailConfig.getUsername());
-    javaMailSender.setPassword(emailConfig.getPassword());
-    javaMailSender.setJavaMailProperties(emailConfig.getProps());
-    return javaMailSender;
-  }
+    public static MailSenderServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new MailSenderServiceImpl();
+        }
+        return instance;
+    }
 
-  @Override
-  @Async
-  public void sendSimpleMessage(String to, String subject, String text) {
-    logger.info(String.format("Sending Mail to %s", to));
-    SimpleMailMessage message = new SimpleMailMessage();
-    message.setTo(to);
-    message.setSubject(subject);
-    message.setText(text);
-    mailSender.send(message);
-    logger.info(String.format("Mail Sent Successfully to %s", to));
-  }
+    @Override
+    public JavaMailSenderImpl getConfigured() {
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setHost(emailConfig.getHost());
+        javaMailSender.setPort(emailConfig.getPort());
+        javaMailSender.setUsername(emailConfig.getUsername());
+        javaMailSender.setPassword(emailConfig.getPassword());
+        javaMailSender.setJavaMailProperties(emailConfig.getProps());
+        return javaMailSender;
+    }
+
+    @Override
+    @Async
+    public void sendSimpleMessage(String to, String subject, String text) {
+        logger.info(String.format("Sending Mail to %s", to));
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        mailSender.send(message);
+        logger.info(String.format("Mail Sent Successfully to %s", to));
+    }
 }

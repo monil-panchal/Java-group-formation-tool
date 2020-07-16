@@ -112,7 +112,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="/css/app.css">
+  <link href="/css/app.css" rel="stylesheet">
   <title>Question Editor</title>
 
 </head>
@@ -122,20 +122,20 @@
 </div>
 
 <div align="center">
-  <table id="QuestionTable" border="2">
+  <table border="2" id="QuestionTable">
     <thead>
     </thead>
     <tbody>
     <tr>
       <td style="padding:10px"><b>Question title</b></td>
-      <td><input type="text" name="question_title" placeholder="Question title"></td>
+      <td><input name="question_title" placeholder="Question title" type="text"></td>
     </tr>
     <tr>
       <td style="padding:10px"><b>Question text</b></td>
-      <td><input type="text" name="question_text" placeholder="Question text"></td>
+      <td><input name="question_text" placeholder="Question text" type="text"></td>
     </tr>
     <tr>
-      <td style="padding:10px" for="responseType"><b>Response type</b></td>
+      <td for="responseType" style="padding:10px"><b>Response type</b></td>
       <td>
         <!--				<select name="responseType" id="responseType" onchange="responseType_changed(this)">-->
         <!--				  <option value="numeric">Numeric</option>-->
@@ -145,8 +145,8 @@
         <!--				</select>-->
 
         <select name="question_type" onchange="responseType_changed(this)">
-          <option th:each="i : ${questionTypeList}" th:value="${i.questionTypeID}"
-                  th:text="${i.questionTypeText}">
+          <option th:each="i : ${questionTypeList}" th:text="${i.questionTypeText}"
+                  th:value="${i.questionTypeID}">
           </option>
         </select>
 
@@ -157,7 +157,7 @@
 </div>
 <br></br>
 <div align="center" id="ChoiceDiv">
-  <table id="courseListTable" border="1">
+  <table border="1" id="courseListTable">
   </table>
 </div>
 <br></br>
@@ -167,6 +167,7 @@
 </div>
 <script>
   $('#sortableBody').sortable();
+
   function sendQuestion() {
     var questionType = document.querySelector("select[name='question_type']").value;
     var questionTitle = document.querySelector("input[name='question_title']").value;
@@ -194,10 +195,10 @@
       method: "POST",
       body: formData,
     }).then(r => r.json()).then(r => {
-      if(r['success']){
+      if (r['success']) {
         alert("Question Added");
         location.reload();
-      }else{
+      } else {
         alert("Failed to insert question")
         location.reload();
       }

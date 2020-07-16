@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.Async;
  */
 public interface MailSenderService {
 
-  JavaMailSenderImpl getConfigured();
+    JavaMailSenderImpl getConfigured();
 
-  @Async
-  void sendSimpleMessage(String to, String subject, String text);
+    @Async
+    void sendSimpleMessage(String to, String subject, String text);
 }

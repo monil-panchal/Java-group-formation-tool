@@ -3,6 +3,8 @@ package com.assessme.service;
 import com.assessme.db.dao.SurveyDAOImpl;
 import com.assessme.model.Survey;
 import com.assessme.util.SurveyStatusConstant;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,12 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
- * @author: monil
- * Created on: 2020-07-14
+ * @author: monil Created on: 2020-07-14
  */
 @ExtendWith(MockitoExtension.class)
 public class SurveyServiceTest {
@@ -42,11 +40,11 @@ public class SurveyServiceTest {
     @BeforeEach
     public void init() {
         survey = new Survey.Builder(1L)
-                .addName("Test survey")
-                .addDescription("Sample test survey")
-                .forCourse(1L)
-                .createdByUser(1L)
-                .build();
+            .addName("Test survey")
+            .addDescription("Sample test survey")
+            .forCourse(1L)
+            .createdByUser(1L)
+            .build();
     }
 
     @Test
@@ -67,7 +65,8 @@ public class SurveyServiceTest {
         Assert.notNull(surveyFromDB.get().getUserId(), "Survey user id should not be null");
         Assertions.assertEquals(surveyFromDB.get().getUserId(), survey.getUserId());
         Assertions.assertEquals(surveyFromDB.get().getCourseId(), survey.getCourseId());
-        Assertions.assertEquals(SurveyStatusConstant.PUBLISHED.getSurveyStatus(), surveyFromDB.get().getStatus());
+        Assertions.assertEquals(SurveyStatusConstant.PUBLISHED.getSurveyStatus(),
+            surveyFromDB.get().getStatus());
 
     }
 
@@ -111,6 +110,7 @@ public class SurveyServiceTest {
         Assert.notNull(surveyFromDB.get().getSurveyId(), "Survey id should not be null");
         Assert.notNull(surveyFromDB.get().getCourseId(), "Survey course id should not be null");
         Assert.notNull(surveyFromDB.get().getUserId(), "Survey user id should not be null");
-        Assertions.assertEquals(SurveyStatusConstant.PUBLISHED.getSurveyStatus(), surveyFromDB.get().getStatus());
+        Assertions.assertEquals(SurveyStatusConstant.PUBLISHED.getSurveyStatus(),
+            surveyFromDB.get().getStatus());
     }
 }

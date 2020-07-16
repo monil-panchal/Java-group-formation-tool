@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author: monil
- * Created on: 2020-07-16
+ * @author: monil Created on: 2020-07-16
  */
 public class SurveyResponseDTO implements Serializable {
 
@@ -34,6 +33,14 @@ public class SurveyResponseDTO implements Serializable {
 
     public void setUsers(List<UserResponse> users) {
         this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "SurveyResponseDTO{" +
+            "surveyId=" + surveyId +
+            ", users=" + users +
+            '}';
     }
 
     public static class UserResponse {
@@ -68,17 +75,9 @@ public class SurveyResponseDTO implements Serializable {
         @Override
         public String toString() {
             return "UserResponse{" +
-                    "userId=" + userId +
-                    ", questions=" + questions +
-                    '}';
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "SurveyResponseDTO{" +
-                "surveyId=" + surveyId +
-                ", users=" + users +
+                "userId=" + userId +
+                ", questions=" + questions +
                 '}';
+        }
     }
 }

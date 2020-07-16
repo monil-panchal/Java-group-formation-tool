@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="/css/app.css">
+  <link href="/css/app.css" rel="stylesheet">
   <title>Question Manager</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script
@@ -22,10 +22,10 @@
     }, 1000);
 
     function removeCourse(questionId) {
-      var CONFIRM_MSG= "removing this question will remove all" +
-          " the responses related to this question.\n"+
+      var CONFIRM_MSG = "removing this question will remove all" +
+          " the responses related to this question.\n" +
           "Do you want to remove this course?";
-      if(confirm(CONFIRM_MSG)) {
+      if (confirm(CONFIRM_MSG)) {
         var formData = new FormData()
         formData.append("questionId", questionId)
         fetch("/remove_question", {
@@ -49,7 +49,7 @@
 </div>
 
 <div align="center">
-  <table id="courseListTable" border="1" class="tablesorter compatibility">
+  <table border="1" class="tablesorter compatibility" id="courseListTable">
     <thead>
     <tr>
       <th style="padding:10px">Question Title</th>

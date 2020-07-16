@@ -7,9 +7,13 @@ import com.assessme.model.User;
 import com.assessme.service.SurveyAlgorithmService;
 import com.assessme.service.SurveyResponseService;
 import com.assessme.service.SurveyResponseServiceImpl;
+import com.assessme.service.UserService;
+import com.assessme.service.UserServiceImpl;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -32,12 +36,14 @@ public class SurveyResponseController {
 
     private final Logger logger = LoggerFactory.getLogger(SurveyResponseController.class);
 
-    private SurveyResponseService surveyResponseService;
-    private SurveyAlgorithmService surveyAlgorithmService;
+    private final SurveyResponseService surveyResponseService;
+    private final SurveyAlgorithmService surveyAlgorithmService;
+    private final UserService userService;
 
     public SurveyResponseController(SurveyResponseService surveyResponseService) {
         this.surveyResponseService = SurveyResponseServiceImpl.getInstance();
         this.surveyAlgorithmService = SurveyAlgorithmService.getInstance();
+        this.userService = UserServiceImpl.getInstance();
     }
 
     @PostMapping(value = "/add", consumes = {MediaType.APPLICATION_JSON_VALUE})
@@ -102,9 +108,24 @@ public class SurveyResponseController {
         ModelAndView mav = new ModelAndView("survey_groups.html");
         mav.addObject("surveyId", surveyId);
         try {
-            HashMap<Integer, List<User>> groups = surveyAlgorithmService
+            HashMap<Integer, List<Long>> groups = surveyAlgorithmService
                 .formGroupsForSurvey(surveyId);
-            mav.addObject("groupMap", groups);
+            HashMap<Integer, List<User>> groupUsers = new HashMap<>();
+
+            for (Entry<Integer, List<Long>> e : groups.entrySet()) {
+                int groupNumber = e.getKey();
+                List<User> userList = e.getValue().stream().map((userId) -> {
+                    try {
+                        logger.info(String.format("Fetching user with id: %d", userId));
+                        return userService.getUserById(userId).get();
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toList());
+                groupUsers.put(groupNumber, userList);
+            }
+            mav.addObject("groupMap", groupUsers);
         } catch (Exception e) {
             mav.addObject("message", "Couldn't form groups. check back later");
         }

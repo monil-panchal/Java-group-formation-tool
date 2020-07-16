@@ -7,12 +7,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
 /**
- * @author: hardik
- * Created on: 2020-06-30
+ * @author: hardik Created on: 2020-06-30
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @SuppressWarnings("deprecation")
 public class ResponseDTOTest<T> {
+
     private final Logger logger = LoggerFactory.getLogger(ResponseDTOTest.class);
 
     @Test

@@ -1,37 +1,44 @@
 package com.assessme.service;
 
 import com.assessme.model.Question;
+import com.assessme.model.SurveyQuestionResponseData;
 import com.assessme.model.SurveyQuestionsDTO;
-import com.assessme.model.User;
+import com.assessme.model.SurveyResponseDTO.UserResponse;
 import com.assessme.util.AppConstant;
 import com.google.common.base.Preconditions;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Darshan Kathiriya
  * @created 15-July-2020 4:02 PM
  */
 public class SurveyAlgorithmService {
+
     final static HashFunction hf = Hashing.md5();
     private static SurveyAlgorithmService instance;
-    final int GROUP_SIZE = 4;
-    long surveyId = 24;
+
+    final int GROUP_SIZE = 2;
+    private final Logger logger = LoggerFactory.getLogger(SurveyAlgorithmService.class);
     QuestionService questionService;
-    UserService userService;
     SurveyQuestionsServiceImpl surveyQuestionsService;
-    private Logger logger = LoggerFactory.getLogger(SurveyAlgorithmService.class);
+    SurveyResponseService surveyResponseService;
 
     public SurveyAlgorithmService() {
         questionService = QuestionServiceImpl.getInstance();
         surveyQuestionsService = SurveyQuestionsServiceImpl.getInstance();
+        surveyResponseService = SurveyResponseServiceImpl.getInstance();
     }
 
     public static SurveyAlgorithmService getInstance() {
@@ -41,26 +48,19 @@ public class SurveyAlgorithmService {
         return instance;
     }
 
-    public HashMap<Integer, List<User>> formGroupsForSurvey(long surveyId) throws Exception {
+    public HashMap<Integer, List<Long>> formGroupsForSurvey(long surveyId) throws Exception {
         int vectorLength = getVectorLength(surveyId).get();
-
         logger.info(String.format("Vector Length: %d", vectorLength));
-        HashMap<Integer, List<User>> groups = new HashMap<>();
-        List<User> group1 = new ArrayList<>();
-        List<User> group2 = new ArrayList<>();
-        group1.add(new User("B001", "Dash_1", "", "", "", true));
-        group1.add(new User("B002", "Dash_2", "", "", "", true));
-        group2.add(new User("B003", "Dash_3", "", "", "", true));
-        groups.put(1, group1);
-        groups.put(2, group2);
-        return groups;
+        HashMap<Integer, List<Long>> groupsIds = createGroups(surveyId, vectorLength);
+        logger.info(String.format("created groups: %d", groupsIds.size()));
+        return groupsIds;
     }
 
     Optional<Integer> getVectorLength(long surveyId) {
         try {
             int vecLength = 0;
             Optional<SurveyQuestionsDTO> surveyQuestions = surveyQuestionsService
-                    .getSurveyQuestions(surveyId);
+                .getSurveyQuestions(surveyId);
             List<Long> questionList = surveyQuestions.get().getQuestionList();
             for (long questionId : questionList) {
                 logger.info(String.format("%d", questionId));
@@ -78,7 +78,7 @@ public class SurveyAlgorithmService {
                         vecLength += 1;
                     default:
                         logger.error(String.format("question type: %d found for question: %d",
-                                questionById.getQuestionTypeId(), questionById.getQuestionId()));
+                            questionById.getQuestionTypeId(), questionById.getQuestionId()));
                         break;
                 }
             }
@@ -89,28 +89,9 @@ public class SurveyAlgorithmService {
         return Optional.empty();
     }
 
-    void createGroups() {
-        HashMap<Long, double[]> responseVectors = getResponseVectors().get();
-        HashMap<Integer, List<Long>> groups = new HashMap<>();
-        int groupNumber = 1;
-        while (responseVectors.size() / GROUP_SIZE >= 1) {
-            int random = ThreadLocalRandom.current().nextInt(0, responseVectors.size());
-            Long[] keys = (Long[]) responseVectors.keySet().toArray();
-            long userId = keys[random];
-            double[] userResponseVec = responseVectors.remove(userId);
-            List<Long> group = formAGroup(userResponseVec, responseVectors);
-            group.add(userId);
-            //TODO: check here if userIds are deleted?
-            group.stream().forEach((i) -> responseVectors.remove(i));
-            groups.put(groupNumber, group);
-            groupNumber++;
-        }
-        groups.put(groupNumber, responseVectors.keySet().stream().collect(Collectors.toList()));
-    }
-
     List<Long> formAGroup(double[] vec, HashMap<Long, double[]> responseVector) {
         List<Long> group = new ArrayList<>();
-        int members = 3;
+        int members = GROUP_SIZE - 1;
         while (members > 0) {
             long userId = 0;
             double similarity = Double.MIN_VALUE;
@@ -130,14 +111,82 @@ public class SurveyAlgorithmService {
         return group;
     }
 
-    Optional<HashMap<Long, double[]>> getResponseVectors() {
+    HashMap<Integer, List<Long>> createGroups(long surveyId, int vectorLength) throws Exception {
+        HashMap<Long, double[]> responseVectors = getResponseVectors(surveyId, vectorLength).get();
+        HashMap<Integer, List<Long>> groups = new HashMap<>();
         try {
-            // TODO: replace with get users list by survey.
-            List<User> userList = userService.getUserList().get();
+            logger.info(
+                String.format("Respnse Vector with Size: %d created", responseVectors.size()));
+            int groupNumber = 1;
+            while (responseVectors.size() / GROUP_SIZE >= 1) {
+                int random = ThreadLocalRandom.current().nextInt(0, responseVectors.size());
+                Long[] keys = responseVectors.keySet().toArray(new Long[responseVectors.size()]);
+                long userId = keys[random];
+                double[] userResponseVec = responseVectors.remove(userId);
+                List<Long> group = formAGroup(userResponseVec, responseVectors);
+                group.add(userId);
+                //TODO: check here if userIds are deleted?
+                logger.info(String.format("Responses are available: %d", responseVectors.size()));
+                group.stream().forEach((i) -> responseVectors.remove(i));
+                groups.put(groupNumber, group);
+                groupNumber++;
+            }
+            if (responseVectors.size() != 0) {
+                groups.put(groupNumber,
+                    responseVectors.keySet().stream().collect(Collectors.toList()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return groups;
+    }
+
+
+    Optional<HashMap<Long, double[]>> getResponseVectors(long surveyId, int vectorLength)
+        throws Exception {
+        try {
+            List<UserResponse> userResponses = surveyResponseService
+                .getSurveyQuestionsForStudent(surveyId)
+                .getUsers();
+
             HashMap<Long, double[]> responseList = new HashMap<>();
-            for (User u : userList) {
-//                double[] vec = getVectorForUser(u);
-//                responseList.put(u.getUserId(), vec);
+            for (UserResponse u : userResponses) {
+                double[] vec = new double[vectorLength];
+                int vecIndex = 0;
+                //TODO: replace with get response list by survey and user.
+                //TODO: get question by user and survey
+                for (SurveyQuestionResponseData q : u.getQuestions()) {
+                    logger.info(String.format("Vector Index: %d", vecIndex));
+                    List<Integer> optionValues;
+                    logger.info(String.format("Question Type: %d", q.getQuestionTypeId()));
+                    switch (q.getQuestionTypeId().intValue()) {
+                        case 1:
+                            vec[vecIndex++] = Integer.parseInt(q.getData());
+                            break;
+                        case 2:
+                        case 3:
+
+                            List<Integer> questionOptions = Arrays
+                                .stream(questionService.getQuestionById(q.getQuestionId()).get()
+                                    .getOptionValue()).boxed().collect(Collectors.toList());
+                            q.getOptionValue().forEach(System.out::println);
+                            for (int opValue : q.getOptionValue()) {
+                                vec[vecIndex + questionOptions.indexOf(opValue)] = opValue;
+                                vecIndex++;
+                            }
+                            break;
+                        case 4:
+                            double string_dist = Math.abs(
+                                cosineSimilarity(convertFreeTextToVector(q.getData()),
+                                    getNewVec()));
+                            vec[vecIndex++] = string_dist;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                responseList.put(u.getUserId(), vec);
             }
             return Optional.of(responseList);
         } catch (Exception e) {
@@ -146,51 +195,6 @@ public class SurveyAlgorithmService {
         return Optional.empty();
     }
 
-    double[] getVectorForUser(User u, int vectorLength) throws Exception {
-        double[] vec = new double[vectorLength];
-        int vecIndex = 0;
-        //TODO: replace with get response list by survey and user.
-//
-//        List<SurveyResponse> responses = new ArrayList<>();
-//        responses.add(new SurveyResponse(1L,"12"));
-//        responses.add(new SurveyResponse(2L, "Hello World!"));
-        //TODO: get question by user and survey
-        Optional<List<Question>> questionsByUser = questionService.getQuestionsByUser(u);
-        for (Question q : questionsByUser.get()) {
-            int[] optionValues;
-            switch (q.getQuestionTypeId()) {
-                case 1:
-                    //TODO: replace hardcoded value with actual response
-                    int numResponseValue = 1;
-                    vec[vecIndex++] = numResponseValue;
-                    break;
-                case 2:
-                    //TODO: replace hardcoded value with actual response
-                    int mcqResponseValue = 1;
-                    optionValues = q.getOptionValue();
-                    int optionIndex = Arrays.asList(optionValues).indexOf(mcqResponseValue);
-                    vec[(++vecIndex) + optionIndex] = mcqResponseValue;
-                    break;
-                case 3:
-                    optionValues = q.getOptionValue();
-                    //TODO: replace hardcoded 1 with actual respones.
-                    //Probably loop will be required.
-                    vec[vecIndex++] = Arrays.asList(optionValues).indexOf(1);
-                    break;
-                case 4:
-                    //TODO: Use response provided by user.
-                    String responseString = "User Response will be used";
-                    double string_dist = Math.abs(
-                            cosineSimilarity(convertFreeTextToVector(responseString), getNewVec()));
-                    vec[vecIndex] = string_dist;
-//                    System.arraycopy(vecString, 0, vec, vecIndex, vecString.length);
-                    vecIndex += 1;
-                default:
-                    break;
-            }
-        }
-        return vec;
-    }
 
     double[] convertFreeTextToVector(String responseString) {
         responseString = responseString.replaceAll("[^a-zA-Z0-9]", " ");
@@ -205,14 +209,14 @@ public class SurveyAlgorithmService {
     }
 
     public double[] getNewVec() {
-        double[] vec = new double[128];
+        double[] vec = new double[AppConstant.STRING_VEC_LENGTH];
         Arrays.fill(vec, 1);
         return vec;
     }
 
     public double cosineSimilarity(double[] vectorA, double[] vectorB) {
         Preconditions.checkState(vectorA.length == vectorB.length,
-                "Need both vector of same length");
+            "Need both vector of same length");
         double dotProduct = 0.0;
         double normA = 0.0;
         double normB = 0.0;

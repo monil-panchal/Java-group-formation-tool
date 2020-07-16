@@ -8,42 +8,43 @@ import org.slf4j.LoggerFactory;
  */
 public class SpecialCharacterLengthValidatorImpl implements PasswordValidator {
 
-  private final Logger logger = LoggerFactory.getLogger(SpecialCharacterLengthValidatorImpl.class);
+    private final Logger logger = LoggerFactory
+        .getLogger(SpecialCharacterLengthValidatorImpl.class);
 
-  private final Integer minLength;
+    private final Integer minLength;
 
-  public SpecialCharacterLengthValidatorImpl(Integer minLength) {
-    this.minLength = minLength;
-  }
-
-  @Override
-  public Boolean isValid(String password) {
-    if (password == null || password.isEmpty() || password.isBlank()) {
-      throw new IllegalArgumentException("Password cannot be null or blank");
+    public SpecialCharacterLengthValidatorImpl(Integer minLength) {
+        this.minLength = minLength;
     }
 
-    int specialCharacterCounter = 0;
+    @Override
+    public Boolean isValid(String password) {
+        if (password == null || password.isEmpty() || password.isBlank()) {
+            throw new IllegalArgumentException("Password cannot be null or blank");
+        }
 
-    for (int i = 0; i < password.length(); i++) {
-      char ch = password.charAt(i);
+        int specialCharacterCounter = 0;
 
-      if (Character.isSpaceChar(ch)) {
+        for (int i = 0; i < password.length(); i++) {
+            char ch = password.charAt(i);
+
+            if (Character.isSpaceChar(ch)) {
+                return false;
+            }
+
+            if (Character.isLetterOrDigit(ch)) {
+                continue;
+            } else {
+                specialCharacterCounter++;
+            }
+        }
+
+        if (specialCharacterCounter >= minLength) {
+            logger.info(this.getClass().getName() + " validation passed");
+            return true;
+        }
+
+        logger.error(this.getClass().getName() + " validation failed");
         return false;
-      }
-
-      if (Character.isLetterOrDigit(ch)) {
-        continue;
-      } else {
-        specialCharacterCounter++;
-      }
     }
-
-    if (specialCharacterCounter >= minLength) {
-      logger.info(this.getClass().getName() + " validation passed");
-      return true;
-    }
-
-    logger.error(this.getClass().getName() + " validation failed");
-    return false;
-  }
 }
