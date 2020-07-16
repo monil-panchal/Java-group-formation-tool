@@ -20,6 +20,7 @@
             <tr>
                 <th>Course ID</th>
                 <th>Course Name</th>
+                <th>Survey</th>
             </tr>
         </table>
     </div>
@@ -33,7 +34,11 @@
                 console.log(response.data);
                 if(response.data != null && response.data.length > 0){
                     $.each(response.data, function (key, value) {
-                        $("#course_table").append("<tr><td>" + value['courseCode'] + "</td><td>" + value['courseName'] +"</td></tr>")
+                        $("#course_table").append("<tr><td>"
+                            + value['courseCode'] + "</td><td>"
+                            + value['courseName'] + "</td><td>"
+                            + "<a href=/survey/course_surveys?courseId=" + value['courseId'] +">Surveys</a>"
+                            + "</td></tr>")
                     });
                 }
                 else{
