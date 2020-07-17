@@ -185,7 +185,8 @@ public class SurveyQuestionsController {
             String resMessage = String
                 .format("Survey question list has been retrieved from the database");
             mav.addObject("questions", surveyList.get());
-        } catch (Exception e) {
+            mav.addObject("surveyQuestions",surveyList.get().getQuestions());
+        }catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
 
@@ -193,6 +194,35 @@ public class SurveyQuestionsController {
                 .format("Error in retrieving the survey questions from the database");
             logger.error("Error fetching questions for survey_page page");
             mav.addObject("message", errMessage);
+        }
+
+        return mav;
+    }
+
+    @GetMapping(value = "/instructor/get_questions")
+    public ModelAndView getQuestionsForSurveyInstructor(@RequestParam("surveyId") Long surveyId) {
+
+        logger.info("Calling API for questions retrieval for the survey: " + surveyId);
+        HttpStatus httpStatus = null;
+        ModelAndView mav = new ModelAndView("survey_questions");
+        ResponseDTO<List<Survey>> responseDTO = null;
+
+        try {
+            mav.addObject("survey_id", surveyId);
+            Optional<SurveyQuestionsDTO> surveyList = surveyQuestionsService.getSurveyQuestions(surveyId);
+            String resMessage = String.format("Survey question list has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, surveyList.get());
+//            mav.addObject("questions", surveyList.get());
+//            mav.addObject("questions", new ArrayList<>());
+//            for(long id: surveyList.get())
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+            String errMessage = String.format("Error in retrieving the survey questions from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
         }
 
         return mav;

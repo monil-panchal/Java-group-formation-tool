@@ -40,20 +40,29 @@
   </button>
 
 </div>
-<div id="noSurvey"></div>
-<table align="centre" border="1" id="survey_table" width=100%>
-  <tr>
-    <th width=5%>Question ID</th>
-    <th width=30%>Question Text</th>
-    <th width=10%>Question Type</th>
-    <th width=30%>Options</th>
-  </tr>
-  <tr th:each="i : ${questions.questions}">
-    <td th:text="${i.questionId}"></td>
-    <td th:text="${i.questionText}"></td>
-    <td th:text="${i.questionTypeText}"></td>
-    <td th:text="${i.optionText}"></td>
-  </tr>
+
+<div id = "noSurvey"></div>
+<table id = "survey_table" border="1" align="centre" width=100%>
+    <tr>
+        <th width=5%>Question ID</th>
+        <th width=30%>Question Text</th>
+        <th width=10%>Question Type</th>
+        <th width=30%>Options</th>
+    </tr>
+    <tr th:each="i : ${surveyQuestions}">
+        <td th:text="${i.questionId}"></td>
+        <td th:text="${i.questionText}"></td>
+        <td th:text="${i.questionTypeText}"></td>
+        <td th:text="${i.optionText}"></td>
+    </tr>
 </table>
+<script>
+$(document).ready(function () {
+console.log("onload called");
+$.getJSON("/survey_questions/api/get_questions_details?surveyId=39", function (response) {
+console.log("response", response)
+});
+});
+</script>
 </body>
 </html>
