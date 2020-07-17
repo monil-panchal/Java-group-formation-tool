@@ -1,13 +1,14 @@
 package com.assessme.db.dao;
 
 import com.assessme.db.connection.ConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author: monil Created on: 2020-06-17

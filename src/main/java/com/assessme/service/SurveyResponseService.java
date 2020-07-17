@@ -1,7 +1,6 @@
 package com.assessme.service;
 
 import com.assessme.model.SurveyQuestionResponseDTO;
-import com.assessme.model.SurveyQuestionsDetails;
 import com.assessme.model.SurveyResponseDTO;
 
 import java.util.Optional;

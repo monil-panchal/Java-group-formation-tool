@@ -3,14 +3,15 @@ package com.assessme.password.validator;
 import com.assessme.auth.password.validator.PasswordHistoryValidatorImpl;
 import com.assessme.model.UserPasswordHistory;
 import com.assessme.util.BcryptPasswordEncoderUtil;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * @author: monil Created on: 2020-06-18
