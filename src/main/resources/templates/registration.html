@@ -1,84 +1,85 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}" lang="en">
+<html lang="en" layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>AssessMe registration</title>
+  <title>AssessMe registration</title>
 </head>
 <body>
 
 <h1>AssessMe registration</h1>
 
-<form name = "registerForm" th:action="@{/registration}" th:object="${user}" onsubmit="return validateForm()" method="POST">
+<form method="POST" name="registerForm" onsubmit="return validateForm()"
+      th:action="@{/registration}" th:object="${user}">
 
-    <div class="message" th:if="${message}">
-        <h2 th:text="${message}"/>
-    </div>
+  <div class="message" th:if="${message}">
+    <h2 th:text="${message}"/>
+  </div>
 
-    <div>
-        <label>First Name</label>
-        <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
-    </div>
-    <div>
-        <label>Last Name</label>
-        <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
-    </div>
+  <div>
+    <label>First Name</label>
+    <input id="firstName" name="firstName" required th:field="*{firstName}" type="text">
+  </div>
+  <div>
+    <label>Last Name</label>
+    <input id="lastName" name="lastName" required th:field="*{lastName}" type="text">
+  </div>
 
-    <div>
-        <label>Email</label>
-        <input type="text" id="email" name="email" th:field="*{email}" required>
-    </div>
-    <div>
-        <label>BannerId</label>
-        <input type="text" id="bannerId" name="bannerId" th:field="*{bannerId}" required>
-    </div>
-    <div>
-        <label>Password</label>
-        <input type="password" id="password" name="password" th:field="*{password}" required>
-    </div>
-    <div>
-        <label>Confirm password</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
-    </div>
+  <div>
+    <label>Email</label>
+    <input id="email" name="email" required th:field="*{email}" type="text">
+  </div>
+  <div>
+    <label>BannerId</label>
+    <input id="bannerId" name="bannerId" required th:field="*{bannerId}" type="text">
+  </div>
+  <div>
+    <label>Password</label>
+    <input id="password" name="password" required th:field="*{password}" type="password">
+  </div>
+  <div>
+    <label>Confirm password</label>
+    <input id="confirmPassword" name="confirmPassword" required type="password">
+  </div>
 
-    <div>
-        <input type="submit" value="Sign in"/>
-    </div>
+  <div>
+    <input type="submit" value="Sign in"/>
+  </div>
 
 </form>
 
 <a th:href="@{/login}">login</a>
 <script>
-    function validateForm() {
-        var mail = document.forms["registerForm"]["email"].value;
-        var password = document.forms["registerForm"]["password"].value;
-        var confirmPassword = document.forms["registerForm"]["confirmPassword"].value;
+  function validateForm() {
+    var mail = document.forms["registerForm"]["email"].value;
+    var password = document.forms["registerForm"]["password"].value;
+    var confirmPassword = document.forms["registerForm"]["confirmPassword"].value;
 
-        var alertString = "";
+    var alertString = "";
 
-        var emailValidated = true;
-        var passwordValidated = true;
+    var emailValidated = true;
+    var passwordValidated = true;
 
-        var mailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var mailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-        if (!mailPattern.test(mail)){
-            // alert("value matched")
-            alertString = alertString.concat("Email not entered in correct format");
-            emailValidated = false;
-        }
-
-        if(password != confirmPassword){
-            if(alertString != ""){
-                alertString = alertString.concat("\n");
-            }
-            alertString = alertString.concat("Passwords do not match")
-            passwordValidated = false;
-        }
-        console.log("alertstring", alertString)
-        // if(alertString != ""){
-            alert(alertString + "\n" + emailValidated + "\n" + passwordValidated);
-        // }
-        return emailValidated && passwordValidated;
+    if (!mailPattern.test(mail)) {
+      // alert("value matched")
+      alertString = alertString.concat("Email not entered in correct format");
+      emailValidated = false;
     }
+
+    if (password != confirmPassword) {
+      if (alertString != "") {
+        alertString = alertString.concat("\n");
+      }
+      alertString = alertString.concat("Passwords do not match")
+      passwordValidated = false;
+    }
+    console.log("alertstring", alertString)
+    // if(alertString != ""){
+    alert(alertString + "\n" + emailValidated + "\n" + passwordValidated);
+    // }
+    return emailValidated && passwordValidated;
+  }
 </script>
 </body>
 </html>

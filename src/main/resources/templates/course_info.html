@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="/css/app.css">
+  <link href="/css/app.css" rel="stylesheet">
   <title>Course Admin Page</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -10,7 +10,7 @@
 <div>
   <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
   <div th:align="right">
-    <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+    <a href="#" th:align="right" th:href="@{/logout}">Log out</a>
   </div>
 </div>
 <h1>Course Information Page</h1>

@@ -1,7 +1,6 @@
 package com.assessme.service;
 
 import com.assessme.model.UserRole;
-
 import java.util.Optional;
 
 /**
@@ -9,5 +8,5 @@ import java.util.Optional;
  */
 public interface UserRoleService {
 
-  Optional<UserRole> addUserRole(Long userId, Integer roleId) throws Exception;
+    Optional<UserRole> addUserRole(Long userId, Integer roleId) throws Exception;
 }

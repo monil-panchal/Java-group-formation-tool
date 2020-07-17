@@ -7,5 +7,5 @@ import java.util.Map;
  */
 public interface StoredPasswordPolicyService {
 
-  Map<String, Object> getPasswordPolicies() throws Exception;
+    Map<String, Object> getPasswordPolicies() throws Exception;
 }

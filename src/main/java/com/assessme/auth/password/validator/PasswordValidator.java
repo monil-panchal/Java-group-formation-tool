@@ -5,5 +5,5 @@ package com.assessme.auth.password.validator;
  */
 public interface PasswordValidator {
 
-  Boolean isValid(String password);
+    Boolean isValid(String password);
 }

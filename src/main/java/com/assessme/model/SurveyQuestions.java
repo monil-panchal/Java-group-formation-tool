@@ -1,6 +1,7 @@
 package com.assessme.model;
 
 public class SurveyQuestions {
+
     private Long surveyId;
     private Long questionId;
 

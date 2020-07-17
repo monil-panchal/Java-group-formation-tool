@@ -3,8 +3,7 @@ package com.assessme.model;
 import java.util.List;
 
 /**
- * @author: monil
- * Created on: 2020-07-15
+ * @author: monil Created on: 2020-07-15
  */
 public class SurveyQuestionsDetails {
 
@@ -33,8 +32,8 @@ public class SurveyQuestionsDetails {
     @Override
     public String toString() {
         return "SurveyQuestionsDetails{" +
-                "surveyId=" + surveyId +
-                ", questions=" + questions +
-                '}';
+            "surveyId=" + surveyId +
+            ", questions=" + questions +
+            '}';
     }
 }

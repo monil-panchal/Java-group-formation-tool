@@ -2,13 +2,13 @@ package com.assessme.db.connection;
 
 public interface IDatabaseConfiguration {
 
-  String getDatabaseUserName();
+    String getDatabaseUserName();
 
-  String getDatabasePassword();
+    String getDatabasePassword();
 
-  String getDatabaseURL();
+    String getDatabaseURL();
 
-  String getDatabaseName();
+    String getDatabaseName();
 
-  int getDatabasePort();
+    int getDatabasePort();
 }

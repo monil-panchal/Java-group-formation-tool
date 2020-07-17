@@ -2,7 +2,6 @@ package com.assessme.db.dao;
 
 import com.assessme.model.Question;
 import com.assessme.model.User;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -12,13 +11,13 @@ import java.util.Optional;
  */
 public interface QuestionDAO {
 
-  void addQuestion(Question question) throws Exception;
+    void addQuestion(Question question) throws Exception;
 
-  Optional<List<Question>> getQuestionsByUser(User user) throws Exception;
+    Optional<List<Question>> getQuestionsByUser(User user) throws Exception;
 
-  void removeQuestion(Question question) throws Exception;
+    void removeQuestion(Question question) throws Exception;
 
-  void removeQuestion(long questionId) throws Exception;
+    void removeQuestion(long questionId) throws Exception;
 
-  Optional<Question> getQuestionById(long question_id) throws Exception;
+    Optional<Question> getQuestionById(long question_id) throws Exception;
 }

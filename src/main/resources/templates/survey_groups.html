@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Survey Groups</title>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<p>Groups for Survey:
+<p th:text="${surveyId}"/>
+</p>
+<div th:if="${message}">
+  <h2 th:text="${message}"/>
+</div>
+<br/>
+<ul th:each="entry: ${groupMap}">
+  <span th:text="'Group: ' + ${entry.key}"></span>
+  <br/>
+  <li th:each="user : ${entry.value}" th:text="${user.firstName}+' | '+${user.bannerId}"></li>
+</ul>
+</body>
+</html>

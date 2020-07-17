@@ -5,7 +5,6 @@ package com.assessme.db.dao;
  */
 
 import com.assessme.model.UserToken;
-
 import java.util.Optional;
 
 /**
@@ -15,8 +14,8 @@ import java.util.Optional;
 
 public interface UserTokenDAO {
 
-  Optional<UserToken> addUserToken(UserToken userToken) throws Exception;
+    Optional<UserToken> addUserToken(UserToken userToken) throws Exception;
 
-  Optional<UserToken> getUserToken(Long userId) throws Exception;
+    Optional<UserToken> getUserToken(Long userId) throws Exception;
 
 }

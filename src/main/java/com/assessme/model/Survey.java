@@ -3,83 +3,13 @@ package com.assessme.model;
 import java.sql.Timestamp;
 
 /**
- * @author: monil
- * Created on: 2020-07-14
+ * @author: monil Created on: 2020-07-14
  */
 
 /**
  * This class uses Creational design pattern -  Builder for constructing the POJO object
  */
 public class Survey {
-
-    private Survey() {
-    }
-
-    public static class Builder {
-
-        private Long surveyId;
-        private String surveyName;
-        private String description;
-        private String status;
-        private Timestamp createdAt;
-        private Timestamp updatedAt;
-        private Long userId;
-        private Long courseId;
-
-        public Builder(Long surveyId) {
-            this.surveyId = surveyId;
-        }
-
-        public Survey.Builder addName(String surveyName) {
-            this.surveyName = surveyName;
-            return this;
-        }
-
-        public Survey.Builder addDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Survey.Builder hasStatus(String status) {
-            this.status = status;
-            return this;
-        }
-
-        public Survey.Builder createdAt(Timestamp createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public Survey.Builder updatedAt(Timestamp updatedAt) {
-            this.updatedAt = updatedAt;
-            return this;
-        }
-
-        public Survey.Builder createdByUser(Long userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public Survey.Builder forCourse(Long courseId) {
-            this.courseId = courseId;
-            return this;
-        }
-
-        public Survey build() {
-            Survey survey = new Survey();
-            survey.surveyId = this.surveyId;
-            survey.surveyName = this.surveyName;
-            survey.description = this.description;
-            survey.status = this.status;
-            survey.createdAt = this.createdAt;
-            survey.updatedAt = this.updatedAt;
-            survey.userId = this.userId;
-            survey.courseId = this.courseId;
-
-            return survey;
-        }
-
-    }
 
     private Long surveyId;
     private String surveyName;
@@ -89,6 +19,9 @@ public class Survey {
     private Timestamp updatedAt;
     private Long userId;
     private Long courseId;
+
+    private Survey() {
+    }
 
     public Long getSurveyId() {
 
@@ -171,14 +104,80 @@ public class Survey {
     @Override
     public String toString() {
         return "Survey{" +
-                "surveyId=" + surveyId +
-                ", surveyName='" + surveyName + '\'' +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", userId=" + userId +
-                ", courseId=" + courseId +
-                '}';
+            "surveyId=" + surveyId +
+            ", surveyName='" + surveyName + '\'' +
+            ", description='" + description + '\'' +
+            ", status='" + status + '\'' +
+            ", createdAt=" + createdAt +
+            ", updatedAt=" + updatedAt +
+            ", userId=" + userId +
+            ", courseId=" + courseId +
+            '}';
+    }
+
+    public static class Builder {
+
+        private final Long surveyId;
+        private String surveyName;
+        private String description;
+        private String status;
+        private Timestamp createdAt;
+        private Timestamp updatedAt;
+        private Long userId;
+        private Long courseId;
+
+        public Builder(Long surveyId) {
+            this.surveyId = surveyId;
+        }
+
+        public Survey.Builder addName(String surveyName) {
+            this.surveyName = surveyName;
+            return this;
+        }
+
+        public Survey.Builder addDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Survey.Builder hasStatus(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public Survey.Builder createdAt(Timestamp createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Survey.Builder updatedAt(Timestamp updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
+        public Survey.Builder createdByUser(Long userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Survey.Builder forCourse(Long courseId) {
+            this.courseId = courseId;
+            return this;
+        }
+
+        public Survey build() {
+            Survey survey = new Survey();
+            survey.surveyId = this.surveyId;
+            survey.surveyName = this.surveyName;
+            survey.description = this.description;
+            survey.status = this.status;
+            survey.createdAt = this.createdAt;
+            survey.updatedAt = this.updatedAt;
+            survey.userId = this.userId;
+            survey.courseId = this.courseId;
+
+            return survey;
+        }
+
     }
 }

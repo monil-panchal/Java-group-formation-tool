@@ -18,18 +18,18 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private final UserServiceImpl userServiceImpl;
+    private final UserServiceImpl userServiceImpl;
 
-  private final AuthenticationSuccessHandler authenticationSuccessHandler;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
-  public SpringSecurityConfig(UserServiceImpl userServiceImpl,
-      AuthenticationSuccessHandler authenticationSuccessHandler) {
-    this.authenticationSuccessHandler = authenticationSuccessHandler;
-    this.userServiceImpl = userServiceImpl;
-  }
+    public SpringSecurityConfig(UserServiceImpl userServiceImpl,
+        AuthenticationSuccessHandler authenticationSuccessHandler) {
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
+        this.userServiceImpl = userServiceImpl;
+    }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
 
     http.csrf().disable()
         .authorizeRequests()
@@ -58,21 +58,21 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll();
   }
 
-  @Bean
-  public BCryptPasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  public DaoAuthenticationProvider authenticationProvider() {
-    DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-    auth.setUserDetailsService(userServiceImpl);
-    auth.setPasswordEncoder(passwordEncoder());
-    return auth;
-  }
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+        auth.setUserDetailsService(userServiceImpl);
+        auth.setPasswordEncoder(passwordEncoder());
+        return auth;
+    }
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.authenticationProvider(authenticationProvider());
-  }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider());
+    }
 }
