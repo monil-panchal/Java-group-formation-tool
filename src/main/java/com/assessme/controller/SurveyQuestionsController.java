@@ -1,15 +1,12 @@
 package com.assessme.controller;
 
-<<<<<<< HEAD
 import com.assessme.auth.CurrentUserService;
 import com.assessme.model.*;
-=======
 import com.assessme.model.ResponseDTO;
 import com.assessme.model.Survey;
 import com.assessme.model.SurveyQuestionsDTO;
 import com.assessme.model.SurveyQuestionsDetails;
 import com.assessme.model.User;
->>>>>>> 38dbf51bbde26c71932131851a6c0ea83ade97ec
 import com.assessme.service.SurveyQuestionsService;
 import com.assessme.service.SurveyQuestionsServiceImpl;
 import java.util.ArrayList;
@@ -36,12 +33,8 @@ public class SurveyQuestionsController {
 
     private final Logger logger = LoggerFactory.getLogger(SurveyController.class);
 
-<<<<<<< HEAD
     private SurveyQuestionsService surveyQuestionsService;
     CurrentUserService currentUserService;
-=======
-    private final SurveyQuestionsService surveyQuestionsService;
->>>>>>> 38dbf51bbde26c71932131851a6c0ea83ade97ec
 
     public SurveyQuestionsController(SurveyQuestionsService surveyQuestionsService) {
         this.surveyQuestionsService = SurveyQuestionsServiceImpl.getInstance();
@@ -128,20 +121,11 @@ public class SurveyQuestionsController {
         ResponseDTO<List<Survey>> responseDTO = null;
         ModelAndView modelAndView = new ModelAndView("student_survey");
         try {
-<<<<<<< HEAD
             Optional<SurveyQuestionsDetails> surveyList = surveyQuestionsService.getSurveyQuestionsDetails(surveyId);
             String resMessage = String.format("Survey question list has been retrieved from the database");
             modelAndView.addObject("surveyQuestions",surveyList.get().getQuestions());
             modelAndView.addObject("userId", currentUserService.getAuthenticatedUser().get().getUserId());
             modelAndView.addObject("surveyId",surveyList.get().getSurveyId());
-=======
-            Optional<SurveyQuestionsDetails> surveyList = surveyQuestionsService
-                .getSurveyQuestionsDetails(surveyId);
-            String resMessage = String
-                .format("Survey question list has been retrieved from the database");
-            modelAndView.addObject("surveyQuestions", surveyList.get().getQuestions());
-            modelAndView.addObject("surveyId", surveyList.get().getSurveyId());
->>>>>>> 38dbf51bbde26c71932131851a6c0ea83ade97ec
             responseDTO = new ResponseDTO(true, resMessage, null, surveyList.get());
             httpStatus = HttpStatus.OK;
         } catch (Exception e) {
