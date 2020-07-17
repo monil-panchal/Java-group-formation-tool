@@ -1,13 +1,10 @@
 package com.assessme.model;
 
-import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * @author: monil
- * Created on: 2020-05-29
+ * @author: monil Created on: 2020-05-29
  */
 
 /**
@@ -26,7 +23,8 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String bannerId, String firstName, String lastName, String email, String password, Boolean isActive) {
+    public User(String bannerId, String firstName, String lastName, String email, String password,
+        Boolean isActive) {
         this.bannerId = bannerId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -94,32 +92,39 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
-                ", bannerId='" + bannerId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", isActive=" + isActive +
-                '}';
+            "userId=" + userId +
+            ", bannerId='" + bannerId + '\'' +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", email='" + email + '\'' +
+            ", password='" + password + '\'' +
+            ", isActive=" + isActive +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
         User user = (User) o;
         return getUserId().equals(user.getUserId()) &&
-                getBannerId().equals(user.getBannerId()) &&
-                getFirstName().equals(user.getFirstName()) &&
-                getLastName().equals(user.getLastName()) &&
-                getEmail().equals(user.getEmail()) &&
-                getPassword().equals(user.getPassword()) &&
-                isActive.equals(user.isActive);
+            getBannerId().equals(user.getBannerId()) &&
+            getFirstName().equals(user.getFirstName()) &&
+            getLastName().equals(user.getLastName()) &&
+            getEmail().equals(user.getEmail()) &&
+            getPassword().equals(user.getPassword()) &&
+            isActive.equals(user.isActive);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getBannerId(), getFirstName(), getLastName(), getEmail(), getPassword(), isActive);
+        return Objects
+            .hash(getUserId(), getBannerId(), getFirstName(), getLastName(), getEmail(),
+                getPassword(),
+                isActive);
     }
 }

@@ -9,11 +9,15 @@ import com.assessme.model.Enrollment;
 import com.assessme.model.Role;
 import com.assessme.model.User;
 import com.assessme.service.CourseService;
+import com.assessme.service.CourseServiceImpl;
 import com.assessme.service.EnrollmentService;
 import com.assessme.service.EnrollmentServiceImpl;
 import com.assessme.service.MailSenderService;
+import com.assessme.service.MailSenderServiceImpl;
 import com.assessme.service.RoleService;
+import com.assessme.service.RoleServiceImpl;
 import com.assessme.service.UserService;
+import com.assessme.service.UserServiceImpl;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -29,63 +33,67 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class AssignInstructorController {
 
-  UserService userService;
-  CourseService courseService;
-  EnrollmentService enrollmentService;
-  MailSenderService mailSenderService;
-  RoleService roleService;
-  private Logger logger = LoggerFactory.getLogger(AssignInstructorController.class);
+    private final Logger logger = LoggerFactory.getLogger(AssignInstructorController.class);
+    UserService userService;
+    CourseService courseService;
+    EnrollmentService enrollmentService;
+    MailSenderService mailSenderService;
+    RoleService roleService;
 
-  public AssignInstructorController(UserService userService, CourseService courseService,
-      EnrollmentService enrollmentService, MailSenderService mailSenderService,
-      RoleService roleService) {
-    this.userService = userService;
-    this.courseService = courseService;
-    this.enrollmentService = enrollmentService;
-    this.mailSenderService = mailSenderService;
-    this.roleService = roleService;
-  }
+    public AssignInstructorController() {
+        this.userService = UserServiceImpl.getInstance();
+        this.courseService = CourseServiceImpl.getInstance();
+        this.enrollmentService = EnrollmentServiceImpl.getInstance();
+        this.mailSenderService = MailSenderServiceImpl.getInstance();
+        this.roleService = RoleServiceImpl.getInstance();
+    }
 
 
-  @GetMapping("/assign_instructor/{courseCode}")
-  public ModelAndView getPage(
-      @PathVariable String courseCode) {
-    logger.info("Serving for course: " + courseCode);
-    ModelAndView mav = new ModelAndView("assign_instructor");
-    try {
-      Optional<List<User>> userList = userService.getUserList();
-      mav.addObject("course_code", courseCode);
-      mav.addObject("users", userList.get());
-      mav.addObject("user_id", -1);
-    } catch (Exception e) {
-      mav.addObject("message", "Error Fetching Users");
+    @GetMapping("/assign_instructor/{courseCode}")
+    public ModelAndView getPage(
+        @PathVariable String courseCode) {
+        logger.info("Serving for course: " + courseCode);
+        ModelAndView mav = new ModelAndView("assign_instructor");
+        try {
+            Optional<List<User>> userList = userService.getUserList();
+            mav.addObject("course_code", courseCode);
+            mav.addObject("users", userList.get());
+            mav.addObject("user_id", -1);
+        } catch (Exception e) {
+            mav.addObject("message", "Error Fetching Users");
+        }
+        return mav;
     }
     return mav;
   }
 
-  @PostMapping("/assign_instructor/{courseCode}")
-  public String handleAssignInstructor(@RequestParam("user_email") String userEmail,
-      @PathVariable String courseCode,
-      RedirectAttributes redirectAttributes) {
-    logger.info(String.format("assigning %s as Instructor for course: %s", userEmail, courseCode));
-    String roleName = "INSTRUCTOR";
-    try {
-      Optional<User> user = userService.getUserFromEmail(userEmail);
-      long courseId = courseService.getCourseWithCode(courseCode).get().getCourseId();
-      Optional<Role> taRole = roleService.getRoleFromRoleName(roleName);
-      userService.updateUserRole(user.get(), roleName);
-      Enrollment enrollment = new Enrollment(user.get().getUserId(),
-          taRole.get().getRoleId(), courseId);
-      enrollmentService.insertEnrollment(enrollment);
-      redirectAttributes.addFlashAttribute("message",
-          String.format("Instructor has been assigned for course %s successfully.", courseCode));
-      redirectAttributes.addFlashAttribute("isSuccess", true);
-    } catch (Exception e) {
-      logger.error(e.getMessage());
-      e.printStackTrace();
-      redirectAttributes.addFlashAttribute("message",
-          "Error while accessing database");
-      redirectAttributes.addFlashAttribute("isSuccess", false);
+    @PostMapping("/assign_instructor/{courseCode}")
+    public String handleAssignInstructor(@RequestParam("user_email") String userEmail,
+        @PathVariable String courseCode,
+        RedirectAttributes redirectAttributes) {
+        logger.info(
+            String.format("assigning %s as Instructor for course: %s", userEmail, courseCode));
+        String roleName = "INSTRUCTOR";
+        try {
+            Optional<User> user = userService.getUserFromEmail(userEmail);
+            long courseId = courseService.getCourseWithCode(courseCode).get().getCourseId();
+            Optional<Role> taRole = roleService.getRoleFromRoleName(roleName);
+            userService.updateUserRole(user.get(), roleName);
+            Enrollment enrollment = new Enrollment(user.get().getUserId(),
+                taRole.get().getRoleId(), courseId);
+            enrollmentService.insertEnrollment(enrollment);
+            redirectAttributes.addFlashAttribute("message",
+                String.format("Instructor has been assigned for course %s successfully.",
+                    courseCode));
+            redirectAttributes.addFlashAttribute("isSuccess", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("message",
+                "Error while accessing database");
+            redirectAttributes.addFlashAttribute("isSuccess", false);
+        }
+        return String.format("redirect:/assign_instructor/%s", courseCode);
     }
     return String.format("redirect:/assign_instructor/%s", courseCode);
   }

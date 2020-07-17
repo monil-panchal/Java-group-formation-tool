@@ -1,12 +1,10 @@
 package com.assessme.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Set;
 
 /**
- * @author: monil
- * Created on: 2020-05-29
+ * @author: monil Created on: 2020-05-29
  */
 public class UserRoleDTO extends User implements Serializable {
 
@@ -28,7 +26,7 @@ public class UserRoleDTO extends User implements Serializable {
     @Override
     public String toString() {
         return "UserRoleDTO{" +
-                "userRoles=" + userRoles +
-                '}';
+            "userRoles=" + userRoles +
+            '}';
     }
 }

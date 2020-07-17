@@ -1,32 +1,51 @@
 package com.assessme.auth.password.restriction;
 
-import com.assessme.auth.password.validator.*;
+import com.assessme.auth.password.validator.DisallowSpecialCharacterValidatorImpl;
+import com.assessme.auth.password.validator.LowerCaseValidatorImpl;
+import com.assessme.auth.password.validator.MaxLengthValidatorImpl;
+import com.assessme.auth.password.validator.MinLengthValidatorImpl;
+import com.assessme.auth.password.validator.PasswordHistoryValidatorImpl;
+import com.assessme.auth.password.validator.PasswordValidator;
+import com.assessme.auth.password.validator.SpecialCharacterLengthValidatorImpl;
+import com.assessme.auth.password.validator.UpperCaseValidatorImpl;
 import com.assessme.model.UserPasswordHistory;
 import com.assessme.service.StoredPasswordPolicyService;
+import com.assessme.service.StoredPasswordPolicyServiceImpl;
 import com.assessme.service.UserPasswordHistoryServiceImpl;
 import com.assessme.util.AppConstant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 /**
- * @author: monil
- * Created on: 2020-06-17
+ * @author: monil Created on: 2020-06-17
  */
 @Service
 public class PasswordChangePolicyImpl implements PasswordPolicy {
 
-    private Logger logger = LoggerFactory.getLogger(PasswordChangePolicyImpl.class);
-
-    private StoredPasswordPolicyService storedPasswordPolicyService;
-    private UserPasswordHistoryServiceImpl userPasswordHistoryService;
+    private static PasswordChangePolicyImpl instance;
+    private final Logger logger = LoggerFactory.getLogger(PasswordChangePolicyImpl.class);
+    private final StoredPasswordPolicyService storedPasswordPolicyService;
+    private final UserPasswordHistoryServiceImpl userPasswordHistoryService;
     private Map<String, Object> policyMap;
     private List<PasswordValidator> registerPasswordPolicies;
     private List<UserPasswordHistory> userPasswordHistoryList;
+
+    public PasswordChangePolicyImpl() {
+        this.storedPasswordPolicyService = StoredPasswordPolicyServiceImpl.getInstance();
+        this.userPasswordHistoryService = UserPasswordHistoryServiceImpl.getInstance();
+        this.init();
+    }
+
+    public static PasswordChangePolicyImpl getInstance() {
+        if (instance == null) {
+            instance = new PasswordChangePolicyImpl();
+        }
+        return instance;
+    }
 
     public Map<String, Object> getPolicyMap() {
         return policyMap;
@@ -50,13 +69,6 @@ public class PasswordChangePolicyImpl implements PasswordPolicy {
 
     public void setUserPasswordHistoryList(List<UserPasswordHistory> userPasswordHistoryList) {
         this.userPasswordHistoryList = userPasswordHistoryList;
-    }
-
-    public PasswordChangePolicyImpl(StoredPasswordPolicyService storedPasswordPolicyService,
-                                    UserPasswordHistoryServiceImpl userPasswordHistoryService) {
-        this.storedPasswordPolicyService = storedPasswordPolicyService;
-        this.userPasswordHistoryService = userPasswordHistoryService;
-        this.init();
     }
 
     private void init() {
@@ -83,53 +95,65 @@ public class PasswordChangePolicyImpl implements PasswordPolicy {
             if (AppConstant.MIN_UPPER_CASE_CHARACTERS.equalsIgnoreCase(key) && value != null) {
                 Integer minUpperCaseLength = Integer.valueOf((String) value);
                 if (minUpperCaseLength > 0) {
-                    PasswordValidator upperCaseValidator = new UpperCaseValidatorImpl(minUpperCaseLength);
+                    PasswordValidator upperCaseValidator = new UpperCaseValidatorImpl(
+                        minUpperCaseLength);
                     registerPasswordPolicies.add(upperCaseValidator);
                 }
-            } else if (AppConstant.MIN_LOWER_CASE_CHARACTERS.equalsIgnoreCase(key) && value != null) {
+            } else if (AppConstant.MIN_LOWER_CASE_CHARACTERS.equalsIgnoreCase(key)
+                && value != null) {
                 Integer minLowerCaseLength = Integer.valueOf((String) value);
                 if (minLowerCaseLength > 0) {
-                    PasswordValidator lowPasswordValidator = new LowerCaseValidatorImpl(minLowerCaseLength);
+                    PasswordValidator lowPasswordValidator = new LowerCaseValidatorImpl(
+                        minLowerCaseLength);
                     registerPasswordPolicies.add(lowPasswordValidator);
                 }
             } else if (AppConstant.MIN_PASSWORD_LENGTH.equalsIgnoreCase(key) && value != null) {
                 Integer minPasswordLength = Integer.valueOf((String) value);
                 if (minPasswordLength > 0) {
-                    PasswordValidator minLengthValidator = new MinLengthValidatorImpl(minPasswordLength);
+                    PasswordValidator minLengthValidator = new MinLengthValidatorImpl(
+                        minPasswordLength);
                     registerPasswordPolicies.add(minLengthValidator);
                 }
             } else if (AppConstant.MAX_PASSWORD_LENGTH.equalsIgnoreCase(key) && value != null) {
                 Integer maxPasswordLength = Integer.valueOf((String) value);
                 if (maxPasswordLength > 0) {
-                    PasswordValidator maxLengthValidator = new MaxLengthValidatorImpl(maxPasswordLength);
+                    PasswordValidator maxLengthValidator = new MaxLengthValidatorImpl(
+                        maxPasswordLength);
                     registerPasswordPolicies.add(maxLengthValidator);
                 }
-            } else if (AppConstant.BLOCK_SPECIAL_CHARACTERS.equalsIgnoreCase(key) && value != null) {
+            } else if (AppConstant.BLOCK_SPECIAL_CHARACTERS.equalsIgnoreCase(key)
+                && value != null) {
                 String blockSpecialCharacterRegex = String.valueOf(value);
-                PasswordValidator specialCharacterValidator = new DisallowSpecialCharacterValidatorImpl(blockSpecialCharacterRegex);
+                PasswordValidator specialCharacterValidator = new DisallowSpecialCharacterValidatorImpl(
+                    blockSpecialCharacterRegex);
                 registerPasswordPolicies.add(specialCharacterValidator);
 
             } else if (AppConstant.MIN_SPECIAL_CHARACTERS.equalsIgnoreCase(key) && value != null) {
                 Integer minSpecialCharacters = Integer.valueOf((String) value);
                 if (minSpecialCharacters > 0) {
-                    PasswordValidator specialCharacterLengthValidator = new SpecialCharacterLengthValidatorImpl(minSpecialCharacters);
+                    PasswordValidator specialCharacterLengthValidator = new SpecialCharacterLengthValidatorImpl(
+                        minSpecialCharacters);
                     registerPasswordPolicies.add(specialCharacterLengthValidator);
                 }
-            } else if (AppConstant.PASSWORD_HISTORY_CONSTRAINT.equalsIgnoreCase(key) && value != null) {
+            } else if (AppConstant.PASSWORD_HISTORY_CONSTRAINT.equalsIgnoreCase(key)
+                && value != null) {
                 Integer lastPasswordConstraint = Integer.valueOf((String) value);
                 if (lastPasswordConstraint > 0) {
-                    userPasswordHistoryList = this.userPasswordHistoryService.getUserPasswordHistory(userId, lastPasswordConstraint);
+                    userPasswordHistoryList = this.userPasswordHistoryService
+                        .getUserPasswordHistory(userId, lastPasswordConstraint);
 
                     if (userPasswordHistoryList == null || userPasswordHistoryList.isEmpty()) {
                         continue;
                     } else {
-                        PasswordValidator passwordHistoryValidator = new PasswordHistoryValidatorImpl(userPasswordHistoryList);
+                        PasswordValidator passwordHistoryValidator = new PasswordHistoryValidatorImpl(
+                            userPasswordHistoryList);
                         registerPasswordPolicies.add(passwordHistoryValidator);
                     }
                 }
             }
         }
-        logger.info(String.format("registerPasswordPolicies: %s", registerPasswordPolicies.toString()));
+        logger.info(
+            String.format("registerPasswordPolicies: %s", registerPasswordPolicies.toString()));
     }
 
     @Override

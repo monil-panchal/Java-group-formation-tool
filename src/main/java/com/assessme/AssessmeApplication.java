@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @ComponentScan(basePackages = "com.assessme.*")
 @EnableAsync
 public class AssessmeApplication {
+
     public static void
     main(String[] args) {
         SpringApplication.run(AssessmeApplication.class, args);

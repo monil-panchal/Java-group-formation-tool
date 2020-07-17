@@ -4,14 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author: monil
- * Created on: 2020-06-17
+ * @author: monil Created on: 2020-06-17
  */
 public class MaxLengthValidatorImpl implements PasswordValidator {
 
-    private Logger logger = LoggerFactory.getLogger(MaxLengthValidatorImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(MaxLengthValidatorImpl.class);
 
-    private Integer maxLength;
+    private final Integer maxLength;
 
     public MaxLengthValidatorImpl(Integer maxLength) {
         this.maxLength = maxLength;

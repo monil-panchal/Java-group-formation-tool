@@ -25,6 +25,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 //	runtimeOnly 'mysql:mysql-connector-java'
     implementation 'com.opencsv:opencsv:5.2'
+
+    implementation "com.google.guava:guava:29.0-jre"
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

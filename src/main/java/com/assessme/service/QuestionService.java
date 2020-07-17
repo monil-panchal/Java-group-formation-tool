@@ -12,11 +12,13 @@ import java.util.Optional;
  */
 public interface QuestionService {
 
-  Optional<List<QuestionType>> getAllQuestionType() throws Exception;
+    Optional<List<QuestionType>> getAllQuestionType() throws Exception;
 
-  void addQuestion(Question question) throws Exception;
+    void addQuestion(Question question) throws Exception;
 
-  Optional<List<Question>> getQuestionsByUser(User user) throws Exception;
+    Optional<List<Question>> getQuestionsByUser(User user) throws Exception;
 
-  void removeQuestion(long questionId) throws Exception;
+    void removeQuestion(long questionId) throws Exception;
+
+    Optional<Question> getQuestionById(Long question_id) throws Exception;
 }

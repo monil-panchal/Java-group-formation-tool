@@ -29,65 +29,68 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-  private Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-  private UserServiceImpl userServiceImpl;
+    private final UserServiceImpl userServiceImpl;
 
-  public UserController(UserServiceImpl userServiceImpl) {
-    this.userServiceImpl = userServiceImpl;
-  }
-
-  // API endpoint method for fetching all users
-  @GetMapping("/all")
-  public ResponseEntity<ResponseDTO> getUsers() throws Exception {
-
-    logger.info("Calling API for user retrieval.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<User>> responseDTO = null;
-
-    try {
-      Optional<List<User>> userList = userServiceImpl.getUserList();
-      String resMessage = String.format("User list has been retrieved from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, userList);
-      httpStatus = HttpStatus.OK;
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.error(e.getMessage());
-
-      String errMessage = String.format("Error in retrieving the user list from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
-    }
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
-
-  // API endpoint method for fetching user using emailId
-  @GetMapping()
-  public ResponseEntity<ResponseDTO> getUserFromEmail(@RequestParam("email") String email)
-      throws Exception {
-
-    logger.info("Calling API for user retrieval using email.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<User>> responseDTO = null;
-
-    try {
-      Optional<User> user = userServiceImpl.getUserFromEmail(email);
-      String resMessage = String.format("User has been retrieved from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, user);
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.error(e.getMessage());
-
-      String errMessage = String.format("Error in retrieving the user from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+    public UserController(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = UserServiceImpl.getInstance();
     }
 
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDTO> getUsers() throws Exception {
 
+        logger.info("Calling API for user retrieval.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<User>> responseDTO = null;
+
+        try {
+            Optional<List<User>> userList = userServiceImpl.getUserList();
+            String resMessage = String.format("User list has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, userList);
+            httpStatus = HttpStatus.OK;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+            String errMessage = String
+                .format("Error in retrieving the user list from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+        return new ResponseEntity(responseDTO, httpStatus);
+    }
+
+    @GetMapping()
+    public ResponseEntity<ResponseDTO> getUserFromEmail(@RequestParam("email") String email)
+        throws Exception {
+
+        logger.info("Calling API for user retrieval using email.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<User>> responseDTO = null;
+
+        try {
+            Optional<User> user = userServiceImpl.getUserFromEmail(email);
+            String resMessage = String.format("User has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, user);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+            String errMessage = String.format("Error in retrieving the user from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity(responseDTO, httpStatus);
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<ResponseDTO> getUserWithRolesFromEmail(
+        @RequestParam("email") String email)
+        throws Exception {
 
   // API endpoint method for fetching user using emailId
   @GetMapping("/roles")
@@ -112,8 +115,8 @@ public class UserController {
       httpStatus = HttpStatus.CONFLICT;
     }
 
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ResponseDTO> createUser(@RequestBody User user) throws Exception {
 
   // API endpoint method for fetching user using emailId
   @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
@@ -125,7 +128,9 @@ public class UserController {
     HttpStatus httpStatus = null;
     ResponseDTO<User> responseDTO = null;
 
-    try {
+            Optional<User> newUser = userServiceImpl.addUser(user, null);
+            String resMessage = String
+                .format("User with email: %s has been successfully.", user.getEmail());
 
       Optional<User> newUser = userServiceImpl.addUser(user, null);
       String resMessage = String
@@ -142,8 +147,9 @@ public class UserController {
       httpStatus = HttpStatus.CONFLICT;
     }
 
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
+    @PutMapping(path = "/roles", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ResponseDTO> updateUserRole(@RequestBody UserRoleDTO user)
+        throws Exception {
 
   // API endpoint method for updating the user role
   @PutMapping(path = "/roles", consumes = {MediaType.APPLICATION_JSON_VALUE})
@@ -154,7 +160,13 @@ public class UserController {
     HttpStatus httpStatus = null;
     ResponseDTO<UserRoleDAO> responseDTO = null;
 
-    try {
+            Optional<UserRoleDTO> newUser = userServiceImpl
+                .updateUserRole(user,
+                    user.getUserRoles().stream().collect(Collectors.toList()).get(0));
+            String resMessage = String
+                .format("User with email: %s has been successfully assigned the role: %s .",
+                    user.getEmail(),
+                    user.getUserRoles().stream().collect(Collectors.toList()).get(0));
 
       Optional<UserRoleDTO> newUser = userServiceImpl
           .updateUserRole(user, user.getUserRoles().stream().collect(Collectors.toList()).get(0));

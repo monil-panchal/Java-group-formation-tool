@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link href="/css/app.css" rel="stylesheet">
+  <title>Course Admin Page</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1 align="center">Survey List</h1>
+<div>
+  <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+  <div th:align="right">
+    <a href="#" th:align="right" th:href="@{/logout}">Log out</a>
+  </div>
+  <br>
+</div>
+<div id="noSurvey"></div>
+<table align="centre" border="1" id="survey_table" width=100%>
+  <tr>
+    <th width=10%>Survey ID</th>
+    <th width=15%>Survey Name</th>
+    <th width=40%>Description</th>
+    <th width=5%>State</th>
+    <th width=10%>Created At</th>
+    <th width=10%>Action</th>
+  </tr>
+  <tr th:each="i : ${surveyList}">
+    <div th:if="${i.status}==published">
+      <td th:text="${i.surveyId}"></td>
+      <td th:text="${i.surveyName}"></td>
+      <td th:text="${i.description}"></td>
+      <td th:text="${i.status}"></td>
+      <td th:text="${i.createdAt}"></td>
+      <td><a th:href="@{/survey_questions/get_questions_details(surveyId=${i.surveyId})}">Fill
+        Survey</a></td>
+    </div>
+    <div th:unless="${i.status}==published">
+      <td align="center" colspan="6">No Surveys published</td>
+    </div>
+  </tr>
+</table>
+</div>
+</body>
+</html>

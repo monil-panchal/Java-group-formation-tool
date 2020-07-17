@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * @author: monil
- * Created on: 2020-06-04
+ * @author: monil Created on: 2020-06-04
  */
 
 /**
@@ -44,18 +43,22 @@ public class UserToken implements Serializable {
     @Override
     public String toString() {
         return "UserToken{" +
-                "userId=" + userId +
-                ", token='" + token + '\'' +
-                '}';
+            "userId=" + userId +
+            ", token='" + token + '\'' +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserToken)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof UserToken)) {
+            return false;
+        }
         UserToken userToken = (UserToken) o;
         return getUserId().equals(userToken.getUserId()) &&
-                getToken().equals(userToken.getToken());
+            getToken().equals(userToken.getToken());
     }
 
     @Override

@@ -4,14 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author: monil
- * Created on: 2020-06-17
+ * @author: monil Created on: 2020-06-17
  */
 public class DisallowSpecialCharacterValidatorImpl implements PasswordValidator {
 
-    private Logger logger = LoggerFactory.getLogger(DisallowSpecialCharacterValidatorImpl.class);
+    private final Logger logger = LoggerFactory
+        .getLogger(DisallowSpecialCharacterValidatorImpl.class);
 
-    private String disallowCharacters;
+    private final String disallowCharacters;
 
     public DisallowSpecialCharacterValidatorImpl(String disallowCharacters) {
         this.disallowCharacters = disallowCharacters;
@@ -24,7 +24,7 @@ public class DisallowSpecialCharacterValidatorImpl implements PasswordValidator 
             throw new IllegalArgumentException("Password cannot be null or blank");
         }
 
-        String passwordSplit[] = password.split("");
+        String[] passwordSplit = password.split("");
 
         for (int i = 0; i < passwordSplit.length; i++) {
             // Password contains one disallowed special character

@@ -2,29 +2,31 @@ package com.assessme.service;
 
 import com.assessme.db.dao.UserTokenDAOImpl;
 import com.assessme.model.UserToken;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 /**
- * @author: monil
- * Created on: 2020-06-04
+ * @author: monil Created on: 2020-06-04
  */
 
-/**
- * UserToken service layer class for this application
- */
 @Service
 public class UserTokenServiceImpl implements UserTokenService {
 
-    private Logger logger = LoggerFactory.getLogger(UserTokenServiceImpl.class);
+    private static UserTokenServiceImpl instance;
+    private final Logger logger = LoggerFactory.getLogger(UserTokenServiceImpl.class);
+    private final UserTokenDAOImpl userTokenDAOImpl;
 
-    private UserTokenDAOImpl userTokenDAOImpl;
+    public UserTokenServiceImpl() {
+        this.userTokenDAOImpl = UserTokenDAOImpl.getInstance();
+    }
 
-    public UserTokenServiceImpl(UserTokenDAOImpl userTokenDAOImpl) {
-        this.userTokenDAOImpl = userTokenDAOImpl;
+    public static UserTokenServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new UserTokenServiceImpl();
+        }
+        return instance;
     }
 
     @Override
@@ -33,11 +35,15 @@ public class UserTokenServiceImpl implements UserTokenService {
         try {
             newUserToken = userTokenDAOImpl.addUserToken(userToken);
             if (newUserToken.isPresent()) {
-                //  newUser = Optional.of(user);
-                String resMessage = String.format("User token with email: %s has been successfully added to the user table", userToken.getUserId());
+                String resMessage = String
+                    .format(
+                        "User token with email: %s has been successfully added to the user table",
+                        userToken.getUserId());
                 logger.info(resMessage);
             } else {
-                throw new Exception(String.format("Error in creating a user token with email: %s", userToken.getUserId()));
+                throw new Exception(
+                    String.format("Error in creating a user token with email: %s",
+                        userToken.getUserId()));
             }
 
         } catch (Exception e) {
@@ -54,10 +60,12 @@ public class UserTokenServiceImpl implements UserTokenService {
         Optional<UserToken> userToken;
         try {
             userToken = userTokenDAOImpl.getUserToken(userId);
-            String resMessage = String.format("UserToken with id: %s has been retrieved from the database", userId);
+            String resMessage = String
+                .format("UserToken with id: %s has been retrieved from the database", userId);
             logger.info(resMessage);
         } catch (Exception e) {
-            String errMessage = String.format("Error in retrieving the user token from the database");
+            String errMessage = String
+                .format("Error in retrieving the user token from the database");
             logger.error(errMessage);
             e.printStackTrace();
             throw e;

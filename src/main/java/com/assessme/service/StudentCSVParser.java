@@ -10,5 +10,5 @@ import java.util.Optional;
  */
 public interface StudentCSVParser {
 
-  public Optional<List<User>> parseStudents(List<String> failureResults);
+    Optional<List<User>> parseStudents(List<String> failureResults);
 }

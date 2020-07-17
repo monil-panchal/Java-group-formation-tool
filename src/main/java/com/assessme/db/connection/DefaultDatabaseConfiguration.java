@@ -1,6 +1,7 @@
 package com.assessme.db.connection;
 
 public class DefaultDatabaseConfiguration implements IDatabaseConfiguration {
+
     private static final String URL = System.getenv("DB_URL");
     private static final String DB_NAME = System.getenv("DB_NAME");
     private static final String USER = System.getenv("DB_USER");
@@ -23,5 +24,7 @@ public class DefaultDatabaseConfiguration implements IDatabaseConfiguration {
         return DB_NAME;
     }
 
-    public int getDatabasePort(){return PORT;}
+    public int getDatabasePort() {
+        return PORT;
+    }
 }

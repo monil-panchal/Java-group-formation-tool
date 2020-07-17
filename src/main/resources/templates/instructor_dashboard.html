@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
 >
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="/css/app.css">
+  <link href="/css/app.css" rel="stylesheet">
   <title>Course Admin Page</title>
 </head>
 <body>
 <div>
   <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
   <div th:align="right">
-    <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+    <a href="#" th:align="right" th:href="@{/logout}">Log out</a>
   </div>
 </div>
 <h1>Course Admin Page</h1>
@@ -22,17 +21,23 @@
     <th>Course Name</th>
     <th>Assign TA</th>
     <th>Import CSV</th>
+    <th>Create Survey</th>
   </tr>
-  <tr th:each="i : ${courses}">
-    <td th:text="${i.courseCode}"></td>
-    <td th:text="${i.courseName}"></td>
+  <tr th:each="course : ${courses}">
+    <td th:text="${course.courseCode}"></td>
+    <td th:text="${course.courseName}"></td>
     <td>
-      <a th:href="@{/assign_ta_page/{courseCode}(courseCode=${i.courseCode})}">
+      <a th:href="@{/assign_ta_page/{courseCode}(courseCode=${course.courseCode})}">
         Assign TA</a>
     </td>
     <td>
-      <a th:href="@{/csvupload/{courseCode}(courseCode=${i.courseCode})}">
+      <a th:href="@{/csvupload/{courseCode}(courseCode=${course.courseCode})}">
         Import CSV
+      </a>
+    </td>
+    <td>
+      <a th:href="@{/survey/instructor/course_surveys(courseId=${course.courseId})}">
+        Manage Survey
       </a>
     </td>
   </tr>

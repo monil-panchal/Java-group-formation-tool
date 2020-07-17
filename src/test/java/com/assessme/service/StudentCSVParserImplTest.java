@@ -1,6 +1,6 @@
 package com.assessme.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.assessme.model.User;
@@ -20,21 +20,24 @@ import org.springframework.mock.web.MockMultipartFile;
  */
 @ExtendWith(MockitoExtension.class)
 class StudentCSVParserImplTest {
-  @Mock
-  StudentCSVParser studentCSVParser;
-  @Test
-  void parseCSV(){
-    MockMultipartFile fooFile = new MockMultipartFile("file", "foo.csv",
-                MediaType.TEXT_PLAIN_VALUE, "B001,Hello,World,email.com".getBytes());
-    List<User> userList = new ArrayList<>();
-    User u =  new User();
-    u.setBannerId("B001");
-    u.setFirstName("Hello");
-    u.setLastName("World");
-    u.setEmail("email.com");
-    userList.add(u);
-    when(studentCSVParser.parseStudents(new ArrayList<String>())).thenReturn(Optional.of(userList));
-    assertTrue(studentCSVParser.parseStudents(new ArrayList<String>()).isPresent());
-  }
+
+    @Mock
+    StudentCSVParser studentCSVParser;
+
+    @Test
+    void parseCSV() {
+        MockMultipartFile fooFile = new MockMultipartFile("file", "foo.csv",
+            MediaType.TEXT_PLAIN_VALUE, "B001,Hello,World,email.com".getBytes());
+        List<User> userList = new ArrayList<>();
+        User u = new User();
+        u.setBannerId("B001");
+        u.setFirstName("Hello");
+        u.setLastName("World");
+        u.setEmail("email.com");
+        userList.add(u);
+        when(studentCSVParser.parseStudents(new ArrayList<String>()))
+            .thenReturn(Optional.of(userList));
+        assertTrue(studentCSVParser.parseStudents(new ArrayList<String>()).isPresent());
+    }
 
 }

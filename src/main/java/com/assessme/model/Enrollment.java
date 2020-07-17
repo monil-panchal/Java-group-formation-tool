@@ -8,6 +8,7 @@ import java.util.Objects;
  * @created 30-May-2020 11:40 PM
  */
 public class Enrollment implements Serializable {
+
     private Long userId;
     private Integer roleId;
     private Long courseId;
@@ -45,20 +46,24 @@ public class Enrollment implements Serializable {
     @Override
     public String toString() {
         return "Enrollment{" +
-                "userId=" + userId +
-                ", roleId=" + roleId +
-                ", courseId=" + courseId +
-                '}';
+            "userId=" + userId +
+            ", roleId=" + roleId +
+            ", courseId=" + courseId +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Enrollment that = (Enrollment) o;
         return userId.equals(that.userId) &&
-                roleId.equals(that.roleId) &&
-                courseId.equals(that.courseId);
+            roleId.equals(that.roleId) &&
+            courseId.equals(that.courseId);
     }
 
     @Override

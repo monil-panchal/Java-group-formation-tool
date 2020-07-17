@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+  <meta charset="ISO-8859-1">
+  <link th:href="@{/styles/cssandjs/normalize.css}" rel="stylesheet" />
+  <link th:href="@{/styles/cssandjs/main.css}" rel="stylesheet" />
+  <title>Student Survey</title>
+</head>
+
+<body>
+  <h1 align="center">Survey List</h1>
+  <div>
+    <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+  <div th:align="right">
+    <a href="#" th:align="right" th:href="@{/logout}">Log out</a>
+  </div>
+</div>
+<form id="surveyForm" onsubmit="submitForm(); return false">
+  <input type="hidden" th:value="${surveyId}" id="surveyId"/>
+  <input type="hidden" th:value="${userId}" id="userId"/>
+  <input type="hidden" th:value="${#lists.size(surveyQuestions)}" id="numQuestion"/>
+  <div th:each="question, iterstat: ${surveyQuestions}" style="border: thin solid #000000">
+    <input th:id="'q_type_id_'+${iterstat.index}" type="hidden"
+           th:value="${question.questionTypeId}"/>
+    <input th:id="'q_type_text_'+${iterstat.index}" type="hidden"
+           th:value="${question.questionTypeText}"/>
+    <input th:id="'q_id_'+${iterstat.index}" type="hidden" th:value="${question.questionId}"/>
+    <input th:id="'q_title_'+${iterstat.index}" type="hidden" th:value="${question.questionTitle}"/>
+    <input th:id="'q_text_'+${iterstat.index}" type="hidden" th:value="${question.questionText}"/>
+    <!--    <input th:id="'q_'+${iterstat.index}" type="hidden"/>-->
+    Title: <b th:text="${question.questionTitle}"></b>
+    <hr>
+    Question: <p th:text="${question.questionText}"></p>
+
+    <div th:if="${question.questionTypeText == 'Free text'}">
+      <textarea th:id="'q_data_'+${iterstat.index}" th:name="${iterstat.index+1}" cols="50"
+                rows="10"></textarea>
+    </div>
+
+    <div th:if="${question.questionTypeText == 'Numeric'}">
+      <input type="number" th:id="'q_data_'+${iterstat.index}" th:name="${iterstat.index+1}" min="1"
+             max="10">
+    </div>
+
+    <div th:if="${question.questionTypeText == 'Multiplle choice - choose multiple'}">
+      <div th:id="'q_data_'+${iterstat.index}">
+        <input th:each="optionText : ${question.optionText}" type="checkbox"
+               th:text="${optionText}" th:value="${optionText}"
+               th:class="'q_data_'+${iterstat.index}">
+      </div>
+    </div>
+
+    <div th:if="${question.questionTypeText == 'Multiple choice - choose one'}">
+      <select th:name="${iterstat.index+1}" th:id="'q_data_'+${iterstat.index}">
+        <div th:each="optionText : ${question.optionText}">
+          <option th:text="${optionText}" th:value="${optionText}"
+          ></option>
+        </div>
+      </select>
+    </div>
+    <br>
+  </div>
+
+  <br>
+  <br>
+  <input type="submit" value="Submit Survey" id="submitButton">
+</form>
+<script>
+  function submitForm() {
+    var length = $("#numQuestion").val();
+    console.log(length);
+    var survey = { surveyId: parseInt($("#surveyId").val()), userId: parseInt($("#userId").val()), response: [] };
+    console.log(survey);
+    for (i = 0; i < length; i++) {
+      var q_type_id_ = parseInt($("#q_type_id_" + i).val());
+      var q_id_ = parseInt($("#q_id_" + i).val());
+      var q_type_text_ = $("#q_type_text_" + i).val();
+      var q_title_ = $("#q_title_" + i).val();
+      var q_text_ = $("#q_text_" + i).val();
+      var q_data_ = $("#q_data_" + i).val();
+      var question = {
+        questionId: q_id_,
+        questionTypeId: q_type_id_,
+        questionTypeText: q_type_text_,
+        questionTitle: q_title_,
+        questionText: q_text_,
+      };
+      switch (q_type_id_) {
+        case 1:
+          question.data = parseInt(q_data_);
+          break;
+        case 4:
+          question.data = q_data_;
+          break;
+        case 2:
+          console.log($("#q_data_" + i + " option:selected").val());
+          question.optionText = [$("#q_data_" + i + " option:selected").val()];
+          break;
+        case 3:
+          var values = [];
+          $('.q_data_' + i + ':checkbox:checked').each(function (k, v) {
+            console.log($(v).val());
+            values.push($(v).val());
+          })
+          question.optionText = values;
+          break;
+      }
+      // console.log(q_type_id_, q_type_text_, q_title_, q_text_);
+      console.log(question);
+      survey.response.push(question)
+    }
+    console.log(survey);
+    var data = JSON.stringify(survey);
+    console.log(data);
+    $.ajax({
+      url: '/survey_response/add',
+      type: 'POST',
+      data: JSON.stringify(survey),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      async: false,
+      success: function (msg) {
+        alert("success");
+      }
+    });
+    return false;
+  }
+</script>
+</body>
+</html>

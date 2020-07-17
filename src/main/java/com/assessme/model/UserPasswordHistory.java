@@ -5,8 +5,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
- * @author: monil
- * Created on: 2020-06-16
+ * @author: monil Created on: 2020-06-16
  */
 public class UserPasswordHistory implements Serializable {
 
@@ -55,20 +54,24 @@ public class UserPasswordHistory implements Serializable {
     @Override
     public String toString() {
         return "UserPasswordHistoryDAO{" +
-                "userId=" + userId +
-                ", password='" + password + '\'' +
-                ", modifiedOn=" + modifiedOn +
-                '}';
+            "userId=" + userId +
+            ", password='" + password + '\'' +
+            ", modifiedOn=" + modifiedOn +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserPasswordHistory)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof UserPasswordHistory)) {
+            return false;
+        }
         UserPasswordHistory that = (UserPasswordHistory) o;
         return getUserId().equals(that.getUserId()) &&
-                getPassword().equals(that.getPassword()) &&
-                getModifiedOn().equals(that.getModifiedOn());
+            getPassword().equals(that.getPassword()) &&
+            getModifiedOn().equals(that.getModifiedOn());
     }
 
     @Override

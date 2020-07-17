@@ -4,12 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author: monil
- * Created on: 2020-06-17
+ * @author: monil Created on: 2020-06-17
  */
 public class UpperCaseValidatorImpl implements PasswordValidator {
 
-    private Logger logger = LoggerFactory.getLogger(UpperCaseValidatorImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(UpperCaseValidatorImpl.class);
 
     private Integer minLength;
 

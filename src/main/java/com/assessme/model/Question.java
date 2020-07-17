@@ -9,76 +9,76 @@ import java.sql.Timestamp;
  */
 public class Question implements Serializable {
 
-  long questionId;
-  long userId;
-  int questionTypeId;
-  String questionTitle;
-  String questionText;
-  String[] optionText;
-  Timestamp questionDate;
-  int[] optionValue;
+    long questionId;
+    long userId;
+    int questionTypeId;
+    String questionTitle;
+    String questionText;
+    String[] optionText;
+    Timestamp questionDate;
+    int[] optionValue;
 
-  public long getQuestionId() {
-    return questionId;
-  }
+    public long getQuestionId() {
+        return questionId;
+    }
 
-  public void setQuestionId(long questionId) {
-    this.questionId = questionId;
-  }
+    public void setQuestionId(long questionId) {
+        this.questionId = questionId;
+    }
 
-  public long getUserId() {
-    return userId;
-  }
+    public long getUserId() {
+        return userId;
+    }
 
-  public void setUserId(long userId) {
-    this.userId = userId;
-  }
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
-  public int getQuestionTypeId() {
-    return questionTypeId;
-  }
+    public int getQuestionTypeId() {
+        return questionTypeId;
+    }
 
-  public void setQuestionTypeId(int questionTypeId) {
-    this.questionTypeId = questionTypeId;
-  }
+    public void setQuestionTypeId(int questionTypeId) {
+        this.questionTypeId = questionTypeId;
+    }
 
-  public String getQuestionTitle() {
-    return questionTitle;
-  }
+    public String getQuestionTitle() {
+        return questionTitle;
+    }
 
-  public void setQuestionTitle(String questionTitle) {
-    this.questionTitle = questionTitle;
-  }
+    public void setQuestionTitle(String questionTitle) {
+        this.questionTitle = questionTitle;
+    }
 
-  public String getQuestionText() {
-    return questionText;
-  }
+    public String getQuestionText() {
+        return questionText;
+    }
 
-  public void setQuestionText(String questionText) {
-    this.questionText = questionText;
-  }
+    public void setQuestionText(String questionText) {
+        this.questionText = questionText;
+    }
 
-  public String[] getOptionText() {
-    return optionText;
-  }
+    public String[] getOptionText() {
+        return optionText;
+    }
 
-  public void setOptionText(String[] optionText) {
-    this.optionText = optionText;
-  }
+    public void setOptionText(String[] optionText) {
+        this.optionText = optionText;
+    }
 
-  public int[] getOptionValue() {
-    return optionValue;
-  }
+    public int[] getOptionValue() {
+        return optionValue;
+    }
 
-  public void setOptionValue(int[] optionValue) {
-    this.optionValue = optionValue;
-  }
+    public void setOptionValue(int[] optionValue) {
+        this.optionValue = optionValue;
+    }
 
-  public void setQuestionDate(Timestamp timestamp) {
-    this.questionDate = timestamp;
-  }
+    public Timestamp getQuestionDate() {
+        return questionDate;
+    }
 
-  public Timestamp getQuestionDate() {
-    return questionDate;
-  }
+    public void setQuestionDate(Timestamp timestamp) {
+        this.questionDate = timestamp;
+    }
 }

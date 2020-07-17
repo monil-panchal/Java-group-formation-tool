@@ -4,14 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author: monil
- * Created on: 2020-06-17
+ * @author: monil Created on: 2020-06-17
  */
 public class LowerCaseValidatorImpl implements PasswordValidator {
 
-    private Logger logger = LoggerFactory.getLogger(LowerCaseValidatorImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(LowerCaseValidatorImpl.class);
 
-    private Integer minLength;
+    private final Integer minLength;
 
     public LowerCaseValidatorImpl(Integer minLength) {
         this.minLength = minLength;

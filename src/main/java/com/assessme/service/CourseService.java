@@ -16,19 +16,19 @@ import org.springframework.stereotype.Service;
 public interface CourseService {
 
 
-  public Optional<List<Course>> getCourseList() throws Exception;
+    Optional<List<Course>> getCourseList() throws Exception;
 
-  public Optional<Course> getCourseWithCode(String courseCode) throws Exception;
-
-
-  public Optional<Course> getCourseWithName(String courseName) throws Exception;
+    Optional<Course> getCourseWithCode(String courseCode) throws Exception;
 
 
-  public Boolean removeCourseWithCourseCode(String courseCode) throws Exception;
+    Optional<Course> getCourseWithName(String courseName) throws Exception;
 
-  public Boolean removeCourseWithCourseName(String courseName) throws Exception;
 
-  public Optional<Course> addCourse(Course course) throws Exception;
+    Boolean removeCourseWithCourseCode(String courseCode) throws Exception;
 
-  public Optional<List<Course>> getCoursesByUserAndRole(long userId, int roleId) throws Exception;
+    Boolean removeCourseWithCourseName(String courseName) throws Exception;
+
+    Optional<Course> addCourse(Course course) throws Exception;
+
+    Optional<List<Course>> getCoursesByUserAndRole(long userId, int roleId) throws Exception;
 }

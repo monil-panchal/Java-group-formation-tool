@@ -50,7 +50,7 @@ deploy:
   - gem install dpl
   - dpl --provider=heroku --app=$HEROKU_APP_NAME_TEST --api-key=$HEROKU_API_KEY_TEST
   only:
-  - release/milestone-2
+  - release-m3
 
 after_script:
   - echo "End CI"

@@ -1,6 +1,7 @@
 package com.assessme;
 
-import com.assessme.config.*;
+import com.assessme.config.EmailConfig;
+import com.assessme.config.EmailConfigImpl;
 import com.assessme.db.connection.DefaultDatabaseConfiguration;
 import com.assessme.db.connection.IDatabaseConfiguration;
 
@@ -16,13 +17,14 @@ public class SystemConfig {
     }
 
     public static SystemConfig getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new SystemConfig();
+        }
         return instance;
     }
 
 
-    public EmailConfig getEmailConfig(){
+    public EmailConfig getEmailConfig() {
         return emailConfig;
     }
 

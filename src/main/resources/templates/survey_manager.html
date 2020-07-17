@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link href="/css/app.css" rel="stylesheet">
+  <title>Course Admin Page</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1 align="center">Survey Manager</h1>
+<div>
+  <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+  <div th:align="right">
+    <a href="#" th:align="right" th:href="@{/logout}">Log out</a>
+  </div>
+</div>
+<div>
+  <form method="post" onsubmit="return formSubmit()" th:action="@{/survey/create_survey}"
+        th:object="${survey}">
+    <table>
+      <tr>
+        <td>Survey Name</td>
+        <td><input th:field="${survey.surveyName}" type="text"></td>
+      </tr>
+      <tr>
+        <td>Survey Description</td>
+        <td><input th:field="${survey.description}" type="text"></td>
+      </tr>
+      <tr hidden>
+        <td>User ID</td>
+        <td><input th:field="${survey.userId}" type="text"></td>
+      </tr>
+      <tr HIDDEN>
+        <td>Course ID</td>
+        <td><input th:field="${survey.courseId}" type="text"></td>
+      </tr>
+    </table>
+    <br>
+    <button type="submit">Add Survey</button>
+  </form>
+  <!--<button th:href="@{/survey/course_surveys(courseId=${courseId})}">Create Survey</button>
+  --><br>
+  <br>
+  <div id="noSurvey"></div>
+  <table align="centre" border="1" id="survey_table" width=100%>
+    <tr>
+      <th width=10%>Survey ID</th>
+      <th width=15%>Survey Name</th>
+      <th width=40%>Description</th>
+      <th width=5%>State</th>
+      <th width=10%>Created At</th>
+      <th width=10%>Updated At</th>
+      <th width=10%>Modify</th>
+      <th width=10%>Survey Groups</th>
+    </tr>
+    <tr th:each="i : ${surveyList}">
+      <td th:text="${i.surveyId}"></td>
+      <td th:text="${i.surveyName}"></td>
+      <td th:text="${i.description}"></td>
+      <td th:text="${i.status }"></td>
+      <td th:text="${i.createdAt}"></td>
+      <td th:text="${i.updatedAt}"></td>
+      <td th:if="${i.status }=='unpublished'">
+      <a th:href="@{/survey_questions/instructor/get_questions_details(surveyId=${i.surveyId})}"> Modify </a>
+    </td>
+      <td th:if="${i.status }=='published'">
+        Can't Modify
+      </td>
+      <td><a th:href="@{/survey_response/survey_group?surveyId={surveyId}(surveyId=${i.surveyId})}">
+        Show Groups </a></td>
+    </tr>
+  </table>
+</div>
+
+<script>
+  function formSubmit() {
+    $.getJSON("/survey/create_survey", function (response) {
+      console.log("response", response)
+      if (response.onsuccess) {
+        alert(response.body)
+      } else {
+        alert("survey not created")
+      }
+    })
+  }
+</script>
+</body>
+</html>

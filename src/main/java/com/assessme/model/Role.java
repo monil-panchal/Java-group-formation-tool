@@ -1,8 +1,7 @@
 package com.assessme.model;
 
 /**
- * @author: monil
- * Created on: 2020-05-30
+ * @author: monil Created on: 2020-05-30
  */
 
 import java.io.Serializable;
@@ -43,18 +42,22 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return "Role{" +
-                "roleId=" + roleId +
-                ", roleName='" + roleName + '\'' +
-                '}';
+            "roleId=" + roleId +
+            ", roleName='" + roleName + '\'' +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Role)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Role)) {
+            return false;
+        }
         Role role = (Role) o;
         return getRoleId().equals(role.getRoleId()) &&
-                getRoleName().equals(role.getRoleName());
+            getRoleName().equals(role.getRoleName());
     }
 
     @Override

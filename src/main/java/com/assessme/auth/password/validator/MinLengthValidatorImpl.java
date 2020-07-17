@@ -4,14 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author: monil
- * Created on: 2020-06-17
+ * @author: monil Created on: 2020-06-17
  */
 public class MinLengthValidatorImpl implements PasswordValidator {
 
-    private Logger logger = LoggerFactory.getLogger(MinLengthValidatorImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(MinLengthValidatorImpl.class);
 
-    private Integer minLength;
+    private final Integer minLength;
 
     public MinLengthValidatorImpl(Integer minLength) {
         this.minLength = minLength;

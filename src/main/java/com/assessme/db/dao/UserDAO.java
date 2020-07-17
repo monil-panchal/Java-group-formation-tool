@@ -1,13 +1,11 @@
 package com.assessme.db.dao;
 
 /**
- * @author: monil
- * Created on: 2020-05-29
+ * @author: monil Created on: 2020-05-29
  */
 
 import com.assessme.model.User;
 import com.assessme.model.UserRoleDTO;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +14,8 @@ import java.util.Optional;
  */
 
 public interface UserDAO {
+
+    Optional<User> getUserById(long id) throws Exception;
 
     List<User> getAllUser() throws Exception;
 

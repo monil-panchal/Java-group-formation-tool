@@ -1,8 +1,7 @@
 package com.assessme.model;
 
 /**
- * @author: monil
- * Created on: 2020-06-04
+ * @author: monil Created on: 2020-06-04
  */
 public class PasswordDTO {
 

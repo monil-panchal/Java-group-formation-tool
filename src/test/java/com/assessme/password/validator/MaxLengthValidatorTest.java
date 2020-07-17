@@ -7,13 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * @author: monil
- * Created on: 2020-06-18
+ * @author: monil Created on: 2020-06-18
  */
 @SpringBootTest
 public class MaxLengthValidatorTest {
 
-    private Integer maxLength = 8;
+    private final Integer maxLength = 8;
 
     private MaxLengthValidatorImpl maxLengthValidator;
 
@@ -25,12 +24,14 @@ public class MaxLengthValidatorTest {
     @Test
     public void isValidTest() {
 
-        Throwable exception = Assertions.assertThrows(IllegalArgumentException.class, () -> maxLengthValidator.isValid(""));
+        Throwable exception = Assertions
+            .assertThrows(IllegalArgumentException.class, () -> maxLengthValidator.isValid(""));
         Assertions.assertEquals("Password cannot be null or blank", exception.getMessage());
 
-
-        Assertions.assertTrue(maxLengthValidator.isValid("12345678"), "Password should not contain more than 8 characters");
-        Assertions.assertFalse(maxLengthValidator.isValid("123456789"), "Password should not contain more than 8 characters");
+        Assertions.assertTrue(maxLengthValidator.isValid("12345678"),
+            "Password should not contain more than 8 characters");
+        Assertions.assertFalse(maxLengthValidator.isValid("123456789"),
+            "Password should not contain more than 8 characters");
 
     }
 
