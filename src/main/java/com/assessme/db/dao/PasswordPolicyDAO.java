@@ -7,5 +7,5 @@ import java.util.Map;
  */
 public interface PasswordPolicyDAO {
 
-  Map<String, Object> getAllPasswordPolicies() throws Exception;
+    Map<String, Object> getAllPasswordPolicies() throws Exception;
 }

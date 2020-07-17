@@ -8,7 +8,7 @@ import com.assessme.model.Enrollment;
  */
 public interface EnrollmentDAO {
 
-  Enrollment getEnrollment(long userId, int roleId, long courseId);
+    Enrollment getEnrollment(long userId, int roleId, long courseId);
 
-  boolean insertEnrollment(Enrollment enrollment) throws Exception;
+    boolean insertEnrollment(Enrollment enrollment) throws Exception;
 }

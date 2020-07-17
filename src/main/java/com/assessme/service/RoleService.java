@@ -1,7 +1,6 @@
 package com.assessme.service;
 
 import com.assessme.model.Role;
-
 import java.util.Optional;
 
 /**
@@ -10,5 +9,5 @@ import java.util.Optional;
 
 public interface RoleService {
 
-  Optional<Role> getRoleFromRoleName(String roleName) throws Exception;
+    Optional<Role> getRoleFromRoleName(String roleName) throws Exception;
 }

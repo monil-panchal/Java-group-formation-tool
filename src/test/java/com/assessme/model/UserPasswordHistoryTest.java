@@ -1,11 +1,10 @@
 package com.assessme.model;
 
+import java.sql.Timestamp;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.Timestamp;
 
 public class UserPasswordHistoryTest {
 
@@ -26,7 +25,8 @@ public class UserPasswordHistoryTest {
         String password = "password";
         Timestamp modifiedOn = new Timestamp(System.currentTimeMillis());
 
-        UserPasswordHistory userPasswordHistory = new UserPasswordHistory(userId, password, modifiedOn);
+        UserPasswordHistory userPasswordHistory = new UserPasswordHistory(userId, password,
+            modifiedOn);
 
         Assertions.assertNotNull(userPasswordHistory.getUserId());
         Assertions.assertEquals(userPasswordHistory.getUserId(), userId);

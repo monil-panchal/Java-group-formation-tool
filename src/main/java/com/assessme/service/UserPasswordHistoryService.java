@@ -1,7 +1,6 @@
 package com.assessme.service;
 
 import com.assessme.model.UserPasswordHistory;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -10,8 +9,8 @@ import java.util.Optional;
  */
 public interface UserPasswordHistoryService {
 
-  List<UserPasswordHistory> getUserPasswordHistory(Long userId, Integer lastPasswords);
+    List<UserPasswordHistory> getUserPasswordHistory(Long userId, Integer lastPasswords);
 
-  Optional<UserPasswordHistory> addUserPasswordRecord(UserPasswordHistory userPasswordHistory)
-      throws Exception;
+    Optional<UserPasswordHistory> addUserPasswordRecord(UserPasswordHistory userPasswordHistory)
+        throws Exception;
 }

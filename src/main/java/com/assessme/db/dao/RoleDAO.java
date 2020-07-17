@@ -5,7 +5,6 @@ package com.assessme.db.dao;
  */
 
 import com.assessme.model.Role;
-
 import java.util.Optional;
 
 /**
@@ -14,5 +13,5 @@ import java.util.Optional;
 
 public interface RoleDAO {
 
-  Optional<Role> getRolebyName(String roleName) throws Exception;
+    Optional<Role> getRolebyName(String roleName) throws Exception;
 }

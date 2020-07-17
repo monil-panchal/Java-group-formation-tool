@@ -7,7 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UserTest {
+
     private final Logger logger = LoggerFactory.getLogger(UserTest.class);
+    @Mock
+    Course course;
 
     @Test
     public void DefaultUserConstructorTest() {
@@ -194,17 +197,15 @@ public class UserTest {
         Assertions.assertEquals(user.getActive(), isActive);
     }
 
-    @Mock
-    Course course;
-
     @Test
     public void equalsTest() {
         User user = new User();
-        User anotherUser = new User("B00881122", "firstName", "lastName", "email@dal.ca", "password", true);
-        User anotherSameUser = new User("B00881122", "firstName", "lastName", "email@dal.ca", "password", true);
+        User anotherUser = new User("B00881122", "firstName", "lastName", "email@dal.ca",
+            "password", true);
+        User anotherSameUser = new User("B00881122", "firstName", "lastName", "email@dal.ca",
+            "password", true);
         anotherSameUser.setUserId(1L);
         anotherUser.setUserId(1L);
-
 
         Assertions.assertTrue(user.equals(user));
         Assertions.assertFalse(user.equals(course));

@@ -3,10 +3,10 @@ package com.assessme.model;
 import java.util.List;
 
 /**
- * @author: monil
- * Created on: 2020-07-15
+ * @author: monil Created on: 2020-07-15
  */
 public class SurveyQuestionsDTO {
+
     private Long surveyId;
     private List<Long> questionList;
 
@@ -37,8 +37,8 @@ public class SurveyQuestionsDTO {
     @Override
     public String toString() {
         return "SurveyQuestionsDTO{" +
-                "surveyId=" + surveyId +
-                ", questionList=" + questionList +
-                '}';
+            "surveyId=" + surveyId +
+            ", questionList=" + questionList +
+            '}';
     }
 }

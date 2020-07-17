@@ -12,26 +12,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class LowerCaseValidatorTest {
 
-  private final Integer minLength = 2;
+    private final Integer minLength = 2;
 
-  private LowerCaseValidatorImpl lowerCaseValidator;
+    private LowerCaseValidatorImpl lowerCaseValidator;
 
-  @BeforeEach
-  public void init() {
-    lowerCaseValidator = new LowerCaseValidatorImpl(minLength);
-  }
+    @BeforeEach
+    public void init() {
+        lowerCaseValidator = new LowerCaseValidatorImpl(minLength);
+    }
 
-  @Test
-  public void isValidTest() {
+    @Test
+    public void isValidTest() {
 
-    Throwable exception = Assertions
-        .assertThrows(IllegalArgumentException.class, () -> lowerCaseValidator.isValid(""));
-    Assertions.assertEquals("Password cannot be null or blank", exception.getMessage());
+        Throwable exception = Assertions
+            .assertThrows(IllegalArgumentException.class, () -> lowerCaseValidator.isValid(""));
+        Assertions.assertEquals("Password cannot be null or blank", exception.getMessage());
 
-    Assertions.assertTrue(lowerCaseValidator.isValid("Pass"),
-        "Password should contain 2 or more lowercase characters");
-    Assertions.assertFalse(lowerCaseValidator.isValid("F"),
-        "Password should contain 2 or more lowercase characters");
+        Assertions.assertTrue(lowerCaseValidator.isValid("Pass"),
+            "Password should contain 2 or more lowercase characters");
+        Assertions.assertFalse(lowerCaseValidator.isValid("F"),
+            "Password should contain 2 or more lowercase characters");
 
-  }
+    }
 }

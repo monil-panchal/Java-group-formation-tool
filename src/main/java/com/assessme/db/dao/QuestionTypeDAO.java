@@ -1,7 +1,6 @@
 package com.assessme.db.dao;
 
 import com.assessme.model.QuestionType;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -11,5 +10,5 @@ import java.util.Optional;
  */
 public interface QuestionTypeDAO {
 
-  Optional<List<QuestionType>> getAllQuestionTypes() throws Exception;
+    Optional<List<QuestionType>> getAllQuestionTypes() throws Exception;
 }

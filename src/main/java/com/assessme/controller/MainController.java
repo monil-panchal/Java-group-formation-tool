@@ -42,170 +42,170 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/")
 public class MainController {
 
-  private final Logger logger = LoggerFactory.getLogger(MainController.class);
+    private final Logger logger = LoggerFactory.getLogger(MainController.class);
 
 
-  private final UserService userService;
-  private final CourseService courseService;
-  private final MailSenderService mailSenderService;
+    private final UserService userService;
+    private final CourseService courseService;
+    private final MailSenderService mailSenderService;
 
-  public MainController() {
-    this.mailSenderService = MailSenderServiceImpl.getInstance();
-    this.userService = UserServiceImpl.getInstance();
-    this.courseService = CourseServiceImpl.getInstance();
-  }
-
-  @GetMapping("/login")
-  public String loginPage() {
-    return "login";
-  }
-
-  @GetMapping("/home")
-  public String homePage(Model model, @AuthenticationPrincipal UserDetails currentUser)
-      throws Exception {
-    Optional<User> user = userService.getUserFromEmail(currentUser.getUsername());
-    model.addAttribute("currentUser", user.get());
-    return "home";
-  }
-
-  @GetMapping("/logout")
-  public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication != null) {
-      new SecurityContextLogoutHandler().logout(request, response, authentication);
-    }
-    return "redirect:/login?logout";
-  }
-
-  @GetMapping("/admin")
-  public String adminPage() {
-    return "admin";
-  }
-
-  @GetMapping("/registration")
-  public String registerUser(WebRequest request, Model model) {
-    logger.info("Serving registration page.");
-    User userDto = new User();
-    model.addAttribute("user", userDto);
-    return "registration";
-  }
-
-  @PostMapping("/registration")
-  public String registerUserAccount(@ModelAttribute("user") User user,
-      RedirectAttributes redirectAttributes) throws Exception {
-    logger.info(String.format("Saving Details for user %s", user));
-    Optional<User> registered = Optional.empty();
-    try {
-      registered = userService.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.error(e.getMessage());
-      throw e;
+    public MainController() {
+        this.mailSenderService = MailSenderServiceImpl.getInstance();
+        this.userService = UserServiceImpl.getInstance();
+        this.courseService = CourseServiceImpl.getInstance();
     }
 
-    return "redirect:/login";
-  }
-
-  @GetMapping("/course_admin")
-  public String courseAdmin(Model model) {
-    Course course = new Course();
-    model.addAttribute("course", course);
-    return "course_admin";
-  }
-
-  @PostMapping("/course_admin")
-  public String addCourse(@ModelAttribute("course") Course course) throws Exception {
-    logger.info("in add course");
-    Optional<Course> courseToAdd = Optional.empty();
-    try {
-      courseToAdd = courseService.addCourse(course);
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.error(e.getMessage());
-      throw e;
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
     }
-    return "course_admin";
-  }
 
-  @GetMapping("/course_info")
-  public String courseInfo(Model model) {
-    return "course_info";
-  }
-
-  @GetMapping("/enrolled_courses")
-  public String enrolledCourses(Model model) {
-    return "enrolledCourses";
-  }
-
-  @GetMapping("/forget_password")
-  public String forgetPassword(@ModelAttribute("user") User user) {
-    return "forget_password";
-  }
-
-  @PostMapping("/forget_password")
-  public ModelAndView forgotUserPassword(ModelAndView modelAndView,
-      @ModelAttribute("user") User user, HttpServletRequest request) throws Exception {
-
-    try {
-
-      Optional<UserToken> token = userService.addUserToken(user.getEmail());
-      String recipient = user.getEmail();
-      String subject = AppConstant.PASSWORD_RESET_EMAIL_SUBJECT;
-
-      URL requestURL = new URL(request.getRequestURL().toString());
-      String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
-      String serverUrl = requestURL.getProtocol() + "://" + requestURL.getHost() + port;
-
-      String body = serverUrl + "/new_password?" +
-          "email=" + user.getEmail() +
-          "&" +
-          "token=" + token.get().getToken();
-
-      mailSenderService.sendSimpleMessage(recipient, subject, body);
-
-      // modelAndView.addObject("message", "An email is sent to your mailbox for password recovery.");
-      // modelAndView.setViewName("successForgotPassword");
-
-    } catch (Exception e) {
-      //   modelAndView.addObject("message", e.getLocalizedMessage());
-      modelAndView.setViewName("error");
+    @GetMapping("/home")
+    public String homePage(Model model, @AuthenticationPrincipal UserDetails currentUser)
+        throws Exception {
+        Optional<User> user = userService.getUserFromEmail(currentUser.getUsername());
+        model.addAttribute("currentUser", user.get());
+        return "home";
     }
-    return modelAndView;
-  }
 
-  @GetMapping("/new_password")
-  public String changePassword(@ModelAttribute("user") User user,
-      @RequestParam("email") String email, @RequestParam("token") String token) throws Exception {
-    Optional<UserToken> userToken = userService.getUserToken(email);
-    if (userToken.isEmpty()) {
-      return "redirect:/login";
-    } else {
-      return "new_password";
+    @GetMapping("/logout")
+    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
+        return "redirect:/login?logout";
     }
-  }
 
-  @PostMapping("/new_password")
-  public String changePassword(@ModelAttribute("user") User user) throws Exception {
-    try {
-      userService.updateUserPassword(user, user.getPassword());
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.error(e.getMessage());
-      throw e;
+    @GetMapping("/admin")
+    public String adminPage() {
+        return "admin";
     }
-    return "redirect:/login";
-  }
 
-  @ExceptionHandler(Exception.class)
-  public ModelAndView exceptionHandler(HttpServletRequest request, Exception exception) {
-    logger.error("Request: " + request.getRequestURL() + " raised " + exception);
+    @GetMapping("/registration")
+    public String registerUser(WebRequest request, Model model) {
+        logger.info("Serving registration page.");
+        User userDto = new User();
+        model.addAttribute("user", userDto);
+        return "registration";
+    }
 
-    ModelAndView modelAndView = new ModelAndView();
-    modelAndView.addObject("error", exception.getLocalizedMessage());
-    modelAndView.addObject("path", request.getRequestURL());
-    modelAndView.addObject("timestamp", new Date().toInstant());
-    modelAndView.setViewName("error");
-    return modelAndView;
-  }
+    @PostMapping("/registration")
+    public String registerUserAccount(@ModelAttribute("user") User user,
+        RedirectAttributes redirectAttributes) throws Exception {
+        logger.info(String.format("Saving Details for user %s", user));
+        Optional<User> registered = Optional.empty();
+        try {
+            registered = userService.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw e;
+        }
+
+        return "redirect:/login";
+    }
+
+    @GetMapping("/course_admin")
+    public String courseAdmin(Model model) {
+        Course course = new Course();
+        model.addAttribute("course", course);
+        return "course_admin";
+    }
+
+    @PostMapping("/course_admin")
+    public String addCourse(@ModelAttribute("course") Course course) throws Exception {
+        logger.info("in add course");
+        Optional<Course> courseToAdd = Optional.empty();
+        try {
+            courseToAdd = courseService.addCourse(course);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw e;
+        }
+        return "course_admin";
+    }
+
+    @GetMapping("/course_info")
+    public String courseInfo(Model model) {
+        return "course_info";
+    }
+
+    @GetMapping("/enrolled_courses")
+    public String enrolledCourses(Model model) {
+        return "enrolledCourses";
+    }
+
+    @GetMapping("/forget_password")
+    public String forgetPassword(@ModelAttribute("user") User user) {
+        return "forget_password";
+    }
+
+    @PostMapping("/forget_password")
+    public ModelAndView forgotUserPassword(ModelAndView modelAndView,
+        @ModelAttribute("user") User user, HttpServletRequest request) throws Exception {
+
+        try {
+
+            Optional<UserToken> token = userService.addUserToken(user.getEmail());
+            String recipient = user.getEmail();
+            String subject = AppConstant.PASSWORD_RESET_EMAIL_SUBJECT;
+
+            URL requestURL = new URL(request.getRequestURL().toString());
+            String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
+            String serverUrl = requestURL.getProtocol() + "://" + requestURL.getHost() + port;
+
+            String body = serverUrl + "/new_password?" +
+                "email=" + user.getEmail() +
+                "&" +
+                "token=" + token.get().getToken();
+
+            mailSenderService.sendSimpleMessage(recipient, subject, body);
+
+            // modelAndView.addObject("message", "An email is sent to your mailbox for password recovery.");
+            // modelAndView.setViewName("successForgotPassword");
+
+        } catch (Exception e) {
+            //   modelAndView.addObject("message", e.getLocalizedMessage());
+            modelAndView.setViewName("error");
+        }
+        return modelAndView;
+    }
+
+    @GetMapping("/new_password")
+    public String changePassword(@ModelAttribute("user") User user,
+        @RequestParam("email") String email, @RequestParam("token") String token) throws Exception {
+        Optional<UserToken> userToken = userService.getUserToken(email);
+        if (userToken.isEmpty()) {
+            return "redirect:/login";
+        } else {
+            return "new_password";
+        }
+    }
+
+    @PostMapping("/new_password")
+    public String changePassword(@ModelAttribute("user") User user) throws Exception {
+        try {
+            userService.updateUserPassword(user, user.getPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw e;
+        }
+        return "redirect:/login";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ModelAndView exceptionHandler(HttpServletRequest request, Exception exception) {
+        logger.error("Request: " + request.getRequestURL() + " raised " + exception);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("error", exception.getLocalizedMessage());
+        modelAndView.addObject("path", request.getRequestURL());
+        modelAndView.addObject("timestamp", new Date().toInstant());
+        modelAndView.setViewName("error");
+        return modelAndView;
+    }
 
 }

@@ -3,12 +3,11 @@ package com.assessme.service;
 import com.assessme.db.dao.SurveyDAOImpl;
 import com.assessme.model.Survey;
 import com.assessme.util.SurveyStatusConstant;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SurveyServiceImpl implements SurveyService {
@@ -40,10 +39,14 @@ public class SurveyServiceImpl implements SurveyService {
 
             survey.setStatus(SurveyStatusConstant.UNPUBLISHED.getSurveyStatus());
             newSurvey = surveyDAOImpl.addSurvey(survey);
-            String resMessage = String.format("Survey %s for course id: %s has been added to the database", survey.getSurveyName(), survey.getCourseId());
+            String resMessage = String
+                .format("Survey %s for course id: %s has been added to the database",
+                    survey.getSurveyName(), survey.getCourseId());
             logger.info(resMessage);
         } catch (Exception e) {
-            String errMessage = String.format("Error in adding the survey for course id: %s to the database", survey.getCourseId());
+            String errMessage = String
+                .format("Error in adding the survey for course id: %s to the database",
+                    survey.getCourseId());
             logger.error(errMessage);
             e.printStackTrace();
             throw e;
@@ -62,7 +65,8 @@ public class SurveyServiceImpl implements SurveyService {
             String resMessage = String.format("Survey list has been retrieved from the database");
             logger.info(resMessage);
         } catch (Exception e) {
-            String errMessage = String.format("Error in retrieving the Survey list from the database");
+            String errMessage = String
+                .format("Error in retrieving the Survey list from the database");
             logger.error(errMessage);
             e.printStackTrace();
             throw e;
@@ -82,7 +86,7 @@ public class SurveyServiceImpl implements SurveyService {
 
             if (survey.isPresent()) {
                 String resMessage = String
-                        .format("Survey: %s has been retrieved from the system,", survey.get());
+                    .format("Survey: %s has been retrieved from the system,", survey.get());
                 logger.info(resMessage);
             }
 
@@ -108,20 +112,25 @@ public class SurveyServiceImpl implements SurveyService {
             surveyFromDB = this.getSurvey(survey.getSurveyId());
 
             if (surveyFromDB.isPresent()) {
-                if (surveyFromDB.get().getStatus().equalsIgnoreCase(SurveyStatusConstant.UNPUBLISHED.getSurveyStatus())) {
+                if (surveyFromDB.get().getStatus()
+                    .equalsIgnoreCase(SurveyStatusConstant.UNPUBLISHED.getSurveyStatus())) {
                     String resMessage = String
-                            .format("Survey: %s status has been changed to: %s in the system", survey.getSurveyName(),
-                                    survey.getStatus());
+                        .format("Survey: %s status has been changed to: %s in the system",
+                            survey.getSurveyName(),
+                            survey.getStatus());
                     logger.info(resMessage);
                     updatedSurvey = surveyDAOImpl.updateSurveyStatus(survey);
                     return updatedSurvey;
                 } else {
-                    String errMessage = String.format("Survey: %s 's status is already: %s and hence cannot be updated",
+                    String errMessage = String
+                        .format("Survey: %s 's status is already: %s and hence cannot be updated",
                             surveyFromDB.get().getSurveyName(), surveyFromDB.get().getStatus());
                     throw new Exception(errMessage);
                 }
             } else {
-                throw new Exception("Survey not found in the system for updating the status: " + survey.getSurveyId());
+                throw new Exception(
+                    "Survey not found in the system for updating the status: " + survey
+                        .getSurveyId());
             }
 
 

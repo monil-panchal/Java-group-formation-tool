@@ -2,14 +2,13 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <html
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="https://www.thymeleaf.org"
 >
 <head>
   <meta charset="ISO-8859-1">
-  <link th:href="@{/styles/cssandjs/normalize.css}" rel="stylesheet" />
-  <link th:href="@{/styles/cssandjs/main.css}" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/styles/cssandjs/normalize.css}"/>
+  <link rel="stylesheet" th:href="@{/styles/cssandjs/main.css}"/>
   <title>Student Survey</title>
 </head>
 
@@ -18,38 +17,42 @@
 <div>
   <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
   <div th:align="right">
-    <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+    <a href="#" th:align="right" th:href="@{/logout}">Log out</a>
   </div>
 </div>
 <form action="">
-    <div th:each="question, iterstat: ${surveyQuestions}" style="border: thin solid #000000">
+  <div style="border: thin solid #000000" th:each="question, iterstat: ${surveyQuestions}">
 
-      Title: <b th:text="${question.questionTitle}"></b> <hr>
-      Question: <p th:text="${question.questionText}"></p>
+    Title: <b th:text="${question.questionTitle}"></b>
+    <hr>
+    Question: <p th:text="${question.questionText}"></p>
 
-      <div th:if="${question.questionTypeText == 'Free text'}">
-        <textarea th:name="${iterstat.index+1}" cols="50" rows="10"></textarea>
-      </div>
-
-      <div th:if="${question.questionTypeText == 'Numeric'}">
-        <input type="number" th:id="${iterstat.index+1}" th:name="${iterstat.index+1}" min="1" max="10">
-      </div>
-
-      <div th:if="${question.questionTypeText == 'Multiplle choice - choose multiple'}">
-        <div th:each="optionText : ${question.optionText}">
-          <input type="checkbox" th:text="${optionText}" th:name="${iterstat.index+1}+|X@Y${optionText}">
-        </div>
-      </div>
-
-      <div th:if="${question.questionTypeText == 'Multiple choice - choose one'}">
-        <select th:name="${iterstat.index+1}">
-          <div th:each="optionText : ${question.optionText}">
-            <option th:text="${optionText}" th:value="${optionText}" th:id="${iterstat.index+1}+|X@Y${optionText}"></option>
-          </div>
-        </select>
-      </div>
-      <br>
+    <div th:if="${question.questionTypeText == 'Free text'}">
+      <textarea cols="50" rows="10" th:name="${iterstat.index+1}"></textarea>
     </div>
+
+    <div th:if="${question.questionTypeText == 'Numeric'}">
+      <input max="10" min="1" th:id="${iterstat.index+1}" th:name="${iterstat.index+1}"
+             type="number">
+    </div>
+
+    <div th:if="${question.questionTypeText == 'Multiplle choice - choose multiple'}">
+      <div th:each="optionText : ${question.optionText}">
+        <input th:name="${iterstat.index+1}+|X@Y${optionText}" th:text="${optionText}"
+               type="checkbox">
+      </div>
+    </div>
+
+    <div th:if="${question.questionTypeText == 'Multiple choice - choose one'}">
+      <select th:name="${iterstat.index+1}">
+        <div th:each="optionText : ${question.optionText}">
+          <option th:id="${iterstat.index+1}+|X@Y${optionText}" th:text="${optionText}"
+                  th:value="${optionText}"></option>
+        </div>
+      </select>
+    </div>
+    <br>
+  </div>
 
   <br>
   <br>

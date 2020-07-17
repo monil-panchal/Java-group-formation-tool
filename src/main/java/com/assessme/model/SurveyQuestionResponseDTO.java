@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author: monil
- * Created on: 2020-07-16
+ * @author: monil Created on: 2020-07-16
  */
 public class SurveyQuestionResponseDTO implements Serializable {
 
@@ -43,9 +42,9 @@ public class SurveyQuestionResponseDTO implements Serializable {
     @Override
     public String toString() {
         return "SurveyQuestionResponseDTO{" +
-                "surveyId=" + surveyId +
-                ", userId=" + userId +
-                ", response=" + response +
-                '}';
+            "surveyId=" + surveyId +
+            ", userId=" + userId +
+            ", response=" + response +
+            '}';
     }
 }
