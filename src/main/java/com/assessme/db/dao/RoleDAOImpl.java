@@ -36,8 +36,8 @@ public class RoleDAOImpl implements RoleDAO {
     public Optional<Role> getRolebyName(String roleName) throws Exception {
         Optional<Role> role = Optional.empty();
         try (
-            Connection connection = connectionManager.getDBConnection().get();
-            PreparedStatement statement = connection.prepareStatement(selectQuery)
+                Connection connection = connectionManager.getDBConnection().get();
+                PreparedStatement statement = connection.prepareStatement(selectQuery)
         ) {
             if ((roleName != null && !roleName.isEmpty())) {
                 statement.setString(1, roleName);
@@ -65,6 +65,4 @@ public class RoleDAOImpl implements RoleDAO {
         }
         return role;
     }
-    return role;
-  }
 }

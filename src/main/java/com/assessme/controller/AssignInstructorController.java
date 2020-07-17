@@ -63,8 +63,6 @@ public class AssignInstructorController {
             mav.addObject("message", "Error Fetching Users");
         }
         return mav;
-    }
-    return mav;
   }
 
     @PostMapping("/assign_instructor/{courseCode}")
@@ -95,6 +93,4 @@ public class AssignInstructorController {
         }
         return String.format("redirect:/assign_instructor/%s", courseCode);
     }
-    return String.format("redirect:/assign_instructor/%s", courseCode);
-  }
 }

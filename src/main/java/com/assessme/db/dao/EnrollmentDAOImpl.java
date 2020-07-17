@@ -38,12 +38,12 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
     public boolean insertEnrollment(Enrollment enrollment) throws Exception {
         String insertUserSQLQuery = "INSERT INTO user_course_role values (?,?,?)";
         try (
-            Connection connection = connectionManager.getDBConnection().get();
-            PreparedStatement preparedStatement = connection
-                .prepareStatement(insertUserSQLQuery, Statement.RETURN_GENERATED_KEYS)
+                Connection connection = connectionManager.getDBConnection().get();
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(insertUserSQLQuery, Statement.RETURN_GENERATED_KEYS)
         ) {
             if (enrollment.getUserId() != null && enrollment.getCourseId() != null
-                && enrollment.getRoleId() != null) {
+                    && enrollment.getRoleId() != null) {
 
                 preparedStatement.setLong(1, enrollment.getUserId());
                 preparedStatement.setLong(2, enrollment.getCourseId());
@@ -68,14 +68,5 @@ public class EnrollmentDAOImpl implements EnrollmentDAO {
             e.printStackTrace();
             throw e;
         }
-        return true;
-      } else {
-        throw new Exception("Missing Fields for Enrollment");
-      }
-    } catch (Exception e) {
-      logger.error(e.getMessage());
-      e.printStackTrace();
-      throw e;
     }
-  }
 }

@@ -36,13 +36,11 @@ public class UserTokenDAOImpl implements UserTokenDAO {
     @Override
     public Optional<UserToken> getUserToken(Long userId) throws Exception {
 
-  public UserTokenDAOImpl() {
-    connectionManager = new ConnectionManager();
-  }
+        Optional<UserToken> userToken = Optional.empty();
 
         try (
-            Connection connection = connectionManager.getDBConnection().get();
-            PreparedStatement statement = connection.prepareStatement(getUserToken_selectQuery)
+                Connection connection = connectionManager.getDBConnection().get();
+                PreparedStatement statement = connection.prepareStatement(getUserToken_selectQuery)
         ) {
             if ((userId != null)) {
                 statement.setLong(1, userId);
@@ -58,9 +56,9 @@ public class UserTokenDAOImpl implements UserTokenDAO {
                     userToken.get().setToken(resultSet.getString("token"));
                     userToken.get().setUserId(resultSet.getLong("user_id"));
 
-        }
-        String successString = String.format("User token retrieved successfully.");
-        logger.info(successString);
+                }
+                String successString = String.format("User token retrieved successfully.");
+                logger.info(successString);
 
 
             } else {
@@ -75,17 +73,14 @@ public class UserTokenDAOImpl implements UserTokenDAO {
         return userToken;
     }
 
-    return userToken;
-  }
-
 
     @Override
     public Optional<UserToken> addUserToken(UserToken userToken) throws Exception {
         Optional<UserToken> newToken;
         try (
-            Connection connection = connectionManager.getDBConnection().get();
-            PreparedStatement preparedStatement = connection
-                .prepareStatement(insertUserTokenSQLQuery, Statement.RETURN_GENERATED_KEYS)
+                Connection connection = connectionManager.getDBConnection().get();
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(insertUserTokenSQLQuery, Statement.RETURN_GENERATED_KEYS)
 
         ) {
             preparedStatement.setLong(1, userToken.getUserId());
@@ -95,14 +90,14 @@ public class UserTokenDAOImpl implements UserTokenDAO {
 
             if (row > 0) {
                 String successString = String
-                    .format("User token with id: %s has been successfully inserted in the DB",
-                        userToken.getUserId());
+                        .format("User token with id: %s has been successfully inserted in the DB",
+                                userToken.getUserId());
                 logger.info(successString);
 
             } else {
                 String failureString = String
-                    .format("Failed to insert the user with id: %s record in the DB",
-                        userToken.getUserId());
+                        .format("Failed to insert the user with id: %s record in the DB",
+                                userToken.getUserId());
                 logger.error(failureString);
                 throw new Exception(failureString);
             }
@@ -114,6 +109,4 @@ public class UserTokenDAOImpl implements UserTokenDAO {
         }
         return newToken;
     }
-    return newToken;
-  }
 }
