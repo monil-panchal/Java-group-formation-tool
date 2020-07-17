@@ -3,18 +3,11 @@ package com.assessme.db.dao;
 import com.assessme.db.connection.ConnectionManager;
 import com.assessme.model.User;
 import com.assessme.model.UserRoleDTO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.*;
+import java.util.*;
 
 /**
  * @author: monil Created on: 2020-05-29

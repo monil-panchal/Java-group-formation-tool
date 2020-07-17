@@ -7,10 +7,6 @@ import com.assessme.auth.password.validator.PasswordValidator;
 import com.assessme.auth.password.validator.SpecialCharacterLengthValidatorImpl;
 import com.assessme.service.StoredPasswordPolicyService;
 import com.assessme.util.AppConstant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: monil Created on: 2020-06-17

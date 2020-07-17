@@ -2,7 +2,6 @@ package com.assessme.db.dao;
 
 import com.assessme.model.SurveyQuestionResponseDTO;
 import com.assessme.model.SurveyQuestionResponseData;
-import com.assessme.model.SurveyResponseDTO;
 
 import java.util.List;
 import java.util.Map;

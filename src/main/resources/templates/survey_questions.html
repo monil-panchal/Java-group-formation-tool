@@ -15,17 +15,43 @@
     </div>
 </div>
 <div>
-    <a th:href="@{/survey/user_questions(surveyId=${survey_id})}">Add Questions</a>
+    <a id="addLink" th:href="@{/survey/user_questions(surveyId=${survey_id})}">Add Questions</a>
+<!--    <a th:method="put" th:href="@{/survey/change_status(surveyId=${survey_id})}">Publish Survey</a>-->
+    <button id="pubBtn" text="Publish Survey" onclick="function publish_survey() {
+        var urlParams = new URLSearchParams(window.location.search);
+        console.log('surveyId urlparams', urlParams.get('surveyId'));
+        var survey_id = urlParams.get('surveyId');
+        console.log('publish clicked');
+        $.ajax({
+            type: 'PUT',
+            url: '/survey/change_status',
+            data: {
+            'surveyId': survey_id,
+            'status': 'published'
+            },
+            success: function() {
+            alert('SURVEY PUBLISHED');
+            $('#pubBtn').hide();
+            $('#addLink').hide();
+            }
+            });
+    }
+    return publish_survey()">Publish Survey</button>
+
 </div>
 <div id = "noSurvey"></div>
 <table id = "survey_table" border="1" align="centre" width=100%>
     <tr>
         <th width=5%>Question ID</th>
-        <th width=15%>Question Name</th>
         <th width=30%>Question Text</th>
         <th width=10%>Question Type</th>
         <th width=30%>Options</th>
-        <th width=10%>Remove</th>
+    </tr>
+    <tr th:each="i : ${questions.questions}">
+        <td th:text="${i.questionId}"></td>
+        <td th:text="${i.questionText}"></td>
+        <td th:text="${i.questionTypeText}"></td>
+        <td th:text="${i.optionText}"></td>
     </tr>
 </table>
 </body>

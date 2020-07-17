@@ -6,10 +6,11 @@ package com.assessme.service;
 
 import com.assessme.db.dao.UserRoleDAOImpl;
 import com.assessme.model.UserRole;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * User role service layer class for this application

@@ -1,25 +1,13 @@
 package com.assessme.service;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import com.assessme.auth.password.restriction.PasswordChangePolicyImpl;
 import com.assessme.auth.password.restriction.RegisterPasswordPolicyImpl;
 import com.assessme.db.dao.RoleDAOImpl;
 import com.assessme.db.dao.UserDAOImpl;
 import com.assessme.db.dao.UserPasswordHistoryDAOImpl;
 import com.assessme.db.dao.UserRoleDAOImpl;
-import com.assessme.model.Role;
-import com.assessme.model.User;
-import com.assessme.model.UserPasswordHistory;
-import com.assessme.model.UserRole;
-import com.assessme.model.UserRoleDTO;
-import com.assessme.model.UserToken;
+import com.assessme.model.*;
 import com.assessme.util.AppConstant;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -28,6 +16,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author: monil Created on: 2020-05-29

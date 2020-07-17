@@ -5,6 +5,7 @@ import com.assessme.db.dao.SurveyResponseDAOImpl;
 import com.assessme.model.SurveyQuestionResponseDTO;
 import com.assessme.model.SurveyQuestionResponseData;
 import com.assessme.model.SurveyResponseDTO;
+import com.assessme.util.AppConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -60,74 +61,82 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
     @Override
     public SurveyResponseDTO getSurveyQuestionsForStudent(Long surveyId) throws Exception {
         SurveyResponseDTO responseDTO = new SurveyResponseDTO();
-        responseDTO.setSurveyId(surveyId);
 
-        List<SurveyResponseDTO.UserResponse> userResponseList = new ArrayList<>();
+        try {
+            if (surveyId == null) {
+                throw new Exception("SurveyId cannot be null for fetching response list");
+            }
+            responseDTO.setSurveyId(surveyId);
 
-        Map<Long, List<SurveyQuestionResponseData>> surveyResponseDTO = surveyQuestionsDAO.getSurveyResponse(surveyId);
-        for (Map.Entry<Long, List<SurveyQuestionResponseData>> entry : surveyResponseDTO.entrySet()) {
+            List<SurveyResponseDTO.UserResponse> userResponseList = new ArrayList<>();
 
-            SurveyResponseDTO.UserResponse response = new SurveyResponseDTO.UserResponse();
+            Map<Long, List<SurveyQuestionResponseData>> surveyResponseDTO = surveyQuestionsDAO.getSurveyResponse(surveyId);
+            for (Map.Entry<Long, List<SurveyQuestionResponseData>> entry : surveyResponseDTO.entrySet()) {
 
-            List<SurveyQuestionResponseData> questionList = entry.getValue();
-            List<SurveyQuestionResponseData> responseDataList = new ArrayList<>();
-            Map<Long, List<SurveyQuestionResponseData>> similarQuestionMap = new HashMap<>();
+                SurveyResponseDTO.UserResponse response = new SurveyResponseDTO.UserResponse();
+
+                List<SurveyQuestionResponseData> questionList = entry.getValue();
+                List<SurveyQuestionResponseData> responseDataList = new ArrayList<>();
+                Map<Long, List<SurveyQuestionResponseData>> similarQuestionMap = new HashMap<>();
 
 
-            for (SurveyQuestionResponseData questionResponseData : questionList) {
+                for (SurveyQuestionResponseData questionResponseData : questionList) {
 
-                if ("Multiplle choice - choose multiple".equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
+                    if (AppConstant.QUESTIONS_TYPE_MCQM.equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
 
-                    if (similarQuestionMap.containsKey(questionResponseData.getQuestionId())) {
-                        List<SurveyQuestionResponseData> similarQuestionList = similarQuestionMap.get(questionResponseData.getQuestionId());
-                        similarQuestionList.add(questionResponseData);
+                        if (similarQuestionMap.containsKey(questionResponseData.getQuestionId())) {
+                            List<SurveyQuestionResponseData> similarQuestionList = similarQuestionMap.get(questionResponseData.getQuestionId());
+                            similarQuestionList.add(questionResponseData);
+                        } else {
+                            List<SurveyQuestionResponseData> similarQuestionList = new ArrayList<>();
+                            similarQuestionList.add(questionResponseData);
+                            similarQuestionMap.put(questionResponseData.getQuestionId(), similarQuestionList);
+                        }
+
+                    } else if (AppConstant.QUESTIONS_TYPE_MCQO.equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
+                        questionResponseData.setOptionText(List.of(questionResponseData.getData()));
+                        questionResponseData.setOptionValue(List.of(questionResponseData.getValue()));
+                        responseDataList.add(questionResponseData);
                     } else {
-                        List<SurveyQuestionResponseData> similarQuestionList = new ArrayList<>();
-                        similarQuestionList.add(questionResponseData);
-                        similarQuestionMap.put(questionResponseData.getQuestionId(), similarQuestionList);
-                    }
-
-                } else if ("Multiple choice - choose one".equalsIgnoreCase(questionResponseData.getQuestionTypeText())) {
-                    questionResponseData.setOptionText(List.of(questionResponseData.getData()));
-                    questionResponseData.setOptionValue(List.of(questionResponseData.getValue()));
-                    responseDataList.add(questionResponseData);
-                } else {
-                    responseDataList.add(questionResponseData);
-                }
-            }
-
-
-            for (Map.Entry<Long, List<SurveyQuestionResponseData>> entry1 : similarQuestionMap.entrySet()) {
-                List<String> optionText = new ArrayList<>();
-                List<Integer> optionValue = new ArrayList<>();
-
-                List<SurveyQuestionResponseData> responseData = entry1.getValue();
-
-                if (responseData != null || responseData.size() != 0) {
-                    for (SurveyQuestionResponseData data : responseData) {
-                        optionText.add(data.getData());
-                        optionValue.add(data.getValue());
+                        responseDataList.add(questionResponseData);
                     }
                 }
-                SurveyQuestionResponseData data = responseData.get(0);
-                data.setOptionValue(optionValue);
-                data.setOptionText(optionText);
-                responseDataList.add(data);
 
+                for (Map.Entry<Long, List<SurveyQuestionResponseData>> entry1 : similarQuestionMap.entrySet()) {
+                    List<String> optionText = new ArrayList<>();
+                    List<Integer> optionValue = new ArrayList<>();
+
+                    List<SurveyQuestionResponseData> responseData = entry1.getValue();
+
+                    if (responseData != null || responseData.size() != 0) {
+                        for (SurveyQuestionResponseData data : responseData) {
+                            optionText.add(data.getData());
+                            optionValue.add(data.getValue());
+                        }
+                    }
+                    SurveyQuestionResponseData data = responseData.get(0);
+                    data.setOptionValue(optionValue);
+                    data.setOptionText(optionText);
+                    responseDataList.add(data);
+                }
+                response.setUserId(entry.getKey());
+                response.setQuestions(responseDataList);
+                userResponseList.add(response);
 
             }
 
-            response.setUserId(entry.getKey());
-            response.setQuestions(responseDataList);
-            userResponseList.add(response);
+            responseDTO.setUsers(userResponseList);
 
+            String resMessage = String.format("Response of the survey: %s retrieved successfully", surveyId, responseDTO);
+            logger.info(resMessage);
+
+            return responseDTO;
+        } catch (Exception e) {
+            String errMessage = String.format("Error in fetching response for the survey", surveyId);
+            logger.error(errMessage);
+            e.printStackTrace();
+            throw e;
         }
-
-        responseDTO.setUsers(userResponseList);
-
-        logger.info("responseDTO: " + responseDTO);
-        return responseDTO;
-
 
     }
 }

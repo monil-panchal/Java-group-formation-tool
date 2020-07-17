@@ -145,8 +145,8 @@ public class SurveyController {
         return new ResponseEntity(responseDTO, httpStatus);
     }
 
-    @PutMapping(value = "/change_status" , consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResponseDTO> updateSurveyStatus(@RequestBody Survey survey){
+    @PutMapping(value = "/api/change_status" , consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ResponseDTO> updateSurveyStatusApi(@RequestBody Survey survey){
 
         logger.info("Calling API for updating survey the survey: " + survey);
         HttpStatus httpStatus = null;
@@ -154,6 +154,32 @@ public class SurveyController {
 
         try {
             Optional<Survey> updatedSurvey = surveyService.updateSurveyStatus(survey);
+            String resMessage = String.format("Survey has been updated in the system");
+            responseDTO = new ResponseDTO(true, resMessage, null, updatedSurvey.get());
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+
+            String errMessage = String.format("Error in updating the survey to the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity(responseDTO, httpStatus);
+    }
+
+    @PutMapping(value = "/change_status")
+    public ResponseEntity<ResponseDTO> updateSurveyStatus(@RequestParam("surveyId") Long surveyId, @RequestParam("status") String status){
+
+        logger.info("Calling API for updating survey for survey id: " + surveyId);
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Survey>> responseDTO = null;
+//        long surveyId = Long.parseLong(surveyStr);
+        try {
+            Survey.Builder survey = new Survey.Builder(surveyId).hasStatus(status);
+            logger.info("survey from put mapping" + survey.toString());
+            Optional<Survey> updatedSurvey = surveyService.updateSurveyStatus(survey.build());
             String resMessage = String.format("Survey has been updated in the system");
             responseDTO = new ResponseDTO(true, resMessage, null, updatedSurvey.get());
             httpStatus = HttpStatus.OK;
