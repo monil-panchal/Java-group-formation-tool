@@ -33,9 +33,9 @@ public class UserRoleDAOImpl implements UserRoleDAO {
     @Override
     public Boolean addUserRole(UserRole userRole) throws Exception {
         try (
-            Connection connection = connectionManager.getDBConnection().get();
-            PreparedStatement preparedStatement = connection.prepareStatement(insertUserSQLQuery,
-                Statement.RETURN_GENERATED_KEYS)
+                Connection connection = connectionManager.getDBConnection().get();
+                PreparedStatement preparedStatement = connection.prepareStatement(insertUserSQLQuery,
+                        Statement.RETURN_GENERATED_KEYS)
         ) {
             if (userRole == null || userRole.getRoleId() == null || userRole.getUserId() == null) {
                 throw new Exception("UserRole cannot be null");
@@ -60,5 +60,4 @@ public class UserRoleDAOImpl implements UserRoleDAO {
             throw e;
         }
     }
-  }
 }

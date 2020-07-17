@@ -55,7 +55,7 @@ public class UserController {
             logger.error(e.getMessage());
 
             String errMessage = String
-                .format("Error in retrieving the user list from the database");
+                    .format("Error in retrieving the user list from the database");
             responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
             httpStatus = HttpStatus.CONFLICT;
         }
@@ -64,7 +64,7 @@ public class UserController {
 
     @GetMapping()
     public ResponseEntity<ResponseDTO> getUserFromEmail(@RequestParam("email") String email)
-        throws Exception {
+            throws Exception {
 
         logger.info("Calling API for user retrieval using email.");
         HttpStatus httpStatus = null;
@@ -89,102 +89,88 @@ public class UserController {
 
     @GetMapping("/roles")
     public ResponseEntity<ResponseDTO> getUserWithRolesFromEmail(
-        @RequestParam("email") String email)
-        throws Exception {
+            @RequestParam("email") String email)
+            throws Exception {
 
-  // API endpoint method for fetching user using emailId
-  @GetMapping("/roles")
-  public ResponseEntity<ResponseDTO> getUserWithRolesFromEmail(@RequestParam("email") String email)
-      throws Exception {
+        logger.info("Calling API for user retrieval using email.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<UserRoleDTO>> responseDTO = null;
 
-    logger.info("Calling API for user retrieval using email.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<UserRoleDTO>> responseDTO = null;
+        try {
+            Optional<UserRoleDTO> user = userServiceImpl.getUserWithRolesFromEmail(email);
+            String resMessage = String.format("User has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, user);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
 
-    try {
-      Optional<UserRoleDTO> user = userServiceImpl.getUserWithRolesFromEmail(email);
-      String resMessage = String.format("User has been retrieved from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, user);
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.error(e.getMessage());
+            String errMessage = String.format("Error in retrieving the user from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
 
-      String errMessage = String.format("Error in retrieving the user from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+        return new ResponseEntity(responseDTO, httpStatus);
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> createUser(@RequestBody User user) throws Exception {
 
-  // API endpoint method for fetching user using emailId
-  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<ResponseDTO> createUser(@RequestBody User user) throws Exception {
+        logger.info("request:" + user);
 
-    logger.info("request:" + user);
+        logger.info("Calling API for creating a new user.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<User> responseDTO = null;
 
-    logger.info("Calling API for creating a new user.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<User> responseDTO = null;
+        try {
 
             Optional<User> newUser = userServiceImpl.addUser(user, null);
             String resMessage = String
-                .format("User with email: %s has been successfully.", user.getEmail());
+                    .format("User with email: %s has been successfully.", user.getEmail());
 
-      Optional<User> newUser = userServiceImpl.addUser(user, null);
-      String resMessage = String
-          .format("User with email: %s has been successfully.", user.getEmail());
+            responseDTO = new ResponseDTO(true, resMessage, null, newUser);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
 
-      responseDTO = new ResponseDTO(true, resMessage, null, newUser);
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.error(e.getMessage());
+            String errMessage = String.format("Error in creating a user in the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
 
-      String errMessage = String.format("Error in creating a user in the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+        return new ResponseEntity(responseDTO, httpStatus);
     }
 
     @PutMapping(path = "/roles", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> updateUserRole(@RequestBody UserRoleDTO user)
-        throws Exception {
+            throws Exception {
 
-  // API endpoint method for updating the user role
-  @PutMapping(path = "/roles", consumes = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<ResponseDTO> updateUserRole(@RequestBody UserRoleDTO user)
-      throws Exception {
+        logger.info("Calling API for updating the user role.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<UserRoleDAO> responseDTO = null;
 
-    logger.info("Calling API for updating the user role.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<UserRoleDAO> responseDTO = null;
+        try {
 
             Optional<UserRoleDTO> newUser = userServiceImpl
-                .updateUserRole(user,
-                    user.getUserRoles().stream().collect(Collectors.toList()).get(0));
+                    .updateUserRole(user,
+                            user.getUserRoles().stream().collect(Collectors.toList()).get(0));
             String resMessage = String
-                .format("User with email: %s has been successfully assigned the role: %s .",
-                    user.getEmail(),
-                    user.getUserRoles().stream().collect(Collectors.toList()).get(0));
+                    .format("User with email: %s has been successfully assigned the role: %s .",
+                            user.getEmail(),
+                            user.getUserRoles().stream().collect(Collectors.toList()).get(0));
 
-      Optional<UserRoleDTO> newUser = userServiceImpl
-          .updateUserRole(user, user.getUserRoles().stream().collect(Collectors.toList()).get(0));
-      String resMessage = String
-          .format("User with email: %s has been successfully assigned the role: %s .",
-              user.getEmail(), user.getUserRoles().stream().collect(Collectors.toList()).get(0));
+            responseDTO = new ResponseDTO(true, resMessage, null, newUser);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
 
-      responseDTO = new ResponseDTO(true, resMessage, null, newUser);
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.error(e.getMessage());
+            String errMessage = String.format("Error in updating the user role in the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
 
-      String errMessage = String.format("Error in updating the user role in the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+        return new ResponseEntity(responseDTO, httpStatus);
     }
-
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
 }

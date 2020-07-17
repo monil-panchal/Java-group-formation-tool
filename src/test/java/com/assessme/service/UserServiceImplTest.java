@@ -118,7 +118,7 @@ public class UserServiceImplTest {
         user.setUserRoles(userRoleSet);
 
         Mockito.when(userServiceMock.getUserWithRolesFromEmail(email))
-            .thenReturn(Optional.of(user));
+                .thenReturn(Optional.of(user));
 
         userFromDB = userServiceMock.getUserWithRolesFromEmail(email);
 
@@ -177,11 +177,11 @@ public class UserServiceImplTest {
 
         Mockito.when(userDAO.addUser(user)).thenReturn(Optional.of(user));
         Mockito.when(roleServiceImpl.getRoleFromRoleName(AppConstant.DEFAULT_USER_ROLE_CREATE))
-            .thenReturn(optionalRole);
+                .thenReturn(optionalRole);
         Mockito.when(userRoleServiceImpl.addUserRole(user.getUserId(), role.getRoleId()))
-            .thenReturn(userRoleOptional);
+                .thenReturn(userRoleOptional);
         Mockito.when(userServiceMock.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE))
-            .thenReturn(optionalUserObject);
+                .thenReturn(optionalUserObject);
 
         userFromDB = userServiceMock.addUser(user, AppConstant.DEFAULT_USER_ROLE_CREATE);
 
@@ -197,7 +197,7 @@ public class UserServiceImplTest {
     @Test
     void insertUser() throws Exception {
         User user = new User("B00123456", "Doe",
-            "John", "john.doe@email.com", "password", true);
+                "John", "john.doe@email.com", "password", true);
         Mockito.when(userDAO.addUser(user)).thenReturn(Optional.of(user));
         assertTrue(userDAO.addUser(user).isPresent());
         verify(userDAO, times(1)).addUser(user);
@@ -231,23 +231,23 @@ public class UserServiceImplTest {
         userRoleDTO.setUserRoles(Set.of("TA", "STUDENT"));
 
         Mockito.when(userServiceMock.getUserFromEmail(user.getEmail()))
-            .thenReturn(optionalUserObject);
+                .thenReturn(optionalUserObject);
         Mockito.when(roleServiceImpl.getRoleFromRoleName(newRole)).thenReturn(optionalRoleObject);
 
         Optional<UserRole> userRoleOptional = Optional.of(new UserRole());
         Mockito.when(userRoleServiceImpl
-            .addUserRole(optionalUserObject.get().getUserId(),
-                optionalRoleObject.get().getRoleId()))
-            .thenReturn(userRoleOptional);
+                .addUserRole(optionalUserObject.get().getUserId(),
+                        optionalRoleObject.get().getRoleId()))
+                .thenReturn(userRoleOptional);
 
         Mockito.when(userServiceMock.updateUserRole(optionalUserObject.get(), newRole))
-            .thenReturn(Optional.of(userRoleDTO));
+                .thenReturn(Optional.of(userRoleDTO));
         userWithRoleFromDB = userServiceMock.updateUserRole(optionalUserObject.get(), newRole);
 
         Assert.isTrue(userWithRoleFromDB.isPresent(), "Updated User object should not be empty");
         Assert.notNull(userWithRoleFromDB.get().getEmail(), "User email should not be null");
         Assert.notEmpty(userWithRoleFromDB.get().getUserRoles(),
-            "User role list should not be empty");
+                "User role list should not be empty");
 
     }
 
@@ -266,7 +266,7 @@ public class UserServiceImplTest {
         Optional<UserToken> newUserToken = Optional.of(userToken);
 
         Mockito.when(userServiceMock.getUserFromEmail(user.getEmail()))
-            .thenReturn(optionalUserObject);
+                .thenReturn(optionalUserObject);
         Mockito.when(userTokenServiceImpl.addUserToken(userToken)).thenReturn(newUserToken);
 
         Assert.isTrue(optionalUserObject.isPresent(), " User object should not be empty");
@@ -316,27 +316,20 @@ public class UserServiceImplTest {
         Mockito.when(passwordChangePolicy.isSatisfied(user.getPassword())).thenReturn(true);
 
         Mockito.when(userServiceMock.getUserFromEmail(user.getEmail()))
-            .thenReturn(optionalUserObject);
+                .thenReturn(optionalUserObject);
         Mockito.when(userServiceMock.updateUserPassword(user, "new password"))
-            .thenReturn(optionalUserObject);
+                .thenReturn(optionalUserObject);
 
         UserPasswordHistory userPasswordHistory = new UserPasswordHistory(user.getUserId(),
-            user.getPassword());
+                user.getPassword());
         Optional<UserPasswordHistory> optionalUserPasswordHistory = Optional
-            .of(userPasswordHistory);
+                .of(userPasswordHistory);
 
         Mockito.when(userPasswordHistoryServiceImpl.addUserPasswordRecord(userPasswordHistory))
-            .thenReturn(optionalUserPasswordHistory);
+                .thenReturn(optionalUserPasswordHistory);
 
         Assert.isTrue(optionalUserPasswordHistory.isPresent(),
-            "UserPasswordHistory object should not be empty");
-
-        UserPasswordHistory userPasswordHistory = new UserPasswordHistory(user.getUserId(), user.getPassword());
-        Optional<UserPasswordHistory> optionalUserPasswordHistory = Optional.of(userPasswordHistory);
-
-        Mockito.when(userPasswordHistoryServiceImpl.addUserPasswordRecord(userPasswordHistory)).thenReturn(optionalUserPasswordHistory);
-
-        Assert.isTrue(optionalUserPasswordHistory.isPresent(), "UserPasswordHistory object should not be empty");
+                "UserPasswordHistory object should not be empty");
 
         Assert.isTrue(optionalUserObject.isPresent(), "Updated User object should not be empty");
         userFromDB = userServiceMock.updateUserPassword(user, "new password");
