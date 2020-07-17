@@ -1,20 +1,20 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}" lang="en">
+<html lang="en" layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>AssessMe registration</title>
+  <title>AssessMe registration</title>
 </head>
 <body>
 <div>
-    <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
-    <div th:align="right">
-        <a href="#" th:href="@{/logout}">Log out</a>
-    </div>
+  <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
+  <div th:align="right">
+    <a href="#" th:href="@{/logout}">Log out</a>
+  </div>
 
 </div>
 
 <div>
-    <h1>Admin page</h1>
+  <h1>Admin page</h1>
 </div>
 
 <br/>

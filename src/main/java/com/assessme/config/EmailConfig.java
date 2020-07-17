@@ -8,13 +8,13 @@ import java.util.Properties;
  */
 public interface EmailConfig {
 
-  Properties getProps();
+    Properties getProps();
 
-  String getHost();
+    String getHost();
 
-  int getPort();
+    int getPort();
 
-  String getUsername();
+    String getUsername();
 
-  String getPassword();
+    String getPassword();
 }

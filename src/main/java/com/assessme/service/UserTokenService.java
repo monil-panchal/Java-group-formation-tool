@@ -1,7 +1,6 @@
 package com.assessme.service;
 
 import com.assessme.model.UserToken;
-
 import java.util.Optional;
 
 /**
@@ -9,7 +8,7 @@ import java.util.Optional;
  */
 public interface UserTokenService {
 
-  Optional<UserToken> addUserToken(UserToken user) throws Exception;
+    Optional<UserToken> addUserToken(UserToken user) throws Exception;
 
-  Optional<UserToken> getUserToken(Long userId) throws Exception;
+    Optional<UserToken> getUserToken(Long userId) throws Exception;
 }

@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class AssessmeApplicationTests {
 
-  @Test
-  void contextLoads() {
-  }
+    @Test
+    void contextLoads() {
+    }
 
 }

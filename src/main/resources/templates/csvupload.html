@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
   <title>Upload CSV File</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
 </head>
 <body>
 <div th:if="${message}">
@@ -11,20 +11,20 @@
 <div>
   <h3 th:align="right" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h3>
   <div th:align="right">
-    <a th:align="right" href="#" th:href="@{/logout}">Log out</a>
+    <a href="#" th:align="right" th:href="@{/logout}">Log out</a>
   </div>
 </div>
 <div>
 
   <a href="/instructor_dashboard">Go Back</a>
 
-  <form method="POST" enctype="multipart/form-data"
+  <form enctype="multipart/form-data" method="POST"
         th:action="@{/csvupload/{course_code}(course_code=${course_code})}">
     <input hidden name="instructorId" th:value="${userId}">
     <table>
       <tr>
         <td>File to upload:</td>
-        <td><input type="file" name="file"/></td>
+        <td><input name="file" type="file"/></td>
       </tr>
       <tr>
         <td></td>

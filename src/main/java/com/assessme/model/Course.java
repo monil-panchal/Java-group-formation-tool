@@ -11,41 +11,41 @@ import java.io.Serializable;
  */
 public class Course implements Serializable {
 
-  private long courseId;
-  private String courseCode;
-  private String courseName;
+    private long courseId;
+    private String courseCode;
+    private String courseName;
 
-  public Course() {
-  }
+    public Course() {
+    }
 
-  public Course(String courseCode, String courseName) {
-    this.courseCode = courseCode;
-    this.courseName = courseName;
-  }
+    public Course(String courseCode, String courseName) {
+        this.courseCode = courseCode;
+        this.courseName = courseName;
+    }
 
-  public long getCourseId() {
-    return courseId;
-  }
+    public long getCourseId() {
+        return courseId;
+    }
 
-  public void setCourseId(long courseId) {
-    this.courseId = courseId;
-  }
+    public void setCourseId(long courseId) {
+        this.courseId = courseId;
+    }
 
-  public String getCourseName() {
-    return courseName;
-  }
+    public String getCourseName() {
+        return courseName;
+    }
 
-  public void setCourseName(String courseName) {
-    this.courseName = courseName;
-  }
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
 
-  public String getCourseCode() {
-    return courseCode;
-  }
+    public String getCourseCode() {
+        return courseCode;
+    }
 
-  public void setCourseCode(String courseCode) {
-    this.courseCode = courseCode;
-  }
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
 
 
 }

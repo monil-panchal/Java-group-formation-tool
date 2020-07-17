@@ -1,7 +1,6 @@
 package com.assessme.service;
 
 import com.assessme.model.User;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -11,5 +10,5 @@ import java.util.Optional;
  */
 public interface StudentCSVParser {
 
-  Optional<List<User>> parseStudents(List<String> failureResults);
+    Optional<List<User>> parseStudents(List<String> failureResults);
 }

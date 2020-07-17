@@ -13,5 +13,5 @@ import com.assessme.model.UserRole;
 
 public interface UserRoleDAO {
 
-  Boolean addUserRole(UserRole userRole) throws Exception;
+    Boolean addUserRole(UserRole userRole) throws Exception;
 }

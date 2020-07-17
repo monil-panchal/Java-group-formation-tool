@@ -12,34 +12,34 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class DisallowSpecialCharacterValidatorTest {
 
-  private final String disallowCharacters = "@$";
+    private final String disallowCharacters = "@$";
 
-  private DisallowSpecialCharacterValidatorImpl disallowSpecialCharacterValidator;
+    private DisallowSpecialCharacterValidatorImpl disallowSpecialCharacterValidator;
 
-  @BeforeEach
-  public void init() {
-    disallowSpecialCharacterValidator = new DisallowSpecialCharacterValidatorImpl(
-        disallowCharacters);
-  }
+    @BeforeEach
+    public void init() {
+        disallowSpecialCharacterValidator = new DisallowSpecialCharacterValidatorImpl(
+            disallowCharacters);
+    }
 
-  @Test
-  public void isValidTest() {
+    @Test
+    public void isValidTest() {
 
-    Throwable exception = Assertions.assertThrows(IllegalArgumentException.class,
-        () -> disallowSpecialCharacterValidator.isValid(""));
-    Assertions.assertEquals("Password cannot be null or blank", exception.getMessage());
+        Throwable exception = Assertions.assertThrows(IllegalArgumentException.class,
+            () -> disallowSpecialCharacterValidator.isValid(""));
+        Assertions.assertEquals("Password cannot be null or blank", exception.getMessage());
 
-    Assertions.assertTrue(disallowSpecialCharacterValidator.isValid("password"),
-        String.format("Password should not contain the characters: %s", disallowCharacters));
-    Assertions.assertTrue(disallowSpecialCharacterValidator.isValid("%^&password"),
-        String.format("Password should not contain the characters: %s", disallowCharacters));
-    Assertions.assertFalse(disallowSpecialCharacterValidator.isValid("@password"),
-        String.format("Password should not contain the characters: %s", disallowCharacters));
-    Assertions.assertFalse(disallowSpecialCharacterValidator.isValid("password$"),
-        String.format("Password should not contain the characters: %s", disallowCharacters));
-    Assertions.assertFalse(disallowSpecialCharacterValidator.isValid("@pass$word"),
-        String.format("Password should not contain the characters: %s", disallowCharacters));
+        Assertions.assertTrue(disallowSpecialCharacterValidator.isValid("password"),
+            String.format("Password should not contain the characters: %s", disallowCharacters));
+        Assertions.assertTrue(disallowSpecialCharacterValidator.isValid("%^&password"),
+            String.format("Password should not contain the characters: %s", disallowCharacters));
+        Assertions.assertFalse(disallowSpecialCharacterValidator.isValid("@password"),
+            String.format("Password should not contain the characters: %s", disallowCharacters));
+        Assertions.assertFalse(disallowSpecialCharacterValidator.isValid("password$"),
+            String.format("Password should not contain the characters: %s", disallowCharacters));
+        Assertions.assertFalse(disallowSpecialCharacterValidator.isValid("@pass$word"),
+            String.format("Password should not contain the characters: %s", disallowCharacters));
 
-  }
+    }
 
 }

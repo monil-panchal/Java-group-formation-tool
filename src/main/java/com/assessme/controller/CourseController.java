@@ -31,170 +31,172 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/course")
 public class CourseController {
 
-  private final Logger logger = LoggerFactory.getLogger(CourseController.class);
+    private final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
-  private final CourseService courseService;
-  private final UserService userService;
-  private final RoleService roleService;
+    private final CourseService courseService;
+    private final UserService userService;
+    private final RoleService roleService;
 
-  public CourseController() {
-    this.courseService = CourseServiceImpl.getInstance();
-    this.userService = UserServiceImpl.getInstance();
-    this.roleService = RoleServiceImpl.getInstance();
-  }
-
-  @GetMapping("/all")
-  public ResponseEntity<ResponseDTO> getCourses() throws Exception {
-
-    logger.info("Calling API for course retrieval.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<Course>> responseDTO = null;
-
-    try {
-      Optional<List<Course>> courseList = courseService.getCourseList();
-      String resMessage = String.format("course list has been retrieved from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, courseList);
-      httpStatus = HttpStatus.OK;
-
-    } catch (Exception e) {
-      String errMessage = String.format("Error in retrieving the course list from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
-    }
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
-
-  @GetMapping("/getCourseByCourseCode")
-  public ResponseEntity<ResponseDTO> getCourseFromCourseCode(
-      @RequestParam("courseCode") String courseCode) throws Exception {
-
-    logger.info("Calling API for course retrieval using course code.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<Course>> responseDTO = null;
-
-    try {
-      Optional<Course> course = courseService.getCourseWithCode(courseCode);
-      String resMessage = String.format("Course has been retrieved from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, course);
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      String errMessage = String.format("Error in retrieving the course from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+    public CourseController() {
+        this.courseService = CourseServiceImpl.getInstance();
+        this.userService = UserServiceImpl.getInstance();
+        this.roleService = RoleServiceImpl.getInstance();
     }
 
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDTO> getCourses() throws Exception {
 
-  @GetMapping("/getCourseByCourseName")
-  public ResponseEntity<ResponseDTO> getCourseFromCourseName(
-      @RequestParam("courseName") String courseName) throws Exception {
+        logger.info("Calling API for course retrieval.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Course>> responseDTO = null;
 
-    logger.info("Calling API for course retrieval using course code.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<Course>> responseDTO = null;
+        try {
+            Optional<List<Course>> courseList = courseService.getCourseList();
+            String resMessage = String.format("course list has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, courseList);
+            httpStatus = HttpStatus.OK;
 
-    try {
-      Optional<Course> course = courseService.getCourseWithName(courseName);
-      String resMessage = String.format("Course has been retrieved from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, course);
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      String errMessage = String.format("Error in retrieving the course from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+        } catch (Exception e) {
+            String errMessage = String
+                .format("Error in retrieving the course list from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+        return new ResponseEntity(responseDTO, httpStatus);
     }
 
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
+    @GetMapping("/getCourseByCourseCode")
+    public ResponseEntity<ResponseDTO> getCourseFromCourseCode(
+        @RequestParam("courseCode") String courseCode) throws Exception {
 
-  @DeleteMapping("/removeCourseByCourseName")
-  public ResponseEntity<ResponseDTO> removeCourseByCourseName(
-      @RequestParam("courseName") String courseName) throws Exception {
+        logger.info("Calling API for course retrieval using course code.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Course>> responseDTO = null;
 
-    logger.info("Calling API for course retrieval using course code.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<Course>> responseDTO = null;
+        try {
+            Optional<Course> course = courseService.getCourseWithCode(courseCode);
+            String resMessage = String.format("Course has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, course);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            String errMessage = String.format("Error in retrieving the course from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
 
-    try {
-      Boolean removed = courseService.removeCourseWithCourseName(courseName);
-      String resMessage = String.format("Course has been removed from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, removed);
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      String errMessage = String.format("Error in removing the course from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+        return new ResponseEntity(responseDTO, httpStatus);
     }
 
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
+    @GetMapping("/getCourseByCourseName")
+    public ResponseEntity<ResponseDTO> getCourseFromCourseName(
+        @RequestParam("courseName") String courseName) throws Exception {
 
-  @DeleteMapping("/removeCourseByCourseCode")
-  public ResponseEntity<ResponseDTO> removeCourseByCourseCode(
-      @RequestParam("courseCode") String courseCode) throws Exception {
+        logger.info("Calling API for course retrieval using course code.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Course>> responseDTO = null;
 
-    logger.info("Calling API for course retrieval using course code.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<Course>> responseDTO = null;
+        try {
+            Optional<Course> course = courseService.getCourseWithName(courseName);
+            String resMessage = String.format("Course has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, course);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            String errMessage = String.format("Error in retrieving the course from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
 
-    try {
-      Boolean removed = courseService.removeCourseWithCourseCode(courseCode);
-      String resMessage = String.format("Course has been removed from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, removed);
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      String errMessage = String.format("Error in removing the course from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+        return new ResponseEntity(responseDTO, httpStatus);
     }
 
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
+    @DeleteMapping("/removeCourseByCourseName")
+    public ResponseEntity<ResponseDTO> removeCourseByCourseName(
+        @RequestParam("courseName") String courseName) throws Exception {
 
-  @PostMapping(path = "/addCourse", consumes = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<ResponseDTO> addCourse(@RequestBody Course course) throws Exception {
+        logger.info("Calling API for course retrieval using course code.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Course>> responseDTO = null;
 
-    logger.info("Calling API for course retrieval using course code.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<Course>> responseDTO = null;
+        try {
+            Boolean removed = courseService.removeCourseWithCourseName(courseName);
+            String resMessage = String.format("Course has been removed from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, removed);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            String errMessage = String.format("Error in removing the course from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
 
-    try {
-      Optional<Course> newCourse = courseService.addCourse(course);
-      String resMessage = String.format("Course has been added from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, newCourse);
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      String errMessage = String.format("Error in adding the course from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+        return new ResponseEntity(responseDTO, httpStatus);
     }
 
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
+    @DeleteMapping("/removeCourseByCourseCode")
+    public ResponseEntity<ResponseDTO> removeCourseByCourseCode(
+        @RequestParam("courseCode") String courseCode) throws Exception {
 
-  @GetMapping("/getEnrolledCourses")
-  public ResponseEntity<ResponseDTO> getEnrolledCourses(@RequestParam("email") String email)
-      throws Exception {
-    logger.info("Calling API for enrolled courses.");
-    HttpStatus httpStatus = null;
-    ResponseDTO<List<Course>> responseDTO = null;
+        logger.info("Calling API for course retrieval using course code.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Course>> responseDTO = null;
 
-    int roleIdStudent = roleService.getRoleFromRoleName("STUDENT").get().getRoleId();
-    Long userId = userService.getUserFromEmail(email).get().getUserId();
+        try {
+            Boolean removed = courseService.removeCourseWithCourseCode(courseCode);
+            String resMessage = String.format("Course has been removed from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, removed);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            String errMessage = String.format("Error in removing the course from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
 
-    try {
-      Optional<List<Course>> courseList = courseService
-          .getCoursesByUserAndRole(userId, roleIdStudent);
-      String resMessage = String.format("course list has been retrieved from the database");
-      responseDTO = new ResponseDTO(true, resMessage, null, courseList);
-      httpStatus = HttpStatus.OK;
-
-    } catch (Exception e) {
-      String errMessage = String.format("Error in retrieving the course list from the database");
-      responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
-      httpStatus = HttpStatus.CONFLICT;
+        return new ResponseEntity(responseDTO, httpStatus);
     }
-    return new ResponseEntity(responseDTO, httpStatus);
-  }
+
+    @PostMapping(path = "/addCourse", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ResponseDTO> addCourse(@RequestBody Course course) throws Exception {
+
+        logger.info("Calling API for course retrieval using course code.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Course>> responseDTO = null;
+
+        try {
+            Optional<Course> newCourse = courseService.addCourse(course);
+            String resMessage = String.format("Course has been added from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, newCourse);
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            String errMessage = String.format("Error in adding the course from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity(responseDTO, httpStatus);
+    }
+
+    @GetMapping("/getEnrolledCourses")
+    public ResponseEntity<ResponseDTO> getEnrolledCourses(@RequestParam("email") String email)
+        throws Exception {
+        logger.info("Calling API for enrolled courses.");
+        HttpStatus httpStatus = null;
+        ResponseDTO<List<Course>> responseDTO = null;
+
+        int roleIdStudent = roleService.getRoleFromRoleName("STUDENT").get().getRoleId();
+        Long userId = userService.getUserFromEmail(email).get().getUserId();
+
+        try {
+            Optional<List<Course>> courseList = courseService
+                .getCoursesByUserAndRole(userId, roleIdStudent);
+            String resMessage = String.format("course list has been retrieved from the database");
+            responseDTO = new ResponseDTO(true, resMessage, null, courseList);
+            httpStatus = HttpStatus.OK;
+
+        } catch (Exception e) {
+            String errMessage = String
+                .format("Error in retrieving the course list from the database");
+            responseDTO = new ResponseDTO(false, errMessage, e.getLocalizedMessage(), null);
+            httpStatus = HttpStatus.CONFLICT;
+        }
+        return new ResponseEntity(responseDTO, httpStatus);
+    }
 }

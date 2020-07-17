@@ -1,21 +1,20 @@
 package com.assessme.model;
 
+import java.sql.Timestamp;
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
-
 /**
- * @author: hardik
- * Created on: 2020-06-30
+ * @author: hardik Created on: 2020-06-30
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @SuppressWarnings("deprecation")
 public class QuestionTest {
+
     private final Logger logger = LoggerFactory.getLogger(QuestionTest.class);
 
     @Test

@@ -17,36 +17,36 @@ import org.springframework.stereotype.Service;
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {
 
-  private static EnrollmentServiceImpl instance;
-  private final Logger logger = LoggerFactory.getLogger(EnrollmentServiceImpl.class);
-  EnrollmentDAO enrollmentDAO;
+    private static EnrollmentServiceImpl instance;
+    private final Logger logger = LoggerFactory.getLogger(EnrollmentServiceImpl.class);
+    EnrollmentDAO enrollmentDAO;
 
-  public EnrollmentServiceImpl() {
-    this.enrollmentDAO = EnrollmentDAOImpl.getInstance();
-  }
-
-  public static EnrollmentServiceImpl getInstance() {
-    if (instance == null) {
-      instance = new EnrollmentServiceImpl();
+    public EnrollmentServiceImpl() {
+        this.enrollmentDAO = EnrollmentDAOImpl.getInstance();
     }
-    return instance;
-  }
 
-  @Override
-  public void insertEnrollment(Enrollment enrollment) throws Exception {
-    try {
-      logger.info("Inserting " + enrollment);
-      enrollmentDAO.insertEnrollment(enrollment);
-    } catch (Exception e) {
-      logger.error("couldn't insert " + enrollment);
-      e.printStackTrace();
-      throw e;
+    public static EnrollmentServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new EnrollmentServiceImpl();
+        }
+        return instance;
     }
-  }
 
-  @Override
-  public void insertEnrollment(Long userId, Integer roleId, long courseId) throws Exception {
-    Enrollment enrollment = new Enrollment(userId, roleId, courseId);
-    this.insertEnrollment(enrollment);
-  }
+    @Override
+    public void insertEnrollment(Enrollment enrollment) throws Exception {
+        try {
+            logger.info("Inserting " + enrollment);
+            enrollmentDAO.insertEnrollment(enrollment);
+        } catch (Exception e) {
+            logger.error("couldn't insert " + enrollment);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public void insertEnrollment(Long userId, Integer roleId, long courseId) throws Exception {
+        Enrollment enrollment = new Enrollment(userId, roleId, courseId);
+        this.insertEnrollment(enrollment);
+    }
 }

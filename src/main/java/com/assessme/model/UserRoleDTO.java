@@ -8,25 +8,25 @@ import java.util.Set;
  */
 public class UserRoleDTO extends User implements Serializable {
 
-  private Set<String> userRoles;
+    private Set<String> userRoles;
 
-  public UserRoleDTO() {
-    super();
-  }
+    public UserRoleDTO() {
+        super();
+    }
 
-  public Set<String> getUserRoles() {
-    return userRoles;
-  }
+    public Set<String> getUserRoles() {
+        return userRoles;
+    }
 
-  public void setUserRoles(Set<String> userRoles) {
-    this.userRoles = userRoles;
-  }
+    public void setUserRoles(Set<String> userRoles) {
+        this.userRoles = userRoles;
+    }
 
 
-  @Override
-  public String toString() {
-    return "UserRoleDTO{" +
-        "userRoles=" + userRoles +
-        '}';
-  }
+    @Override
+    public String toString() {
+        return "UserRoleDTO{" +
+            "userRoles=" + userRoles +
+            '}';
+    }
 }
