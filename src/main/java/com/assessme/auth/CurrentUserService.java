@@ -40,6 +40,7 @@ public class CurrentUserService {
     try {
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       if (authentication.isAuthenticated()) {
+        logger.info(authentication.getPrincipal().toString());
         String userEmail = ((org.springframework.security.core.userdetails.User) authentication
             .getPrincipal()).getUsername();
 

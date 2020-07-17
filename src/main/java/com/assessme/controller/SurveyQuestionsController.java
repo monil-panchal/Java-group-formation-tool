@@ -1,5 +1,6 @@
 package com.assessme.controller;
 
+import com.assessme.auth.CurrentUserService;
 import com.assessme.model.*;
 import com.assessme.service.SurveyQuestionsService;
 import com.assessme.service.SurveyQuestionsServiceImpl;
@@ -27,9 +28,11 @@ public class SurveyQuestionsController {
     private final Logger logger = LoggerFactory.getLogger(SurveyController.class);
 
     private SurveyQuestionsService surveyQuestionsService;
+    CurrentUserService currentUserService;
 
     public SurveyQuestionsController(SurveyQuestionsService surveyQuestionsService) {
         this.surveyQuestionsService = SurveyQuestionsServiceImpl.getInstance();
+        this.currentUserService = CurrentUserService.getInstance();
     }
 
     @PostMapping(value = "/add_questions")
@@ -108,6 +111,7 @@ public class SurveyQuestionsController {
             Optional<SurveyQuestionsDetails> surveyList = surveyQuestionsService.getSurveyQuestionsDetails(surveyId);
             String resMessage = String.format("Survey question list has been retrieved from the database");
             modelAndView.addObject("surveyQuestions",surveyList.get().getQuestions());
+            modelAndView.addObject("userId", currentUserService.getAuthenticatedUser().get().getUserId());
             modelAndView.addObject("surveyId",surveyList.get().getSurveyId());
             responseDTO = new ResponseDTO(true, resMessage, null, surveyList.get());
             httpStatus = HttpStatus.OK;
